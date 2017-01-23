@@ -10,6 +10,7 @@ public:
 	int r, g, b, a;
 
 public:
+	Color() {};
 	Color(int r, int g, int b, int a = 255)
 	{
 		this->r = r;
