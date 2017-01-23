@@ -19,11 +19,12 @@ int main(int, char**)
 		window->Clear();
 		window->Update();
 
-		console->Begin();
 		if (Console::DebugEnabled)
+		{
+			console->Begin();
 			console->Render();
-
-		console->End();
+			console->End();
+		}
 		
 		window->SwapBuffers();
 	}
