@@ -131,6 +131,7 @@
     <ClInclude Include="src\imgui\stb_textedit.h" />
     <ClInclude Include="src\imgui\stb_truetype.h" />
     <ClInclude Include="src\utils\color.h" />
+    <ClInclude Include="src\utils\console.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
