@@ -8,6 +8,7 @@ syntax: glob
 *.cache
 *.log
 *.lib
+.vs/
 [Bb]in
 [Dd]ebug*/
 obj/
