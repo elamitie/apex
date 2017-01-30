@@ -1,0 +1,1 @@
+xcopy /s .\Renderer\resources .\Debug\resources
