@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "utils/math.h"
+
 #include "utils/console.h"
 #include "utils/color.h"
 #include "graphics/assets/shader.h"
@@ -60,6 +62,11 @@ int main(int, char**)
 
 	glBindVertexArray(0); // Unbind VAO
 
+	// Quad positioning in the world
+	glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 transform;
+	transform = glm::translate(transform, glm::vec3(1.0f, 1.0f, 0.0f));
+	vec = transform * vec;
 	
 	// Main loop
 	while (window->Open())
@@ -67,17 +74,22 @@ int main(int, char**)
 		window->Clear();
 		window->Update();
 
-		/*if (Console::DebugEnabled)
-		{
-			console->Begin();
-			console->Render();
-			console->End();
-		}*/
-
 		shader->Bind();
 		texture->Bind();
 
 		shader->SetUniform("ourTexture", 0);
+
+		glm::mat4 model;
+		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians((GLfloat)glfwGetTime() * 50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 view;
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		glm::mat4 projection;
+		projection = projection = glm::perspective(glm::radians(45.0f), (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), 0.1f, 100.0f);
+
+		shader->SetUniform("model", model);
+		shader->SetUniform("view", view);
+		shader->SetUniform("projection", projection);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
