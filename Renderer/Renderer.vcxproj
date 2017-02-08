@@ -141,6 +141,7 @@
     <ClInclude Include="src\utils\color.h" />
     <ClInclude Include="src\utils\console.h" />
     <ClInclude Include="src\graphics\window.h" />
+    <ClInclude Include="src\utils\math.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

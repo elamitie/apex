@@ -1,4 +1,5 @@
 #include "shader.h"
+#include "../../utils/math.h"
 #include <fstream>
 #include <vector>
 #include <iostream>
@@ -160,5 +161,5 @@ void Shader::SetUniform(const std::string& name, const glm::vec4& vector)
 void Shader::SetUniform(const std::string& name, const glm::mat4& matrix)
 {
 	GLint location = GetUniformLocation(name);
-	glUniformMatrix4fv(location, 1, GL_FALSE, &(matrix[0][0]));
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
