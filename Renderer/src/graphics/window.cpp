@@ -38,6 +38,7 @@ Window::Window(int width, int height, const char* title)
 	int _width, _height;
 	glfwGetFramebufferSize(m_window, &_width, &_height);
 	glViewport(0, 0, width, height);
+	glEnable(GL_DEPTH_TEST);
 }
 
 Window::~Window()
