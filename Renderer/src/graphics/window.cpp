@@ -1,5 +1,6 @@
 #include "window.h"
 #include "../utils/console.h"
+#include "../input/keyboard.h"
 #include <iostream>
 
 Window::Window(int width, int height, const char* title)
@@ -55,6 +56,7 @@ bool Window::Open()
 void Window::Update()
 {
 	glfwPollEvents();
+	Keyboard::Update();
 }
 
 void Window::SwapBuffers()
@@ -76,6 +78,34 @@ void Window::Clear()
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS)
-		Console::ToggleDebug();
+	//if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS)
+	//	Console::ToggleDebug();
+	if (action == GLFW_PRESS)
+		Keyboard::__hardwareKeyPress(key);
+	if (action == GLFW_RELEASE)
+		Keyboard::__hardwareKeyRelease(key);
 }
+//
+//void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+//{
+//	if (firstMouse)
+//	{
+//		lastX = xpos;
+//		lastY = ypos;
+//		firstMouse = false;
+//	}
+//
+//	GLfloat xoffset = xpos - lastX;
+//	GLfloat yoffset = lastY - ypos;  // Reversed since y-coordinates go from bottom to left
+//
+//	lastX = xpos;
+//	lastY = ypos;
+//
+//	camera.ProcessMouseMovement(xoffset, yoffset);
+//}
+//
+//
+//void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+//{
+//	camera.ProcessMouseScroll(yoffset);
+//}
