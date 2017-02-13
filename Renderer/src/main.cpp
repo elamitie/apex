@@ -7,6 +7,7 @@
 #include "utils/color.h"
 #include "graphics/assets/shader.h"
 #include "graphics/assets/texture.h"
+#include "input/keyboard.h"
 
 
 int main(int, char**)
@@ -105,6 +106,13 @@ int main(int, char**)
 	{
 		window->Clear();
 		window->Update();
+
+		if (Keyboard::KeyDown(GLFW_KEY_A))
+			std::cout << "Key A" << std::endl;
+		if (Keyboard::KeyPressed(GLFW_KEY_SPACE))
+			std::cout << "Key Space" << std::endl;
+		if (Keyboard::KeyReleased(GLFW_KEY_ESCAPE))
+			std::cout << "Key Escape" << std::endl;
 
 		shader->Bind();
 		texture->Bind();
