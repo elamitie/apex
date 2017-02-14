@@ -7,13 +7,18 @@
 #include "utils/color.h"
 #include "graphics/assets/shader.h"
 #include "graphics/assets/texture.h"
+#include "graphics/view/camera.h"
 #include "input/keyboard.h"
 
 
 int main(int, char**)
 {
+	GLfloat deltaTime = 0.0f;
+	GLfloat lastFrame = 0.0f;
+
 	Console* console = new Console();
 	Window* window = new Window(800, 600, "OpenGL Renderer");
+	Camera* camera = new Camera({ 0.0f, 0.0f, 3.0f });
 	// TODO: need some sort of GetAssetPath() function so I don't have to hardcode this
 	Shader* shader = new Shader("resources/shaders/basic_texture.vert", "resources/shaders/basic_texture.frag");
 	shader->AddAttribute("position");
@@ -25,6 +30,8 @@ int main(int, char**)
 
 	console->Init(window);
 	window->SetClearColor({ 114, 144, 154 });
+	
+	Keyboard::Init();
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices[] = {
@@ -104,15 +111,21 @@ int main(int, char**)
 	// Main loop
 	while (window->Open())
 	{
+		GLfloat currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		window->Clear();
 		window->Update();
 
+		if (Keyboard::KeyDown(GLFW_KEY_W))
+			camera->HandleKeyboard(CamForward, deltaTime);
+		if (Keyboard::KeyDown(GLFW_KEY_S))
+			camera->HandleKeyboard(CamBack, deltaTime);
 		if (Keyboard::KeyDown(GLFW_KEY_A))
-			std::cout << "Key A" << std::endl;
-		if (Keyboard::KeyPressed(GLFW_KEY_SPACE))
-			std::cout << "Key Space" << std::endl;
-		if (Keyboard::KeyReleased(GLFW_KEY_ESCAPE))
-			std::cout << "Key Escape" << std::endl;
+			camera->HandleKeyboard(CamLeft, deltaTime);
+		if (Keyboard::KeyDown(GLFW_KEY_D))
+			camera->HandleKeyboard(CamRight, deltaTime);
 
 		shader->Bind();
 		texture->Bind();
@@ -120,9 +133,9 @@ int main(int, char**)
 		shader->SetUniform("ourTexture", 0);
 
 		glm::mat4 view;
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		view = camera->GetView();
 		glm::mat4 projection;
-		projection = projection = glm::perspective(glm::radians(45.0f), (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), 0.1f, 100.0f);
+		projection = projection = glm::perspective(camera->Properties.Zoom, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), 0.1f, 100.0f);
 
 		shader->SetUniform("view", view);
 		shader->SetUniform("projection", projection);

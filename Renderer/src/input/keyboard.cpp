@@ -4,9 +4,19 @@ bool* Keyboard::mDown = new bool[1024];
 bool* Keyboard::mNext = new bool[1024];
 bool* Keyboard::mLast = new bool[1024];
 
+void Keyboard::Init()
+{
+	for (int i = 0; i < 1024; i++)
+	{
+		mDown[i] = false;
+		mNext[i] = false;
+		mLast[i] = false;
+	}
+}
+
 void Keyboard::Update()
 {
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < 1024; i++)
 	{
 		Keyboard::mLast[i] = Keyboard::mDown[i];
 		Keyboard::mDown[i] = Keyboard::mNext[i];
