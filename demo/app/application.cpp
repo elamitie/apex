@@ -4,20 +4,20 @@
 void Application::Init()
 {
 	mCamera = new Camera({ 0.0f, 0.0f, 3.0f });
-	/*mShader = new Shader("../resources/shaders/basic_texture.vert", "../resources/shaders/basic_texture.frag");
-	mShader->AddAttribute("position");
-	mShader->AddAttribute("color");
-	mShader->AddAttribute("texCoord");*/
+
+	mLightPos = glm::vec3(1.2f, 1.0f, 2.0f);
+
 	mLightingShader = new Shader("../resources/shaders/basic_lighting.vert", "../resources/shaders/basic_lighting.frag");
 	mLightingShader->AddAttribute("position");
 	mLightingShader->AddAttribute("normal");
+
 	mLampShader = new Shader("../resources/shaders/lamp.vert", "../resources/shaders/lamp.frag");
 	mLampShader->AddAttribute("position");
 
 	mTexture = new Texture2D();
 	mTexture->Load("../resources/textures/bricks.jpg");
 
-	SetClearColor({ 114, 144, 154 });
+	SetClearColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
 
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mVbo);
@@ -46,45 +46,56 @@ void Application::Init()
 	glBindVertexArray(0);
 }
 
-void Application::Update(float dt)
+void Application::Update()
 {
 	if (Keyboard::KeyDown(GLFW_KEY_W))
-		mCamera->HandleKeyboard(CamForward, dt);
+		mCamera->HandleKeyboard(CamForward, DeltaTime());
 	if (Keyboard::KeyDown(GLFW_KEY_S))
-		mCamera->HandleKeyboard(CamBack, dt);
+		mCamera->HandleKeyboard(CamBack, DeltaTime());
 	if (Keyboard::KeyDown(GLFW_KEY_A))
-		mCamera->HandleKeyboard(CamLeft, dt);
+		mCamera->HandleKeyboard(CamLeft, DeltaTime());
 	if (Keyboard::KeyDown(GLFW_KEY_D))
-		mCamera->HandleKeyboard(CamRight, dt);
+		mCamera->HandleKeyboard(CamRight, DeltaTime());
 }
 
-void Application::Render(float dt)
+void Application::Render()
 {
-	////mShader->Bind();
-	////mTexture->Bind();
-
-	////mShader->SetUniform("ourTexture", 0);
-	//
-	//glm::mat4 model;
-	////model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	////model = glm::rotate(model, (GLfloat)glm::radians(glfwGetTime() * 50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//glm::mat4 view;
-	//view = mCamera->GetView();
-	//glm::mat4 projection;
-	//projection = projection = glm::perspective(mCamera->Properties.Zoom, (GLfloat)GetWidth() / (GLfloat)GetHeight(), 0.1f, 100.0f);
-
-	///*mShader->SetUniform("model", model);
-	//mShader->SetUniform("view", view);
-	//mShader->SetUniform("projection", projection);*/
-
-	///*glBindVertexArray(mVao);
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	//glBindVertexArray(0);*/
-
-	////mTexture->Unbind();
-	////mShader->Unbind();
-
 	mLightingShader->Bind();
+	mLightingShader->SetUniform("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+	mLightingShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	mLightingShader->SetUniform("lightPos", mLightPos);
+	mLightingShader->SetUniform("viewPos", mCamera->Position);
+
+	glm::mat4 view;
+	view = mCamera->GetView();
+	glm::mat4 proj = glm::perspective(mCamera->Properties.Zoom, (GLfloat)GetWidth() / (GLfloat)GetHeight(), 0.1f, 100.0f);
+
+	mLightingShader->SetUniform("view", view);
+	mLightingShader->SetUniform("projection", proj);
+
+	glBindVertexArray(mVao);
+	glm::mat4 model;
+	model = glm::rotate(model, (float)glm::radians(ElapsedTime() * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	mLightingShader->SetUniform("model", model);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+
+	mLampShader->Bind();
+	mLampShader->SetUniform("view", view);
+	mLampShader->SetUniform("projection", proj);
+	
+	mLightPos.x = std::cos(ElapsedTime());
+	mLightPos.y = std::sin(ElapsedTime() * 2.0f);
+	mLightPos.z = std::sin(ElapsedTime());
+
+	model = glm::mat4();
+	model = glm::translate(model, mLightPos);
+	model = glm::scale(model, glm::vec3(0.2f));
+	mLampShader->SetUniform("model", model);
+
+	glBindVertexArray(mLightVao);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
 }
 
 void Application::Cleanup()

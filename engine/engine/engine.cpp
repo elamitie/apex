@@ -35,20 +35,23 @@ void Engine::SetClearColor(Color color)
 void Engine::Loop()
 {
 	// TODO: More robust timing system
-	GLfloat deltaTime = 0.0f;
-	GLfloat lastFrame = 0.0f;
+	float lastFrame = 0.0f;
+	mDeltaTime = 0.0f;
 
 	while (mWindow->Open())
 	{
+		// Accumulate total time
+		mTotalTime = glfwGetTime();
+
 		GLfloat currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
+		mDeltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
 		mWindow->Clear();
 		mWindow->Update();
 
-		Update(deltaTime);
-		Render(deltaTime);
+		Update();
+		Render();
 
 		mWindow->SwapBuffers();
 	}

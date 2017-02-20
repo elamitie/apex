@@ -17,13 +17,16 @@ public:
 	int GetWidth() { return mWindow->GetWidth(); }
 	int GetHeight() { return mWindow->GetHeight(); }
 
+	float DeltaTime() { return mDeltaTime; }
+	float ElapsedTime() { return mTotalTime; }
+
 	void SetClearColor(Color color);
 
 protected:
 	virtual void Init() = 0;
 	virtual void Cleanup() = 0;
-	virtual void Update(float dt) = 0;
-	virtual void Render(float dt) = 0;
+	virtual void Update() = 0;
+	virtual void Render() = 0;
 
 private:
 	void Loop();
@@ -34,4 +37,7 @@ private:
 	Window* mWindow;
 	bool mQuit;
 	int mWidth, mHeight;
+
+	float mDeltaTime;
+	float mTotalTime;
 };
