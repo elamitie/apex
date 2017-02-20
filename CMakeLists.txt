@@ -13,7 +13,7 @@ function(assign_source_group)
     endforeach()
 endfunction(assign_source_group)
 
-set(PROJECT_NAME "renderer")
+set(PROJECT_NAME "engine")
 set(DEMO_NAME "demo")
 
 set_property(GLOBAL PROPERTY USE)
@@ -25,21 +25,21 @@ if (WIN32)
 	set(LIB_INCLUDE "${CMAKE_SOURCE_DIR}/lib/include")
 	set(LIB_LIBRARIES "${CMAKE_SOURCE_DIR}/lib/lib")
 	set(LIB_BINARIES "${CMAKE_SOURCE_DIR}/lib/bin")
-	set(RENDERER_INCLUDE "${CMAKE_SOURCE_DIR}/renderer")
+	set(ENGINE_INCLUDE "${CMAKE_SOURCE_DIR}/engine")
 endif()
 
 project(${PROJECT_NAME})
 
-include_directories( ${LIB_INCLUDE} ${RENDERER_INCLUDE} )
+include_directories( ${LIB_INCLUDE} ${ENGINE_INCLUDE} )
 link_directories( ${LIB_LIBRARIES} )
 
-FILE(GLOB_RECURSE RENDERER_SOURCES renderer/*)
+FILE(GLOB_RECURSE ENGINE_SOURCES engine/*)
 FILE(GLOB_RECURSE DEMO_SOURCES demo/*)
 
-assign_source_group(${RENDERER_SOURCES})
+assign_source_group(${ENGINE_SOURCES})
 assign_source_group(${DEMO_SOURCES})
 
-add_library( ${PROJECT_NAME} ${RENDERER_SOURCES} )
+add_library( ${PROJECT_NAME} ${ENGINE_SOURCES} )
 add_executable( ${DEMO_NAME} ${DEMO_SOURCES} )
 
 target_link_libraries(
