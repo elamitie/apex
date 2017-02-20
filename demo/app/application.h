@@ -3,6 +3,7 @@
 #include "engine/engine.h"
 #include "graphics/assets/shader.h"
 #include "graphics/assets/texture.h"
+#include "graphics/mesh/prefab/sphere.h"
 #include "graphics/view/camera.h"
 #include "utils/math.h"
 
@@ -18,6 +19,8 @@ private:
 	Shader* mShader;
 	Texture2D* mTexture;
 	Camera* mCamera;
+
+	Sphere* mSphere;
 
 	GLfloat vertices[20] = {
 		// Positions         // Texture Coords

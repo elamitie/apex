@@ -15,20 +15,22 @@
 class Mesh
 {
 public:
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<TexturePtr>& textures);
+	Mesh();
+	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D*>& textures);
 
-	inline std::vector<TexturePtr> GetTextures() { return mTextures; }
+	inline std::vector<Texture2D*> GetTextures() { return mTextures; }
 	inline std::vector<Vertex> GetVertices() { return mVertices; }
 	inline std::vector<unsigned int> GetIndices() { return mIndices; }
 
-	// Later this should definitely be part of a renderer, not here.
-	void Draw(ShaderPtr shader);
+	inline void SetTextures(const std::vector<Texture2D*>& textures) { mTextures = textures; }
 
-private:
+	// Later this should definitely be part of a renderer, not here.
+	void Draw(Shader* shader);
+
+protected:
 	void ConstructMesh();
 
-private:
-	std::vector<TexturePtr> mTextures;
+	std::vector<Texture2D*> mTextures;
 	std::vector<Vertex> mVertices;
 	std::vector<unsigned int> mIndices;
 
