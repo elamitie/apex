@@ -48,7 +48,7 @@ GLint Shader::GetUniformLocation(const std::string& uniformName)
 {
 	GLint location = glGetUniformLocation(mProg, uniformName.c_str());
 	if (location == GL_INVALID_INDEX)
-		std::cout << "could not find uniform name" << std::endl;
+		std::cout << "could not find uniform name: " << uniformName << std::endl;
 	return location;
 }
 
@@ -58,8 +58,15 @@ void Shader::Compile(const std::string& shader, GLuint shaderID)
 	std::string filecontents = "";
 	std::string line;
 
-	while (std::getline(file, line))
-		filecontents += line + "\n";
+	if (file.is_open())
+	{
+		while (file.good())
+		{
+			while (std::getline(file, line))
+				filecontents += line + "\n";
+		}
+	}
+	else std::cout << "Could not open file: " << shader << std::endl;
 
 	file.close();
 

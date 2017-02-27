@@ -16,3 +16,9 @@ typedef std::shared_ptr<Mesh> MeshPtr;
 
 struct Vertex;
 typedef std::shared_ptr<Vertex> VertexPtr;
+
+class Model;
+typedef std::shared_ptr<Model> ModelPtr;
+
+struct Material;
+typedef std::shared_ptr<Material> MaterialPtr;

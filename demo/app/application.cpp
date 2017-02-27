@@ -7,7 +7,7 @@ void Application::Init()
 
 	mLightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-	mLightingShader = new Shader("../resources/shaders/basic_lighting.vert", "../resources/shaders/basic_lighting.frag");
+	mLightingShader = new Shader("../resources/shaders/mat_lighting.vert", "../resources/shaders/mat_lighting.frag");
 	mLightingShader->AddAttribute("position");
 	mLightingShader->AddAttribute("normal");
 
@@ -18,7 +18,7 @@ void Application::Init()
 	mTexture->Load("../resources/textures/bricks.jpg");
 
 	SetClearColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
-
+	
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mVbo);
 
@@ -61,10 +61,26 @@ void Application::Update()
 void Application::Render()
 {
 	mLightingShader->Bind();
-	mLightingShader->SetUniform("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-	mLightingShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	mLightingShader->SetUniform("lightPos", mLightPos);
+
+	glm::vec3 lightColor;
+	lightColor.x = sin(ElapsedTime() * 2.0f);
+	lightColor.y = sin(ElapsedTime() * 0.7f);
+	lightColor.z = sin(ElapsedTime() * 1.3f);
+
+	glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+	glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
 	mLightingShader->SetUniform("viewPos", mCamera->Position);
+	mLightingShader->SetUniform("light.position", mLightPos);
+
+	mLightingShader->SetUniform("light.ambient", ambientColor);
+	mLightingShader->SetUniform("light.diffuse", diffuseColor);
+	mLightingShader->SetUniform("light.specular", glm::vec3(1.0f));
+
+	mLightingShader->SetUniform("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+	mLightingShader->SetUniform("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+	mLightingShader->SetUniform("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+	mLightingShader->SetUniform("material.shininess", 32.0f);
 
 	glm::mat4 view;
 	view = mCamera->GetView();
