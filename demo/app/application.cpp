@@ -7,15 +7,18 @@ void Application::Init()
 
 	mLightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-	mLightingShader = new Shader("../resources/shaders/mat_lighting.vert", "../resources/shaders/mat_lighting.frag");
+	mLightingShader = new Shader("../resources/shaders/textured_mat_lighting.vert", "../resources/shaders/textured_mat_lighting.frag");
 	mLightingShader->AddAttribute("position");
 	mLightingShader->AddAttribute("normal");
+	mLightingShader->AddAttribute("texCoords");
 
 	mLampShader = new Shader("../resources/shaders/lamp.vert", "../resources/shaders/lamp.frag");
 	mLampShader->AddAttribute("position");
 
-	mTexture = new Texture2D();
-	mTexture->Load("../resources/textures/bricks.jpg");
+	mDiffuse = new Texture2D();
+	mDiffuse->Load("../resources/textures/container2.png");
+	mSpecular = new Texture2D();
+	mSpecular->Load("../resources/textures/container2_specular.png");
 
 	SetClearColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
 	
@@ -26,12 +29,12 @@ void Application::Init()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindVertexArray(mVao);
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-	// Normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
 	glBindVertexArray(0);
 
 	// Then, we set the light's VAO (VBO stays the same. After all, the vertices are the same for the light object (also a 3D cube))
@@ -41,7 +44,7 @@ void Application::Init()
 	// We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
 	glBindBuffer(GL_ARRAY_BUFFER, mVbo);
 	// Set the vertex attributes (only position data for the lamp))
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0); // Note that we skip over the normal vectors
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0); // Note that we skip over the normal vectors
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 }
@@ -62,24 +65,15 @@ void Application::Render()
 {
 	mLightingShader->Bind();
 
-	glm::vec3 lightColor;
-	lightColor.x = sin(ElapsedTime() * 2.0f);
-	lightColor.y = sin(ElapsedTime() * 0.7f);
-	lightColor.z = sin(ElapsedTime() * 1.3f);
-
-	glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-	glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
 	mLightingShader->SetUniform("viewPos", mCamera->Position);
 	mLightingShader->SetUniform("light.position", mLightPos);
 
-	mLightingShader->SetUniform("light.ambient", ambientColor);
-	mLightingShader->SetUniform("light.diffuse", diffuseColor);
+	mLightingShader->SetUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	mLightingShader->SetUniform("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
 	mLightingShader->SetUniform("light.specular", glm::vec3(1.0f));
 
-	mLightingShader->SetUniform("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
-	mLightingShader->SetUniform("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
-	mLightingShader->SetUniform("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+	mLightingShader->SetUniform("material.diffuse", 0);
+	mLightingShader->SetUniform("material.specular", 1);
 	mLightingShader->SetUniform("material.shininess", 32.0f);
 
 	glm::mat4 view;
@@ -89,12 +83,16 @@ void Application::Render()
 	mLightingShader->SetUniform("view", view);
 	mLightingShader->SetUniform("projection", proj);
 
+	mDiffuse->Bind(0);
+	mSpecular->Bind(1);
 	glBindVertexArray(mVao);
 	glm::mat4 model;
 	model = glm::rotate(model, (float)glm::radians(ElapsedTime() * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	mLightingShader->SetUniform("model", model);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
+	mSpecular->Unbind();
+	mDiffuse->Unbind();
 
 	mLampShader->Bind();
 	mLampShader->SetUniform("view", view);
@@ -116,7 +114,7 @@ void Application::Render()
 
 void Application::Cleanup()
 {
-	delete mTexture;
+	delete mDiffuse;
 	//delete mShader;
 	delete mCamera;
 }
