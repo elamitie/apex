@@ -7,7 +7,7 @@ void Application::Init()
 
 	mLightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-	mLightingShader = new Shader("../resources/shaders/textured_mat_lighting.vert", "../resources/shaders/textured_mat_lighting.frag");
+	mLightingShader = new Shader("../resources/shaders/lighting.vert", "../resources/shaders/lighting.frag");
 	mLightingShader->AddAttribute("position");
 	mLightingShader->AddAttribute("normal");
 	mLightingShader->AddAttribute("texCoords");
@@ -66,15 +66,47 @@ void Application::Render()
 	mLightingShader->Bind();
 
 	mLightingShader->SetUniform("viewPos", mCamera->Position);
-	mLightingShader->SetUniform("light.position", mLightPos);
-
-	mLightingShader->SetUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	mLightingShader->SetUniform("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-	mLightingShader->SetUniform("light.specular", glm::vec3(1.0f));
 
 	mLightingShader->SetUniform("material.diffuse", 0);
 	mLightingShader->SetUniform("material.specular", 1);
 	mLightingShader->SetUniform("material.shininess", 32.0f);
+
+	mLightingShader->SetUniform("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+	mLightingShader->SetUniform("dirLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+	mLightingShader->SetUniform("dirLight.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
+	mLightingShader->SetUniform("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+
+	mLightingShader->SetUniform("pointLights[0].position",  pointLightPositions[0]);
+	mLightingShader->SetUniform("pointLights[0].ambient",   glm::vec3(0.05f, 0.05f, 0.05f));
+	mLightingShader->SetUniform("pointLights[0].diffuse",   glm::vec3(0.8f, 0.8f, 0.8f));
+	mLightingShader->SetUniform("pointLights[0].specular",  glm::vec3(1.0f, 1.0f, 1.0f));
+	mLightingShader->SetUniform("pointLights[0].constant",  1.0f);
+	mLightingShader->SetUniform("pointLights[0].linear",    0.09f);
+	mLightingShader->SetUniform("pointLights[0].quadratic", 0.032f);
+
+	mLightingShader->SetUniform("pointLights[1].position",  pointLightPositions[1]);
+	mLightingShader->SetUniform("pointLights[1].ambient",   glm::vec3(0.05f, 0.05f, 0.05f));
+	mLightingShader->SetUniform("pointLights[1].diffuse",   glm::vec3(0.8f, 0.8f, 0.8f));
+	mLightingShader->SetUniform("pointLights[1].specular",  glm::vec3(1.0f, 1.0f, 1.0f));
+	mLightingShader->SetUniform("pointLights[1].constant",  1.0f);
+	mLightingShader->SetUniform("pointLights[1].linear",    0.09f);
+	mLightingShader->SetUniform("pointLights[1].quadratic", 0.032f);
+
+	mLightingShader->SetUniform("pointLights[2].position",  pointLightPositions[2]);
+	mLightingShader->SetUniform("pointLights[2].ambient",   glm::vec3(0.05f, 0.05f, 0.05f));
+	mLightingShader->SetUniform("pointLights[2].diffuse",   glm::vec3(0.8f, 0.8f, 0.8f));
+	mLightingShader->SetUniform("pointLights[2].specular",  glm::vec3(1.0f, 1.0f, 1.0f));
+	mLightingShader->SetUniform("pointLights[2].constant",  1.0f);
+	mLightingShader->SetUniform("pointLights[2].linear",    0.09f);
+	mLightingShader->SetUniform("pointLights[2].quadratic", 0.032f);
+
+	mLightingShader->SetUniform("pointLights[3].position",  pointLightPositions[3]);
+	mLightingShader->SetUniform("pointLights[3].ambient",   glm::vec3(0.05f, 0.05f, 0.05f));
+	mLightingShader->SetUniform("pointLights[3].diffuse",   glm::vec3(0.8f, 0.8f, 0.8f));
+	mLightingShader->SetUniform("pointLights[3].specular",  glm::vec3(1.0f, 1.0f, 1.0f));
+	mLightingShader->SetUniform("pointLights[3].constant",  1.0f);
+	mLightingShader->SetUniform("pointLights[3].linear",    0.09f);
+	mLightingShader->SetUniform("pointLights[3].quadratic", 0.032f);
 
 	glm::mat4 view;
 	view = mCamera->GetView();
@@ -85,11 +117,18 @@ void Application::Render()
 
 	mDiffuse->Bind(0);
 	mSpecular->Bind(1);
-	glBindVertexArray(mVao);
 	glm::mat4 model;
-	model = glm::rotate(model, (float)glm::radians(ElapsedTime() * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	mLightingShader->SetUniform("model", model);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(mVao);
+	for (GLuint i = 0; i < 10; i++)
+	{
+		model = glm::mat4();
+		model = glm::translate(model, cubePositions[i]);
+		GLfloat angle = 20.0f * i;
+		model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+		mLightingShader->SetUniform("model", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 	glBindVertexArray(0);
 	mSpecular->Unbind();
 	mDiffuse->Unbind();
@@ -97,18 +136,17 @@ void Application::Render()
 	mLampShader->Bind();
 	mLampShader->SetUniform("view", view);
 	mLampShader->SetUniform("projection", proj);
-	
-	mLightPos.x = std::cos(ElapsedTime());
-	mLightPos.y = std::sin(ElapsedTime() * 2.0f);
-	mLightPos.z = std::sin(ElapsedTime());
 
 	model = glm::mat4();
-	model = glm::translate(model, mLightPos);
-	model = glm::scale(model, glm::vec3(0.2f));
-	mLampShader->SetUniform("model", model);
-
 	glBindVertexArray(mLightVao);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	for (GLuint i = 0; i < 4; i++)
+	{
+		model = glm::mat4();
+		model = glm::translate(model, pointLightPositions[i]);
+		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+		mLampShader->SetUniform("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 	glBindVertexArray(0);
 }
 
