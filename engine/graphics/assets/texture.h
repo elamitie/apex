@@ -4,8 +4,18 @@
 #include <GL/glew.h>
 #include <string>
 
+enum TextureType
+{
+	DIFFUSE,
+	SPECULAR,
+	NORMAL,
+	HEIGHTMAP
+};
+
 class Texture2D
 {
+	friend class Mesh;
+	friend class Model;
 public:
 	Texture2D();
 	~Texture2D();
@@ -17,7 +27,8 @@ public:
 	void Unbind(unsigned int loc = 0);
 
 private:
-	GLuint m_id;
-	int m_width, m_height;
-	std::string m_path;
+	GLuint mId;
+	int mWidth, mHeight;
+	std::string mPath;
+	std::string mType;
 };
