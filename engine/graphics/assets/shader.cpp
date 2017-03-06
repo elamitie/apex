@@ -126,47 +126,47 @@ void Shader::Link()
 void Shader::SetUniform(const std::string& name, GLint data)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform1i(location, data);
+	if (location != -1) glUniform1i(location, data);
 }
 
 void Shader::SetUniform(const std::string& name, GLint* data, GLsizei count)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform1iv(location, count, data);
+	if (location != -1) glUniform1iv(location, count, data);
 }
 
 void Shader::SetUniform(const std::string& name, GLfloat data)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform1f(location, data);
+	if (location != -1) glUniform1f(location, data);
 }
 
 void Shader::SetUniform(const std::string& name, GLfloat* data, GLsizei count)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform1fv(location, count, data);
+	if (location != -1) glUniform1fv(location, count, data);
 }
 
 void Shader::SetUniform(const std::string& name, const glm::vec2& vector)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform2f(location, vector.x, vector.y);
+	if (location != -1) glUniform2f(location, vector.x, vector.y);
 }
 
 void Shader::SetUniform(const std::string& name, const glm::vec3& vector)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform3f(location, vector.x, vector.y, vector.z);
+	if (location != -1) glUniform3f(location, vector.x, vector.y, vector.z);
 }
 
 void Shader::SetUniform(const std::string& name, const glm::vec4& vector)
 {
 	GLint location = GetUniformLocation(name);
-	glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
+	if (location != -1) glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 }
 
 void Shader::SetUniform(const std::string& name, const glm::mat4& matrix)
 {
 	GLint location = GetUniformLocation(name);
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	if (location != -1) glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
