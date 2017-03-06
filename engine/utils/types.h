@@ -2,6 +2,10 @@
 
 #include <memory>
 
+typedef unsigned int uint;
+typedef unsigned char ubyte;
+typedef char byte;
+
 class Window;
 typedef std::shared_ptr<Window> WindowPtr;
 

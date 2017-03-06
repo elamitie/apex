@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../graphics/window.h"
+#include "../utils/console.h"
 
 class Engine
 {
@@ -20,6 +21,8 @@ public:
 	float DeltaTime() { return mDeltaTime; }
 	float ElapsedTime() { return mTotalTime; }
 
+	Console* GetConsole() { return mConsole; }
+
 	void SetClearColor(Color color);
 
 protected:
@@ -35,6 +38,7 @@ private:
 
 private:
 	Window* mWindow;
+	Console* mConsole;
 	bool mQuit;
 	int mWidth, mHeight;
 
