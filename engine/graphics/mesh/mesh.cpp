@@ -73,7 +73,7 @@ void Mesh::Render(ShaderPtr shader)
 			uniformTexture += (++spec > 0) ? std::to_string(spec) : "";
 
 		texture->Bind(loc);
-		shader->SetUniform(uniformTexture, (GLint)loc++);
+		shader->SetUniform("material." + uniformTexture, (GLint)loc++);
 	}
 
 	glBindVertexArray(mVertexArray);
