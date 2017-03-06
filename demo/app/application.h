@@ -4,8 +4,9 @@
 #include "graphics/assets/shader.h"
 #include "graphics/assets/texture.h"
 #include "graphics/view/camera.h"
+#include "graphics/mesh/mesh.h"
 #include "utils/math.h"
-#include "graphics/mesh/model.h"
+#include "utils/types.h"
 
 class Application : public Engine
 {
@@ -16,7 +17,7 @@ public:
 	void Cleanup() override;
 
 private:
-	Shader* mModelShader;
+	ShaderPtr mMeshShader;
+	MeshPtr mMesh;
 	Camera* mCamera;
-	Model* mModel;
 };

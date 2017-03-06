@@ -5,12 +5,12 @@ void Application::Init()
 {
 	mCamera = new Camera({ 0.0f, 0.0f, 3.0f });
 
-	mModelShader = new Shader("../resources/shaders/model_loading_demo.vert", "../resources/shaders/model_loading_demo.frag");
-	mModelShader->AddAttribute("position");
-	mModelShader->AddAttribute("normal");
-	mModelShader->AddAttribute("texCoords");
+	mMeshShader = std::make_shared<Shader>("../resources/shaders/model_loading_demo.vert", "../resources/shaders/model_loading_demo.frag");
+	mMeshShader->AddAttribute("position");
+	mMeshShader->AddAttribute("normal");
+	mMeshShader->AddAttribute("texCoords");
 
-	mModel = new Model("../resources/models/nanosuit/nanosuit.obj");
+	mMesh = std::make_shared<Mesh>("../resources/models/nanosuit/nanosuit.obj");
 
 	SetClearColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
 }
@@ -29,25 +29,24 @@ void Application::Update()
 
 void Application::Render()
 {
-	mModelShader->Bind();
+	mMeshShader->Bind();
 
 	glm::mat4 view;
 	view = mCamera->GetView();
 	glm::mat4 proj = glm::perspective(mCamera->Properties.Zoom, (GLfloat)GetWidth() / (GLfloat)GetHeight(), 0.1f, 100.0f);
 
-	mModelShader->SetUniform("view", view);
-	mModelShader->SetUniform("projection", proj);
+	mMeshShader->SetUniform("view", view);
+	mMeshShader->SetUniform("projection", proj);
 
 	glm::mat4 model;
 	model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
 	model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-	mModelShader->SetUniform("model", model);
+	mMeshShader->SetUniform("model", model);
 
-	mModel->Render(mModelShader);
+	mMesh->Render(mMeshShader);
 }
 
 void Application::Cleanup()
 {
-	//delete mShader;
 	delete mCamera;
 }

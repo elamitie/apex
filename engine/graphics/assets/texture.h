@@ -9,13 +9,19 @@ enum TextureType
 	DIFFUSE,
 	SPECULAR,
 	NORMAL,
-	HEIGHTMAP
+	HEIGHTMAP,
+	NUM_TYPES
+};
+static const char* TextureTypeStr[] = {
+	"diffuse",
+	"specular",
+	"normal",
+	"heightmap"
 };
 
 class Texture2D
 {
 	friend class Mesh;
-	friend class Model;
 public:
 	Texture2D();
 	~Texture2D();
@@ -30,5 +36,5 @@ private:
 	GLuint mId;
 	int mWidth, mHeight;
 	std::string mPath;
-	std::string mType;
+	TextureType mType;
 };
