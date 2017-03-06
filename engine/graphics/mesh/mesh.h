@@ -1,5 +1,10 @@
 #pragma once
 
+/*
+ *	Mesh implementation loosely based off of LearnOpenGL.com and Glitter (https://github.com/Polytonic/Glitter)
+ *	Slightly modified Nanosuit body (from crytek) obtained from LearnOpenGL.com
+ */
+
 #include <GL/glew.h>
 #include <vector>
 
