@@ -47,6 +47,7 @@ target_link_libraries(
 	opengl32
 	glew32s
 	glfw3
+	assimp-vc140-mt
 )
 
 target_link_libraries(
@@ -60,6 +61,9 @@ if (WIN32)
 		TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different
 		"${LIB_BINARIES}/glfw3.dll"
+		"${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>"
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		"${LIB_BINARIES}/assimp-vc140-mt.dll"
 		"${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>"
 	)
 

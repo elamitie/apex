@@ -3,36 +3,42 @@
 #include <GL/glew.h>
 #include <vector>
 
-#include "../../utils/rendering_types.h"
+#include "../../utils/types.h"
 #include "../assets/shader.h"
 #include "../assets/texture.h"
 #include "vertex.h"
 
-// Ethan's Note: Eventually will support model loading w/ assimp.
-// Models would extend (or own) this class. Primitives will inherit
-// from this class.
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+
+#include <map>
 
 class Mesh
 {
 public:
-	Mesh();
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D*>& textures);
+	Mesh(const std::string& filename);
+	Mesh(const std::vector<Vertex>& vertices,
+		const std::vector<uint>& indices,
+		const std::vector<TexturePtr>& textures);
+	~Mesh();
 
-	inline std::vector<Texture2D*> GetTextures() { return mTextures; }
-	inline std::vector<Vertex> GetVertices() { return mVertices; }
-	inline std::vector<unsigned int> GetIndices() { return mIndices; }
+	void Render(ShaderPtr shader);
 
-	inline void SetTextures(const std::vector<Texture2D*>& textures) { mTextures = textures; }
+private:
+	void Parse(const std::string& path, const aiNode* node, const aiScene* scene);
+	void Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
+	std::vector<TexturePtr> Process(const std::string& path,
+		aiMaterial* material,
+		aiTextureType type);
 
-	// Later this should definitely be part of a renderer, not here.
-	void Draw(Shader* shader);
-
-protected:
-	void ConstructMesh();
-
-	std::vector<Texture2D*> mTextures;
+private:
+	std::vector<MeshPtr> mChildren;
+	std::vector<uint> mIndices;
 	std::vector<Vertex> mVertices;
-	std::vector<unsigned int> mIndices;
+	std::vector<TexturePtr> mTextures;
 
-	GLuint mVao, mVbo, mIbo;
+	GLuint mVertexArray;
+	GLuint mVertexBuffer;
+	GLuint mIndexBuffer;
 };

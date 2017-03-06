@@ -64,6 +64,8 @@ void Engine::InitBackend(int width, int height, const char* title)
 	mWindow = new Window(width, height, title);
 
 	Keyboard::Init();
+	mConsole = new Console(); 
+	mConsole->Init(mWindow);
 }	
 
 void Engine::CleanupBackend()
