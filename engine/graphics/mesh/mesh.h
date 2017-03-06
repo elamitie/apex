@@ -25,7 +25,7 @@ public:
 	inline void SetTextures(const std::vector<Texture2D*>& textures) { mTextures = textures; }
 
 	// Later this should definitely be part of a renderer, not here.
-	void Draw(Shader* shader);
+	void Render(Shader* shader);
 
 protected:
 	void ConstructMesh();

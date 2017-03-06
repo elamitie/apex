@@ -1,4 +1,5 @@
 #include "mesh.h"
+#include <sstream>
 
 // DO THE THING
 
@@ -16,18 +17,28 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
 	ConstructMesh();
 }
 
-void Mesh::Draw(Shader* shader)
+void Mesh::Render(Shader* shader)
 {
-	// This method will probably change, a lot.
-	// For now, because we aren't handling ASSIMP yet, I'm going to assume
-	// there is only ever one texture.
-	shader->SetUniform("ourTexture", 0);
-	mTextures[0]->Bind();
+	GLuint diffuseNr = 1;
+	GLuint specularNr = 1;
+	for (int i = 0; i < mTextures.size(); i++)
+	{
+		std::stringstream ss;
+		std::string number;
+		std::string name = mTextures[i]->mType;
+		if (name == "texture_diffuse")
+			ss << diffuseNr++;
+		else if (name == "texture_specular")
+			ss << specularNr++;
+		number = ss.str();
+
+		shader->SetUniform(/*"material." + */name + number, i);
+		mTextures[i]->Bind(i);
+	}
+	glActiveTexture(GL_TEXTURE0);
 
 	glBindVertexArray(mVao);
-	if (mIndices.size() > 0)
-		glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
-	
+	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
