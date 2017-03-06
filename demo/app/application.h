@@ -20,4 +20,6 @@ private:
 	ShaderPtr mMeshShader;
 	MeshPtr mMesh;
 	Camera* mCamera;
+
+	glm::vec3 mLightPos;
 };
