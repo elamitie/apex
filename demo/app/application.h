@@ -7,6 +7,7 @@
 #include "graphics/mesh/mesh.h"
 #include "utils/math.h"
 #include "utils/types.h"
+#include "utils/console.h"
 
 class Application : public Engine
 {

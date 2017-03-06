@@ -59,6 +59,12 @@ void Application::Render()
 	mMeshShader->SetUniform("model", model);
 
 	mMesh->Render(mMeshShader);
+
+	GetConsole()->Log("Light Pos: " + glm::to_string(mLightPos));
+
+	GetConsole()->Begin();
+	GetConsole()->Render();
+	GetConsole()->End();
 }
 
 void Application::Cleanup()
