@@ -13,6 +13,10 @@ Texture2D::~Texture2D()
 
 }
 
+void Texture2D::Generate(uint width, uint height, ubyte* pixels)
+{
+}
+
 void Texture2D::Load(const std::string& path)
 {
 	glGenTextures(1, &mId);
