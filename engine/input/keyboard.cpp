@@ -4,7 +4,7 @@ bool* Keyboard::mDown = new bool[1024];
 bool* Keyboard::mNext = new bool[1024];
 bool* Keyboard::mLast = new bool[1024];
 
-void Keyboard::Init()
+void Keyboard::init()
 {
     for (int i = 0; i < 1024; i++)
     {
@@ -14,7 +14,7 @@ void Keyboard::Init()
     }
 }
 
-void Keyboard::Update()
+void Keyboard::update()
 {
     for (int i = 0; i < 1024; i++)
     {
@@ -23,7 +23,7 @@ void Keyboard::Update()
     }
 }
 
-void Keyboard::CleanUp()
+void Keyboard::cleanup()
 {
     delete[] mDown;
     delete[] mNext;
@@ -40,17 +40,17 @@ void Keyboard::__hardwareKeyRelease(int key)
     Keyboard::mNext[key] = false;
 }
 
-bool Keyboard::KeyDown(int key)
+bool Keyboard::keyDown(int key)
 {
     return (Keyboard::mDown[key]);
 }
 
-bool Keyboard::KeyPressed(int key)
+bool Keyboard::keyPressed(int key)
 {
     return (Keyboard::mDown[key] && !Keyboard::mLast[key]);
 }
 
-bool Keyboard::KeyReleased(int key)
+bool Keyboard::keyReleased(int key)
 {
     return (!Keyboard::mDown[key] && Keyboard::mLast[key]);
 }

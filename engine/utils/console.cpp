@@ -12,18 +12,18 @@ Console::~Console()
     ImGui_ImplGlfwGL3_Shutdown();
 }
 
-void Console::Init(Window* window)
+void Console::init(Window* window)
 {
     ImGui_ImplGlfwGL3_Init(window->m_window, false);
 }
 
-void Console::Begin()
+void Console::begin()
 {
     ImGui_ImplGlfwGL3_NewFrame();
 }
 
 // -- Where the actual rendering of the console window takes place, calls to ImGUI
-void Console::Render()
+void Console::render()
 {
     ImGui::Begin("Debug");
     ImGui::Text("Framerate: %.3f ms/frame", 1000.0f / ImGui::GetIO().Framerate);
@@ -33,7 +33,7 @@ void Console::Render()
 }
 
 // -- The name is end but the internal call is to Render. Think of it more like a Flush().
-void Console::End()
+void Console::end()
 {
     ImGui::Render();
 
@@ -41,7 +41,7 @@ void Console::End()
     mUserData.clear();
 }
 
-void Console::Log(const std::string& data)
+void Console::log(const std::string& data)
 {
     mUserData.push_back(data);
 }

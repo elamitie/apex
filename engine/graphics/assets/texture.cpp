@@ -13,7 +13,7 @@ Texture2D::~Texture2D()
 
 }
 
-void Texture2D::Generate(uint width, uint height, ubyte* pixels)
+void Texture2D::generate(uint width, uint height, ubyte* pixels)
 {
     mWidth = width;
     mHeight = height;
@@ -29,7 +29,7 @@ void Texture2D::Generate(uint width, uint height, ubyte* pixels)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture2D::Load(const std::string& path)
+void Texture2D::load(const std::string& path)
 {
     glGenTextures(1, &mId);
     glBindTexture(GL_TEXTURE_2D, mId);
@@ -63,14 +63,14 @@ void Texture2D::Load(const std::string& path)
     }
 }
 
-void Texture2D::Bind(unsigned int loc /*= 0*/)
+void Texture2D::bind(unsigned int loc /*= 0*/)
 {
     if (loc >= 0)
         glActiveTexture(GL_TEXTURE0 + loc);
     glBindTexture(GL_TEXTURE_2D, mId);
 }
 
-void Texture2D::Unbind(unsigned int loc /*= 0*/)
+void Texture2D::unbind(unsigned int loc /*= 0*/)
 {
     glBindTexture(GL_TEXTURE_2D, 0);
 }

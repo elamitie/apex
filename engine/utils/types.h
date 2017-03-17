@@ -27,5 +27,5 @@ typedef std::shared_ptr<Model> ModelPtr;
 struct Material;
 typedef std::shared_ptr<Material> MaterialPtr;
 
-class RenderTarget;
-typedef std::shared_ptr<RenderTarget> RenderTargetPtr;
+class Camera;
+typedef std::shared_ptr<Camera> CameraPtr;

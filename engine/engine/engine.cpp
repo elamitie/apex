@@ -1,44 +1,44 @@
 #include "engine.h"
 #include "../input/keyboard.h"
 
-void Engine::Start(int width, int height, const char* title)
+void Engine::start(int width, int height, const char* title)
 {
-    InitBackend(width, height, title);
-    Init();
+    initBackend(width, height, title);
+    init();
 
-    Loop();
+    loop();
 
-    Cleanup();
-    CleanupBackend();
+    cleanup();
+    cleanupBackend();
 }
 
-void Engine::Quit()
-{
-    // Not Implemented Yet
-}
-
-void Engine::SetTitle(const char* title)
+void Engine::quit()
 {
     // Not Implemented Yet
 }
 
-void Engine::SetDimensions(int width, int height)
+void Engine::setTitle(const char* title)
 {
     // Not Implemented Yet
 }
 
-void Engine::SetClearColor(Color color)
+void Engine::setDimensions(int width, int height)
 {
-    mWindow->SetClearColor(color);
+    // Not Implemented Yet
 }
 
-void Engine::Loop()
+void Engine::setColor(Color color)
+{
+    mWindow->setColor(color);
+}
+
+void Engine::loop()
 {
     // TODO: More robust timing system
     float lastFrame = 0.0f;
     mDeltaTime = 0.0f;
 
-    while (mWindow->Open())
+    while (mWindow->open())
     {
         // Accumulate total time
         mTotalTime = glfwGetTime();
@@ -47,39 +47,39 @@ void Engine::Loop()
         mDeltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        mWindow->Clear();
+        mWindow->clear();
 
-        Update();
-        Render();
+        update();
+        render();
 
-        mWindow->SwapBuffers();
+        mWindow->swapBuffers();
     }
 }
 
-void Engine::InitBackend(int width, int height,
+void Engine::initBackend(int width, int height,
                          const char* title)
 {
     mWidth = width;
     mHeight = height;
     mWindow = new Window(width, height, title);
 
-    Keyboard::Init();
+    Keyboard::init();
     mConsole = new Console();
-    mConsole->Init(mWindow);
+    mConsole->init(mWindow);
 }
 
-void Engine::CleanupBackend()
+void Engine::cleanupBackend()
 {
-    Keyboard::CleanUp();
+    Keyboard::cleanup();
     delete mConsole;
     delete mWindow;
 }
 
-void Engine::Update()
+void Engine::update()
 {
-    mWindow->Update();
+    mWindow->update();
 }
 
-void Engine::Render()
+void Engine::render()
 {
 }

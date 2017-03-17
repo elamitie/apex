@@ -28,12 +28,12 @@ public:
          const std::vector<TexturePtr>& textures);
     ~Mesh();
 
-    void Render(ShaderPtr shader);
+    void render(ShaderPtr shader);
 
 private:
-    void Parse(const std::string& path, const aiNode* node, const aiScene* scene);
-    void Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
-    std::vector<TexturePtr> Process(const std::string& path,
+    void parse(const std::string& path, const aiNode* node, const aiScene* scene);
+    void parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
+    std::vector<TexturePtr> process(const std::string& path,
                                     aiMaterial* material,
                                     aiTextureType type);
 

@@ -9,34 +9,34 @@ public:
     Engine() : mQuit (false) {}
     ~Engine() {}
 
-    void Start(int width = 640, int height = 480,
+    void start(int width = 640, int height = 480,
                const char* title = "");
-    void Quit();
+    void quit();
 
-    void SetTitle (const char* title);
-    void SetDimensions (int width, int height);
+    void setTitle(const char* title);
+    void setDimensions(int width, int height);
 
-    int GetWidth() { return mWindow->GetWidth(); }
-    int GetHeight() { return mWindow->GetHeight(); }
+    int getWidth() { return mWindow->getWidth(); }
+    int getHeight() { return mWindow->getHeight(); }
 
-    float DeltaTime() { return mDeltaTime; }
-    float ElapsedTime() { return mTotalTime; }
+    float deltaTime() { return mDeltaTime; }
+    float elapsedTime() { return mTotalTime; }
 
-    Console* GetConsole() { return mConsole; }
+    Console* console() { return mConsole; }
 
-    void SetClearColor (Color color);
+    void setColor (Color color);
 
 protected:
-    virtual void Init() = 0;
-    virtual void Cleanup() = 0;
+    virtual void init() = 0;
+    virtual void cleanup() = 0;
 
-    virtual void Update();
-    virtual void Render();
+    virtual void update();
+    virtual void render();
 
 private:
-    void Loop();
-    void InitBackend(int width, int height, const char* title);
-    void CleanupBackend();
+    void loop();
+    void initBackend(int width, int height, const char* title);
+    void cleanupBackend();
 
 private:
     Window* mWindow;

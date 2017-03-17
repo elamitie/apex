@@ -1,76 +1,75 @@
 #include "application.h"
 #include "input/keyboard.h"
 
-void Application::Init()
+void Application::init()
 {
-    mCamera = new Camera({ 0.0f, 0.0f, 3.0f });
+    mCamera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 
     mMeshShader = std::make_shared<Shader>("../resources/shaders/prototype1_lighting.vert",
                                            "../resources/shaders/prototype1_lighting.frag");
-    mMeshShader->AddAttribute("position");
-    mMeshShader->AddAttribute("normal");
-    mMeshShader->AddAttribute("texCoords");
+    mMeshShader->addAttribute("position");
+    mMeshShader->addAttribute("normal");
+    mMeshShader->addAttribute("texCoords");
 
     mMesh = std::make_shared<Mesh>("../resources/models/nanosuit/nanosuit.obj");
 
     mLightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-    SetClearColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
+    setColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
 }
 
-void Application::Update()
+void Application::update()
 {
-    Engine::Update();
+    Engine::update();
 
-    if (Keyboard::KeyDown(GLFW_KEY_W))
-        mCamera->HandleKeyboard(CamForward, DeltaTime());
-    if (Keyboard::KeyDown(GLFW_KEY_S))
-        mCamera->HandleKeyboard(CamBack, DeltaTime());
-    if (Keyboard::KeyDown(GLFW_KEY_A))
-        mCamera->HandleKeyboard(CamLeft, DeltaTime());
-    if (Keyboard::KeyDown(GLFW_KEY_D))
-        mCamera->HandleKeyboard(CamRight, DeltaTime());
+    if (Keyboard::keyDown(GLFW_KEY_W))
+        mCamera->handleKeyboard(CamForward, deltaTime());
+    if (Keyboard::keyDown(GLFW_KEY_S))
+        mCamera->handleKeyboard(CamBack, deltaTime());
+    if (Keyboard::keyDown(GLFW_KEY_A))
+        mCamera->handleKeyboard(CamLeft, deltaTime());
+    if (Keyboard::keyDown(GLFW_KEY_D))
+        mCamera->handleKeyboard(CamRight, deltaTime());
 }
 
-void Application::Render()
+void Application::render()
 {
-    mMeshShader->Bind();
+    mMeshShader->enable();
 
-    mLightPos.x = std::cos(ElapsedTime());
-    mLightPos.z = std::sin(ElapsedTime());
+    mLightPos.x = std::cos(elapsedTime());
+    mLightPos.z = std::sin(elapsedTime());
 
-    mMeshShader->SetUniform("light.position", mLightPos);
-    mMeshShader->SetUniform("viewPos", mCamera->Position);
+    mMeshShader->setUniform("light.position", mLightPos);
+    mMeshShader->setUniform("viewPos", mCamera->position);
 
-    mMeshShader->SetUniform("light.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    mMeshShader->SetUniform("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    mMeshShader->SetUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-    mMeshShader->SetUniform("material.shininess", 32.0f);
+    mMeshShader->setUniform("light.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
+    mMeshShader->setUniform("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+    mMeshShader->setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    mMeshShader->setUniform("material.shininess", 32.0f);
 
     glm::mat4 view;
-    view = mCamera->GetView();
-    glm::mat4 proj = glm::perspective(mCamera->Properties.Zoom,
-                                      (GLfloat)GetWidth() / (GLfloat)GetHeight(), 0.1f, 100.0f);
+    view = mCamera->getView();
+    glm::mat4 proj = glm::perspective(mCamera->properties.zoom,
+                                      (GLfloat)getWidth() / (GLfloat)getHeight(), 0.1f, 100.0f);
 
-    mMeshShader->SetUniform("view", view);
-    mMeshShader->SetUniform("projection", proj);
+    mMeshShader->setUniform("view", view);
+    mMeshShader->setUniform("projection", proj);
 
     glm::mat4 model;
-    model = glm::rotate(model, glm::radians(ElapsedTime() * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(elapsedTime() * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
     model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-    mMeshShader->SetUniform("model", model);
+    mMeshShader->setUniform("model", model);
 
-    mMesh->Render(mMeshShader);
+    mMesh->render(mMeshShader);
 
-    GetConsole()->Log("Light Pos: " + glm::to_string(mLightPos));
+    console()->log("Light Pos: " + glm::to_string(mLightPos));
 
-    GetConsole()->Begin();
-    GetConsole()->Render();
-    GetConsole()->End();
+    console()->begin();
+    console()->render();
+    console()->end();
 }
 
-void Application::Cleanup()
+void Application::cleanup()
 {
-    delete mCamera;
 }

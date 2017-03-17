@@ -2,8 +2,8 @@
 
 int main(int argc, char** argv)
 {
-	Application app;
-	app.Start(800, 600, "OpenGL Demo");
+    Application app;
+    app.start(800, 600, "OpenGL Demo");
 
-	return 0;
+    return 0;
 }

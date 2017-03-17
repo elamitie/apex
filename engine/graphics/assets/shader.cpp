@@ -10,10 +10,10 @@ Shader::Shader(const std::string& vert, const std::string& frag)
     mVert = glCreateShader(GL_VERTEX_SHADER);
     mFrag = glCreateShader(GL_FRAGMENT_SHADER);
 
-    Compile(vert, mVert);
-    Compile(frag, mFrag);
+    compile(vert, mVert);
+    compile(frag, mFrag);
 
-    Link();
+    link();
 }
 
 Shader::~Shader()
@@ -21,26 +21,26 @@ Shader::~Shader()
 
 }
 
-void Shader::AddAttribute(const std::string& name)
+void Shader::addAttribute(const std::string& name)
 {
     glBindAttribLocation(mProg, mNumAttribs++, name.c_str());
 }
 
-void Shader::Bind()
+void Shader::enable()
 {
     glUseProgram(mProg);
     for (int i = 0; i < mNumAttribs; i++)
         glEnableVertexAttribArray(i);
 }
 
-void Shader::Unbind()
+void Shader::disable()
 {
     glUseProgram(0);
     for (int i = 0; i < mNumAttribs; i++)
         glDisableVertexAttribArray(i);
 }
 
-GLint Shader::GetUniformLocation(const std::string& uniformName)
+GLint Shader::getUniformLocation(const std::string& uniformName)
 {
     GLint location = glGetUniformLocation(mProg, uniformName.c_str());
     if (location == GL_INVALID_INDEX)
@@ -48,7 +48,7 @@ GLint Shader::GetUniformLocation(const std::string& uniformName)
     return location;
 }
 
-void Shader::Compile(const std::string& shader, GLuint shaderID)
+void Shader::compile(const std::string& shader, GLuint shaderID)
 {
     std::ifstream file(shader);
     std::string filecontents = "";
@@ -88,7 +88,7 @@ void Shader::Compile(const std::string& shader, GLuint shaderID)
     }
 }
 
-void Shader::Link()
+void Shader::link()
 {
     glAttachShader(mProg, mVert);
     glAttachShader(mProg, mFrag);
@@ -119,50 +119,50 @@ void Shader::Link()
     glDeleteShader(mFrag);
 }
 
-void Shader::SetUniform(const std::string& name, GLint data)
+void Shader::setUniform(const std::string& name, GLint data)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform1i(location, data);
 }
 
-void Shader::SetUniform(const std::string& name, GLint* data, GLsizei count)
+void Shader::setUniform(const std::string& name, GLint* data, GLsizei count)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform1iv(location, count, data);
 }
 
-void Shader::SetUniform(const std::string& name, GLfloat data)
+void Shader::setUniform(const std::string& name, GLfloat data)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform1f(location, data);
 }
 
-void Shader::SetUniform(const std::string& name, GLfloat* data, GLsizei count)
+void Shader::setUniform(const std::string& name, GLfloat* data, GLsizei count)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform1fv(location, count, data);
 }
 
-void Shader::SetUniform(const std::string& name, const glm::vec2& vector)
+void Shader::setUniform(const std::string& name, const glm::vec2& vector)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform2f(location, vector.x, vector.y);
 }
 
-void Shader::SetUniform(const std::string& name, const glm::vec3& vector)
+void Shader::setUniform(const std::string& name, const glm::vec3& vector)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform3f(location, vector.x, vector.y, vector.z);
 }
 
-void Shader::SetUniform(const std::string& name, const glm::vec4& vector)
+void Shader::setUniform(const std::string& name, const glm::vec4& vector)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 }
 
-void Shader::SetUniform(const std::string& name, const glm::mat4& matrix)
+void Shader::setUniform(const std::string& name, const glm::mat4& matrix)
 {
-    GLint location = GetUniformLocation(name);
+    GLint location = getUniformLocation(name);
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

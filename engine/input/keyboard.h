@@ -4,13 +4,13 @@
 class Keyboard
 {
 public:
-    static void Init();
-    static void Update();
-    static void CleanUp();
+    static void init();
+    static void update();
+    static void cleanup();
 
-    static bool KeyDown(int key);
-    static bool KeyReleased(int key);
-    static bool KeyPressed(int key);
+    static bool keyDown(int key);
+    static bool keyReleased(int key);
+    static bool keyPressed(int key);
 
     static void __hardwareKeyPress(int key);
     static void __hardwareKeyRelease(int key);

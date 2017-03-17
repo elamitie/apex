@@ -13,7 +13,7 @@ Mesh::Mesh(const std::string& filename)
 
     size_t index = filename.find_last_of("/");
 
-    Parse(filename.substr(0, index), scene->mRootNode, scene);
+    parse(filename.substr(0, index), scene->mRootNode, scene);
 }
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,
@@ -54,13 +54,13 @@ Mesh::~Mesh()
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
-void Mesh::Render(ShaderPtr shader)
+void Mesh::render(ShaderPtr shader)
 {
     uint loc, diff, spec;
     loc = diff = spec = 0;
 
     for (auto& mesh : mChildren)
-        mesh->Render(shader);
+        mesh->render(shader);
 
     for (auto& texture : mTextures)
     {
@@ -72,8 +72,8 @@ void Mesh::Render(ShaderPtr shader)
         else if (uniformTexture == "specular")
             uniformTexture += (++spec > 0) ? std::to_string(spec) : "";
 
-        texture->Bind(loc);
-        shader->SetUniform("material." + uniformTexture, (GLint)loc++);
+        texture->bind(loc);
+        shader->setUniform("material." + uniformTexture, (GLint)loc++);
     }
 
     glBindVertexArray(mVertexArray);
@@ -81,15 +81,15 @@ void Mesh::Render(ShaderPtr shader)
     glBindVertexArray(0);
 }
 
-void Mesh::Parse(const std::string& path, const aiNode* node, const aiScene* scene)
+void Mesh::parse(const std::string& path, const aiNode* node, const aiScene* scene)
 {
     for (int i = 0; i < node->mNumMeshes; i++)
-        Parse(path, scene->mMeshes[node->mMeshes[i]], scene);
+        parse(path, scene->mMeshes[node->mMeshes[i]], scene);
     for (int i = 0; i < node->mNumChildren; i++)
-        Parse(path, node->mChildren[i], scene);
+        parse(path, node->mChildren[i], scene);
 }
 
-void Mesh::Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene)
+void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     for (int i = 0; i < mesh->mNumVertices; i++)
@@ -124,9 +124,9 @@ void Mesh::Parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
             indices.push_back(mesh->mFaces[i].mIndices[j]);
 
     std::vector<TexturePtr> textures;
-    std::vector<TexturePtr> diffuse  = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+    std::vector<TexturePtr> diffuse  = process(path, scene->mMaterials[mesh->mMaterialIndex],
                                        aiTextureType_DIFFUSE);
-    std::vector<TexturePtr> specular = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+    std::vector<TexturePtr> specular = process(path, scene->mMaterials[mesh->mMaterialIndex],
                                        aiTextureType_SPECULAR);
 
     textures.insert(textures.end(), diffuse.begin(), diffuse.end());
@@ -135,7 +135,7 @@ void Mesh::Parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures));
 }
 
-std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* material,
+std::vector<TexturePtr> Mesh::process(const std::string& path, aiMaterial* material,
                                       aiTextureType type)
 {
     std::vector<TexturePtr> textures;
@@ -147,7 +147,7 @@ std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* mater
         filename = path + "/" + filename;
 
         TexturePtr texture = std::make_shared<Texture2D>();
-        texture->Load(filename);
+        texture->load(filename);
 
         if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
         if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;
