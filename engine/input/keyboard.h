@@ -4,19 +4,19 @@
 class Keyboard
 {
 public:
-	static void Init();
-	static void Update();
-	static void CleanUp();
+    static void Init();
+    static void Update();
+    static void CleanUp();
 
-	static bool KeyDown(int key);
-	static bool KeyReleased(int key);
-	static bool KeyPressed(int key);
+    static bool KeyDown(int key);
+    static bool KeyReleased(int key);
+    static bool KeyPressed(int key);
 
-	static void __hardwareKeyPress(int key);
-	static void __hardwareKeyRelease(int key);
+    static void __hardwareKeyPress(int key);
+    static void __hardwareKeyRelease(int key);
 
 private:
-	static bool* mDown;
-	static bool* mLast;
-	static bool* mNext;
+    static bool* mDown;
+    static bool* mLast;
+    static bool* mNext;
 };

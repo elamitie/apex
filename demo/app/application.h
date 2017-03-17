@@ -12,15 +12,16 @@
 class Application : public Engine
 {
 public:
-	void Init() override;
-	void Update() override;
-	void Render() override;
-	void Cleanup() override;
+    void Init() override;
+    void Update() override;
+    void Render() override;
+    void Cleanup() override;
 
 private:
-	ShaderPtr mMeshShader;
-	MeshPtr mMesh;
-	Camera* mCamera;
+    ShaderPtr mMeshShader;
+    MeshPtr mMesh;
+    Camera* mCamera;
+    RenderTarget* mRenderTarget;
 
-	glm::vec3 mLightPos;
+    glm::vec3 mLightPos;
 };

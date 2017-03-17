@@ -1,8 +1,8 @@
 #pragma once
 
 /*
- *	Mesh implementation loosely based off of LearnOpenGL.com and Glitter (https://github.com/Polytonic/Glitter)
- *	Slightly modified Nanosuit body (from crytek) obtained from LearnOpenGL.com
+ *  Mesh implementation loosely based off of LearnOpenGL.com and Glitter (https://github.com/Polytonic/Glitter)
+ *  Slightly modified Nanosuit body (from crytek) obtained from LearnOpenGL.com
  */
 
 #include <GL/glew.h>
@@ -22,28 +22,28 @@
 class Mesh
 {
 public:
-	Mesh(const std::string& filename);
-	Mesh(const std::vector<Vertex>& vertices,
-		const std::vector<uint>& indices,
-		const std::vector<TexturePtr>& textures);
-	~Mesh();
+    Mesh(const std::string& filename);
+    Mesh(const std::vector<Vertex>& vertices,
+         const std::vector<uint>& indices,
+         const std::vector<TexturePtr>& textures);
+    ~Mesh();
 
-	void Render(ShaderPtr shader);
-
-private:
-	void Parse(const std::string& path, const aiNode* node, const aiScene* scene);
-	void Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
-	std::vector<TexturePtr> Process(const std::string& path,
-		aiMaterial* material,
-		aiTextureType type);
+    void Render(ShaderPtr shader);
 
 private:
-	std::vector<MeshPtr> mChildren;
-	std::vector<uint> mIndices;
-	std::vector<Vertex> mVertices;
-	std::vector<TexturePtr> mTextures;
+    void Parse(const std::string& path, const aiNode* node, const aiScene* scene);
+    void Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
+    std::vector<TexturePtr> Process(const std::string& path,
+                                    aiMaterial* material,
+                                    aiTextureType type);
 
-	GLuint mVertexArray;
-	GLuint mVertexBuffer;
-	GLuint mIndexBuffer;
+private:
+    std::vector<MeshPtr> mChildren;
+    std::vector<uint> mIndices;
+    std::vector<Vertex> mVertices;
+    std::vector<TexturePtr> mTextures;
+
+    GLuint mVertexArray;
+    GLuint mVertexBuffer;
+    GLuint mIndexBuffer;
 };

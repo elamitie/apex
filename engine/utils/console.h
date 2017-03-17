@@ -12,20 +12,20 @@
 class Console
 {
 public:
-	static bool DebugEnabled;
+    static bool DebugEnabled;
 public:
-	Console();
-	~Console();
+    Console();
+    ~Console();
 
-	void Init(Window* window);
-	void Begin();
-	void Render();
-	void End();
+    void Init(Window* window);
+    void Begin();
+    void Render();
+    void End();
 
-	void Log(const std::string& data);
+    void Log(const std::string& data);
 
-	inline static void ToggleDebug() { DebugEnabled = !DebugEnabled; }
+    inline static void ToggleDebug() { DebugEnabled = !DebugEnabled; }
 
 private:
-	std::vector<std::string> mUserData;
+    std::vector<std::string> mUserData;
 };

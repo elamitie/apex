@@ -5,15 +5,15 @@
 class Mouse
 {
 public:
-	static void Clear();
+    static void Clear();
 
-	static void __hardwareMouseButtonPress();
-	static void __hardwareMouseButtonRelease();
-	static void __hardwareMouseMove();
+    static void __hardwareMouseButtonPress();
+    static void __hardwareMouseButtonRelease();
+    static void __hardwareMouseMove();
 
 private:
-	glm::vec2 mPosition;
+    glm::vec2 mPosition;
 
-	bool mLeftDown, mLeftPressed, mLeftReleased;
-	bool mRightDown, mRightPressed, mRightReleased;
+    bool mLeftDown, mLeftPressed, mLeftReleased;
+    bool mRightDown, mRightPressed, mRightReleased;
 };
