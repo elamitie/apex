@@ -25,6 +25,7 @@ static const char* TextureTypeStr[] =
 class Texture2D
 {
     friend class Mesh;
+    friend class FrameBuffer;
 public:
     Texture2D();
     ~Texture2D();

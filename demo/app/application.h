@@ -9,6 +9,9 @@
 #include "utils/types.h"
 #include "utils/console.h"
 
+// post process
+#include "graphics/processing/postProcessor.h"
+
 class Application : public Engine
 {
 public:
@@ -19,8 +22,12 @@ public:
 
 private:
     ShaderPtr mMeshShader;
+    ShaderPtr mScreenShader;
     MeshPtr mMesh;
     CameraPtr mCamera;
 
     glm::vec3 mLightPos;
+
+    FrameBuffer* mFrameBuffer;
+    PostProcessor* mPostProcessor;
 };

@@ -33,13 +33,10 @@ Window::Window(int width, int height, const char* title)
         std::cout << "Failed to initialize GLEW" << std::endl;
     }
 
+    printf("***   OpenGL Version: %s   ***\n", glGetString(GL_VERSION));
+
     glfwSetKeyCallback(m_window, key_callback);
 
-    // Rather than use the stored window width and height, using
-    // local variables to set the viewport size will let it work
-    // on high res displays like retina
-    int _width, _height;
-    glfwGetFramebufferSize(m_window, &_width, &_height);
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
 }
