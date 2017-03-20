@@ -12,7 +12,7 @@ void Application::init()
     mMeshShader->addAttribute("texCoords");
 
     mHdrShader = std::make_shared<Shader>("../resources/shaders/textured_quad.vert",
-                                          "../resources/shaders/simple_hdr.frag");
+                                          "../resources/shaders/post_process/default_framebuffer.frag");
     mHdrShader->addAttribute("position");
     mHdrShader->addAttribute("texCoords");
 
@@ -50,7 +50,7 @@ void Application::render()
     mMeshShader->setUniform("viewPos", mCamera->position);
 
     mMeshShader->setUniform("light.ambient", glm::vec3(0.4f, 0.4f, 0.4f));
-    mMeshShader->setUniform("light.diffuse", glm::vec3(8.6f, 8.6f, 8.6f));
+    mMeshShader->setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
     mMeshShader->setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
     mMeshShader->setUniform("material.shininess", 32.0f);
 
