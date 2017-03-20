@@ -1,11 +1,12 @@
 #include "frameBuffer.h"
 
-FrameBuffer::FrameBuffer(uint width, uint height, DepthBufferType depthBufferType)
+FrameBuffer::FrameBuffer(uint width, uint height, DepthBufferType depthBufferType, bool hdrEnabled)
 {
     mWidth = width;
     mHeight = height;
     mDepthType = depthBufferType;
-    initialize(depthBufferType);
+    mHdrEnabled = hdrEnabled;
+    initialize();
 }
 
 FrameBuffer::~FrameBuffer()
@@ -49,8 +50,10 @@ void FrameBuffer::createColorTexture()
 {
     glGenTextures(1, &mColorTexture);
 
+    GLenum internalFormat = mHdrEnabled ? GL_RGBA16F : GL_RGBA8;
+
     glBindTexture(GL_TEXTURE_2D, mColorTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -81,12 +84,12 @@ void FrameBuffer::createDepthBuffer()
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthBuffer);
 }
 
-void FrameBuffer::initialize(DepthBufferType depthBufferType)
+void FrameBuffer::initialize()
 {
     createFrameBuffer();
     createColorTexture();
 
-    switch (depthBufferType)
+    switch (mDepthType)
     {
     case DEPTH_RENDER_BUFFER:
         createDepthBuffer();

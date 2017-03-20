@@ -11,19 +11,19 @@ void Application::init()
     mMeshShader->addAttribute("normal");
     mMeshShader->addAttribute("texCoords");
 
-    mScreenShader = std::make_shared<Shader>("../resources/shaders/basic_framebuffer.vert",
-                    "../resources/shaders/basic_framebuffer.frag");
-    mScreenShader->addAttribute("position");
-    mScreenShader->addAttribute("texCoords");
+    mHdrShader = std::make_shared<Shader>("../resources/shaders/textured_quad.vert",
+                                          "../resources/shaders/simple_hdr.frag");
+    mHdrShader->addAttribute("position");
+    mHdrShader->addAttribute("texCoords");
 
     mMesh = std::make_shared<Mesh>("../resources/models/nanosuit/nanosuit.obj");
 
     mLightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-    mFrameBuffer = new FrameBuffer(getWidth(), getHeight(), DEPTH_RENDER_BUFFER);
+    mFrameBuffer = new FrameBuffer(getWidth(), getHeight(), DEPTH_RENDER_BUFFER, true);
     mPostProcessor = new PostProcessor();
     mPostProcessor->init();
-    mPostProcessor->pushEffect(mScreenShader);
+    mPostProcessor->pushEffect(mHdrShader);
 
     setColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
 }
@@ -50,7 +50,7 @@ void Application::render()
     mMeshShader->setUniform("viewPos", mCamera->position);
 
     mMeshShader->setUniform("light.ambient", glm::vec3(0.4f, 0.4f, 0.4f));
-    mMeshShader->setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
+    mMeshShader->setUniform("light.diffuse", glm::vec3(8.6f, 8.6f, 8.6f));
     mMeshShader->setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
     mMeshShader->setUniform("material.shininess", 32.0f);
 
@@ -73,12 +73,6 @@ void Application::render()
     mFrameBuffer->unbind();
 
     mPostProcessor->process(mFrameBuffer->getColorTexture());
-
-    console()->log("Light Pos: " + glm::to_string(mLightPos));
-
-    console()->begin();
-    console()->render();
-    console()->end();
 }
 
 void Application::cleanup()

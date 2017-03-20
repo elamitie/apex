@@ -13,7 +13,7 @@ enum DepthBufferType
 class FrameBuffer
 {
 public:
-    FrameBuffer(uint width, uint height, DepthBufferType depthBufferType);
+    FrameBuffer(uint width, uint height, DepthBufferType depthBufferType, bool hdrEnabled = false);
     ~FrameBuffer();
 
     void bind();
@@ -31,10 +31,11 @@ private:
     void createDepthTexture();
     void createDepthBuffer();
 
-    void initialize(DepthBufferType depthBufferType);
+    void initialize();
 
 private:
     uint mWidth, mHeight;
+    bool mHdrEnabled;
 
     // Storing these textures as ints rather than engine textures because its
     // easier to track internally. Can always create an engine texture from an

@@ -22,7 +22,7 @@ public:
 
 private:
     ShaderPtr mMeshShader;
-    ShaderPtr mScreenShader;
+    ShaderPtr mHdrShader;
     MeshPtr mMesh;
     CameraPtr mCamera;
 
