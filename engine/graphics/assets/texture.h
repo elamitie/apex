@@ -6,24 +6,21 @@
 
 #include "utils/types.h"
 
-enum TextureType
-{
+enum TextureType {
     DIFFUSE,
     SPECULAR,
     NORMAL,
     HEIGHTMAP,
     NUM_TYPES
 };
-static const char* TextureTypeStr[] =
-{
+static const char* TextureTypeStr[] = {
     "diffuse",
     "specular",
     "normal",
     "heightmap"
 };
 
-class Texture2D
-{
+class Texture2D {
     friend class Mesh;
     friend class FrameBuffer;
 public:

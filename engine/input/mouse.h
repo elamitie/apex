@@ -2,8 +2,7 @@
 
 #include "../utils/math.h"
 
-class Mouse
-{
+class Mouse {
 public:
     static void Clear();
 

@@ -6,8 +6,7 @@
 
 #include "../utils/color.h"
 
-class Window
-{
+class Window {
     friend class Console;
     friend class Keyboard;
 public:

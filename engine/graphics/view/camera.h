@@ -3,8 +3,7 @@
 
 // TODO: This maybe should have different subclasses for user controlled and auto fly.
 
-enum CameraDirection
-{
+enum CameraDirection {
     CamForward,
     CamBack,
     CamLeft,
@@ -14,8 +13,7 @@ enum CameraDirection
 };
 
 // Default
-struct CameraProperties
-{
+struct CameraProperties {
     float yaw         = -90.0f;
     float pitch       =  0.0f;
     float speed       =  3.0f;
@@ -23,8 +21,7 @@ struct CameraProperties
     float zoom        =  45.0f;
 };
 
-class Camera
-{
+class Camera {
 public:
     Camera(glm::vec3 pos = vec3_zero, glm::vec3 up = vec3_up);
     ~Camera();

@@ -3,15 +3,13 @@
 #include "graphics/window.h"
 #include "utils/types.h"
 
-enum DepthBufferType
-{
+enum DepthBufferType {
     NONE = 0,
     DEPTH_TEXTURE,
     DEPTH_RENDER_BUFFER
 };
 
-class FrameBuffer
-{
+class FrameBuffer {
 public:
     FrameBuffer(uint width, uint height, DepthBufferType depthBufferType, bool hdrEnabled = false);
     ~FrameBuffer();

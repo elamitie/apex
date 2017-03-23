@@ -2,9 +2,9 @@
 
 #include "graphics/window.h"
 #include "utils/console.h"
+#include "utils/logger.h"
 
-class Engine
-{
+class Engine {
 public:
     Engine() : mQuit (false) {}
     ~Engine() {}

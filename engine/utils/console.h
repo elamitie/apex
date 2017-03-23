@@ -9,8 +9,7 @@
 
 // Going to be a wrapper for IMGUI; a simple console debug window.
 
-class Console
-{
+class Console {
 public:
     static bool DebugEnabled;
 public:

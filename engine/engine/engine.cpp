@@ -1,8 +1,7 @@
 #include "engine.h"
 #include "../input/keyboard.h"
 
-void Engine::start(int width, int height, const char* title)
-{
+void Engine::start(int width, int height, const char* title) {
     initBackend(width, height, title);
     init();
 
@@ -12,34 +11,28 @@ void Engine::start(int width, int height, const char* title)
     cleanupBackend();
 }
 
-void Engine::quit()
-{
+void Engine::quit() {
     // Not Implemented Yet
 }
 
-void Engine::setTitle(const char* title)
-{
+void Engine::setTitle(const char* title) {
     // Not Implemented Yet
 }
 
-void Engine::setDimensions(int width, int height)
-{
+void Engine::setDimensions(int width, int height) {
     // Not Implemented Yet
 }
 
-void Engine::setColor(Color color)
-{
+void Engine::setColor(Color color) {
     mWindow->setColor(color);
 }
 
-void Engine::loop()
-{
+void Engine::loop() {
     // TODO: More robust timing system
     float lastFrame = 0.0f;
     mDeltaTime = 0.0f;
 
-    while (mWindow->open())
-    {
+    while (mWindow->open()) {
         // Accumulate total time
         mTotalTime = glfwGetTime();
 
@@ -57,8 +50,7 @@ void Engine::loop()
 }
 
 void Engine::initBackend(int width, int height,
-                         const char* title)
-{
+                         const char* title) {
     mWidth = width;
     mHeight = height;
     mWindow = new Window(width, height, title);
@@ -68,18 +60,15 @@ void Engine::initBackend(int width, int height,
     mConsole->init(mWindow);
 }
 
-void Engine::cleanupBackend()
-{
+void Engine::cleanupBackend() {
     Keyboard::cleanup();
     delete mConsole;
     delete mWindow;
 }
 
-void Engine::update()
-{
+void Engine::update() {
     mWindow->update();
 }
 
-void Engine::render()
-{
+void Engine::render() {
 }

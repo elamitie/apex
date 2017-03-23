@@ -3,8 +3,7 @@
 #include "graphics/assets/shader.h"
 #include "renderTarget.h"
 
-class PostProcessEffect
-{
+class PostProcessEffect {
 public:
     PostProcessEffect(ShaderPtr shader);
     virtual ~PostProcessEffect();

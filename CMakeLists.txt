@@ -30,6 +30,9 @@ endif()
 
 project(${PROJECT_NAME})
 
+configure_file(cmake_config/root_directory.h.in cmake_config/root_directory.h)
+include_directories(${CMAKE_BINARY_DIR}/cmake_config)
+
 include_directories( ${LIB_INCLUDE} ${ENGINE_INCLUDE} )
 link_directories( ${LIB_LIBRARIES} )
 

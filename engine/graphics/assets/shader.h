@@ -5,34 +5,41 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <string>
+#include <vector>
+#include "utils/types.h"
+#include "utils/fileio.h"
 
-class Shader
-{
+typedef std::enable_shared_from_this<Shader> ShaderShared;
+
+class Shader : public ShaderShared {
 public:
-    Shader(const std::string& vertPath, const std::string& fragPath);
-    ~Shader();
+    Shader() { mProg = glCreateProgram(); }
+    ~Shader() { glDeleteProgram(mProg); }
 
-    void addAttribute(const std::string& name);
+    void Enable();
+    void Disable();
 
-    void enable();
-    void disable();
+    ShaderPtr AddAttribs(const std::vector<std::string>& attribs);
+    ShaderPtr Attach(const std::string& filename);
+    ShaderPtr Link();
 
-    void setUniform(const std::string& name, GLint data);
-    void setUniform(const std::string& name, GLint* data, GLsizei count);
-    void setUniform(const std::string& name, GLfloat data);
-    void setUniform(const std::string& name, GLfloat* data, GLsizei count);
-    void setUniform(const std::string& name, const glm::vec2& vector);
-    void setUniform(const std::string& name, const glm::vec3& vector);
-    void setUniform(const std::string& name, const glm::vec4& vector);
-    void setUniform(const std::string& name, const glm::mat4& matrix);
+    void SetUniform(const std::string& name, GLint data);
+    void SetUniform(const std::string& name, GLint* data, GLsizei count);
+    void SetUniform(const std::string& name, GLfloat data);
+    void SetUniform(const std::string& name, GLfloat* data, GLsizei count);
+    void SetUniform(const std::string& name, const glm::vec2& vector);
+    void SetUniform(const std::string& name, const glm::vec3& vector);
+    void SetUniform(const std::string& name, const glm::vec4& vector);
+    void SetUniform(const std::string& name, const glm::mat4& matrix);
 
 private:
-    GLint getUniformLocation(const std::string& uniformName);
-    void compile(const std::string& shader, GLuint shaderID);
-    void link();
+    GLuint Create(const std::string& filename);
+    GLint GetUniformLocation(const std::string& uniformName);
 
 private:
     // TODO: support geom shaders
     GLuint mProg, mVert, mFrag;
     int mNumAttribs;
+
+    GLint mStatus, mLength;
 };

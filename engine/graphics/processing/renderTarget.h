@@ -2,8 +2,7 @@
 
 #include "frameBuffer.h"
 
-class RenderTarget
-{
+class RenderTarget {
 public:
     RenderTarget();
     RenderTarget(uint width, uint height);

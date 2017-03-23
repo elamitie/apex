@@ -12,13 +12,12 @@
 // post process
 #include "graphics/processing/postProcessor.h"
 
-class Application : public Engine
-{
+class Application : public Engine {
 public:
     void init() override;
     void update() override;
     void render() override;
-    void cleanup() override;
+    void cleanup() override {};
 
 private:
     ShaderPtr mMeshShader;

@@ -1,8 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 
-class Keyboard
-{
+class Keyboard {
 public:
     static void init();
     static void update();

@@ -1,25 +1,25 @@
 #include "mesh.h"
+#include "utils/logger.h"
 
-Mesh::Mesh(const std::string& filename)
-{
+Mesh::Mesh(const std::string& filename) {
     Assimp::Importer loader;
     uint flags = aiProcessPreset_TargetRealtime_MaxQuality |
                  aiProcess_OptimizeGraph |
                  aiProcess_FlipUVs;
 
-    const aiScene* scene = loader.ReadFile(filename, flags);
+    std::string path = FileSystem::GetPath("resources/models/" + filename);
+    const aiScene* scene = loader.ReadFile(path, flags);
     if (!scene)
         printf("%s\n", loader.GetErrorString());
 
-    size_t index = filename.find_last_of("/");
+    size_t index = path.find_last_of("/");
 
-    parse(filename.substr(0, index), scene->mRootNode, scene);
+    parse(path.substr(0, index), scene->mRootNode, scene);
 }
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,
            const std::vector<uint>& indices,
-           const std::vector<TexturePtr>& textures)
-{
+           const std::vector<TexturePtr>& textures) {
     mVertices = vertices;
     mIndices = indices;
     mTextures = textures;
@@ -49,21 +49,18 @@ Mesh::Mesh(const std::vector<Vertex>& vertices,
     glDeleteBuffers(1, &mIndexBuffer);
 }
 
-Mesh::~Mesh()
-{
+Mesh::~Mesh() {
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
-void Mesh::render(ShaderPtr shader)
-{
+void Mesh::render(ShaderPtr shader) {
     uint loc, diff, spec;
     loc = diff = spec = 0;
 
     for (auto& mesh : mChildren)
         mesh->render(shader);
 
-    for (auto& texture : mTextures)
-    {
+    for (auto& texture : mTextures) {
         TextureType t = texture->mType;
         std::string uniformTexture = TextureTypeStr[t];
 
@@ -73,7 +70,7 @@ void Mesh::render(ShaderPtr shader)
             uniformTexture += (++spec > 0) ? std::to_string(spec) : "";
 
         texture->bind(loc);
-        shader->setUniform("material." + uniformTexture, (GLint)loc++);
+        shader->SetUniform("material." + uniformTexture, (GLint)loc++);
     }
 
     glBindVertexArray(mVertexArray);
@@ -81,22 +78,18 @@ void Mesh::render(ShaderPtr shader)
     glBindVertexArray(0);
 }
 
-void Mesh::parse(const std::string& path, const aiNode* node, const aiScene* scene)
-{
+void Mesh::parse(const std::string& path, const aiNode* node, const aiScene* scene) {
     for (int i = 0; i < node->mNumMeshes; i++)
         parse(path, scene->mMeshes[node->mMeshes[i]], scene);
     for (int i = 0; i < node->mNumChildren; i++)
         parse(path, node->mChildren[i], scene);
 }
 
-void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* scene)
-{
+void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* scene) {
     std::vector<Vertex> vertices;
-    for (int i = 0; i < mesh->mNumVertices; i++)
-    {
+    for (int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
-        if (mesh->mTextureCoords[0])
-        {
+        if (mesh->mTextureCoords[0]) {
             glm::vec3 vec3;
             glm::vec2 vec2;
 
@@ -136,11 +129,9 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
 }
 
 std::vector<TexturePtr> Mesh::process(const std::string& path, aiMaterial* material,
-                                      aiTextureType type)
-{
+                                      aiTextureType type) {
     std::vector<TexturePtr> textures;
-    for (int i = 0; i < material->GetTextureCount(type); i++)
-    {
+    for (int i = 0; i < material->GetTextureCount(type); i++) {
         aiString str;
         material->GetTexture(type, i, &str);
         std::string filename = str.C_Str();

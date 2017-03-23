@@ -19,8 +19,7 @@
 
 #include <map>
 
-class Mesh
-{
+class Mesh {
 public:
     Mesh(const std::string& filename);
     Mesh(const std::vector<Vertex>& vertices,

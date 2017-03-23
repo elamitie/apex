@@ -1,22 +1,18 @@
 #include "renderTarget.h"
 
-RenderTarget::RenderTarget()
-{
+RenderTarget::RenderTarget() {
     mFrameBuffer = nullptr;
 }
 
-RenderTarget::RenderTarget(uint width, uint height)
-{
+RenderTarget::RenderTarget(uint width, uint height) {
     mFrameBuffer = new FrameBuffer(width, height, NONE);
 }
 
-RenderTarget::~RenderTarget()
-{
+RenderTarget::~RenderTarget() {
     if (mFrameBuffer != nullptr) delete mFrameBuffer;
 }
 
-void RenderTarget::render()
-{
+void RenderTarget::render() {
     if (mFrameBuffer != nullptr)
         mFrameBuffer->bind();
 
