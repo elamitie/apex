@@ -5,6 +5,7 @@ Mesh::Mesh(const std::string& filename) {
     Assimp::Importer loader;
     uint flags = aiProcessPreset_TargetRealtime_MaxQuality |
                  aiProcess_OptimizeGraph |
+                 aiProcess_CalcTangentSpace |
                  aiProcess_FlipUVs;
 
     std::string path = FileSystem::GetPath("resources/models/" + filename);
@@ -19,10 +20,14 @@ Mesh::Mesh(const std::string& filename) {
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,
            const std::vector<uint>& indices,
-           const std::vector<TexturePtr>& textures) {
+           const std::vector<TexturePtr>& textures,
+           const std::string& name) {
+
     mVertices = vertices;
     mIndices = indices;
     mTextures = textures;
+    // This will be nice to track for the future
+    mName = name;
 
     glGenVertexArrays(1, &mVertexArray);
     glBindVertexArray(mVertexArray);
@@ -40,9 +45,13 @@ Mesh::Mesh(const std::vector<Vertex>& vertices,
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Position));
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Normal));
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Tangents));
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Bitangents));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
 
     glBindVertexArray(0);
     glDeleteBuffers(1, &mVertexBuffer);
@@ -54,7 +63,10 @@ Mesh::~Mesh() {
 }
 
 void Mesh::render(ShaderPtr shader) {
-    uint loc, diff, spec;
+
+    // TODO: MAKE THIS CLEANER WITH MATERIAL ABSTRACTION
+
+    uint loc, diff, spec, norm;
     loc = diff = spec = 0;
 
     for (auto& mesh : mChildren)
@@ -68,6 +80,8 @@ void Mesh::render(ShaderPtr shader) {
             uniformTexture += (++diff > 0) ? std::to_string(diff) : "";
         else if (uniformTexture == "specular")
             uniformTexture += (++spec > 0) ? std::to_string(spec) : "";
+        else if (uniformTexture == "normal")
+            uniformTexture += (++norm > 0) ? std::to_string(spec) : "";
 
         texture->bind(loc);
         shader->SetUniform("material." + uniformTexture, (GLint)loc++);
@@ -107,6 +121,16 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
             vec2.y = mesh->mTextureCoords[0][i].y;
             vertex.TexCoords = vec2;
 
+            vec3.x = mesh->mTangents[i].x;
+            vec3.y = mesh->mTangents[i].y;
+            vec3.z = mesh->mTangents[i].z;
+            vertex.Tangents = vec3;
+
+            vec3.x = mesh->mBitangents[i].x;
+            vec3.y = mesh->mBitangents[i].y;
+            vec3.z = mesh->mBitangents[i].z;
+            vertex.Bitangents = vec3;
+
             vertices.push_back(vertex);
         }
     }
@@ -115,6 +139,8 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     for (int i = 0; i < mesh->mNumFaces; i++)
         for (int j = 0; j < mesh->mFaces[i].mNumIndices; j++)
             indices.push_back(mesh->mFaces[i].mIndices[j]);
+
+    // TODO: Process any materials
 
     std::vector<TexturePtr> textures;
     std::vector<TexturePtr> diffuse  = process(path, scene->mMaterials[mesh->mMaterialIndex],
@@ -125,7 +151,7 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     textures.insert(textures.end(), diffuse.begin(), diffuse.end());
     textures.insert(textures.end(), specular.begin(), specular.end());
 
-    mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures));
+    mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures, mesh->mName));
 }
 
 std::vector<TexturePtr> Mesh::process(const std::string& path, aiMaterial* material,

@@ -24,7 +24,8 @@ public:
     Mesh(const std::string& filename);
     Mesh(const std::vector<Vertex>& vertices,
          const std::vector<uint>& indices,
-         const std::vector<TexturePtr>& textures);
+         const std::vector<TexturePtr>& textures,
+         const std::string& name = "");
     ~Mesh();
 
     void render(ShaderPtr shader);
@@ -45,4 +46,6 @@ private:
     GLuint mVertexArray;
     GLuint mVertexBuffer;
     GLuint mIndexBuffer;
+
+    std::string mName;
 };

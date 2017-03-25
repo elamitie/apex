@@ -11,13 +11,15 @@ enum TextureType {
     SPECULAR,
     NORMAL,
     HEIGHTMAP,
+    AMBIENT,
     NUM_TYPES
 };
 static const char* TextureTypeStr[] = {
     "diffuse",
     "specular",
     "normal",
-    "heightmap"
+    "heightmap",
+    "ambient"
 };
 
 class Texture2D {
