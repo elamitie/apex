@@ -29,3 +29,12 @@ typedef std::shared_ptr<Material> MaterialPtr;
 
 class Camera;
 typedef std::shared_ptr<Camera> CameraPtr;
+
+class Transform;
+typedef std::shared_ptr<Transform> TransformPtr;
+
+class Scene;
+typedef std::shared_ptr<Scene> ScenePtr;
+
+class SceneObject;
+typedef std::shared_ptr<SceneObject> SceneObjectPtr;
