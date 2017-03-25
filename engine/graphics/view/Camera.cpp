@@ -1,4 +1,4 @@
-#include "camera.h"
+#include "Camera.h"
 #include <math.h>
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up) {

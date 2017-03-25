@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "../utils/color.h"
+#include "../utils/Color.h"
 
 class Window {
     friend class Console;

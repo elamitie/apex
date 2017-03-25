@@ -6,8 +6,8 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
-#include "utils/types.h"
-#include "utils/fileio.h"
+#include "utils/Types.h"
+#include "utils/FileSystem.h"
 
 typedef std::enable_shared_from_this<Shader> ShaderShared;
 

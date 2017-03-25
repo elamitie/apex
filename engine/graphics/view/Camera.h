@@ -1,5 +1,5 @@
 #pragma once
-#include "../../utils/math.h"
+#include "../../utils/Math.h"
 
 // TODO: This maybe should have different subclasses for user controlled and auto fly.
 

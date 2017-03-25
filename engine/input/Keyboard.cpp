@@ -1,4 +1,4 @@
-#include "keyboard.h"
+#include "Keyboard.h"
 
 bool* Keyboard::mDown = new bool[1024];
 bool* Keyboard::mNext = new bool[1024];

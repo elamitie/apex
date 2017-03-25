@@ -1,5 +1,5 @@
-#include "mesh.h"
-#include "utils/logger.h"
+#include "Mesh.h"
+#include "utils/Logger.h"
 
 Mesh::Mesh(const std::string& filename) {
     Assimp::Importer loader;
@@ -151,7 +151,8 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     textures.insert(textures.end(), diffuse.begin(), diffuse.end());
     textures.insert(textures.end(), specular.begin(), specular.end());
 
-    mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures, mesh->mName));
+    std::string name = mesh->mName.C_Str();
+    mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures, name));
 }
 
 std::vector<TexturePtr> Mesh::process(const std::string& path, aiMaterial* material,

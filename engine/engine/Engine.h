@@ -1,8 +1,8 @@
 #pragma once
 
-#include "graphics/window.h"
-#include "utils/console.h"
-#include "utils/logger.h"
+#include "graphics/Window.h"
+#include "utils/Console.h"
+#include "utils/Logger.h"
 
 class Engine {
 public:

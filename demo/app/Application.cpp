@@ -45,17 +45,10 @@ void Application::render() {
     mMeshShader->SetUniform("light.position", mLightPos);
     mMeshShader->SetUniform("viewPos", mCamera->position);
 
-    <<< <<< < HEAD
     mMeshShader->SetUniform("light.ambient", glm::vec3(0.4f, 0.4f, 0.4f));
     mMeshShader->SetUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
     mMeshShader->SetUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
     mMeshShader->SetUniform("material.shininess", 32.0f);
-    == == == =
-        mMeshShader->setUniform("light.ambient", glm::vec3(0.4f, 0.4f, 0.4f));
-    mMeshShader->setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    mMeshShader->setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-    mMeshShader->setUniform("material.shininess", 32.0f);
-    >>> >>> > 368a5d6c87cfd802b2a1ffca739716988a186987
 
     glm::mat4 view;
     view = mCamera->getView();

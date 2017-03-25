@@ -1,6 +1,6 @@
-#include "shader.h"
-#include "../../utils/math.h"
-#include "utils/logger.h"
+#include "Shader.h"
+#include "../../utils/Math.h"
+#include "utils/Logger.h"
 #include <fstream>
 #include <vector>
 #include <iostream>

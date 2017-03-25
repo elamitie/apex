@@ -8,10 +8,10 @@
 #include <GL/glew.h>
 #include <vector>
 
-#include "../../utils/types.h"
-#include "../assets/shader.h"
-#include "../assets/texture.h"
-#include "vertex.h"
+#include "../../utils/Types.h"
+#include "../assets/Shader.h"
+#include "../assets/Texture.h"
+#include "Vertex.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

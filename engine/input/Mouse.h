@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/math.h"
+#include "../utils/Math.h"
 
 class Mouse {
 public:

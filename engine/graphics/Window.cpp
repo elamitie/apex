@@ -1,9 +1,9 @@
-#include "window.h"
-#include "../utils/console.h"
-#include "../input/keyboard.h"
+#include "Window.h"
+#include "../utils/Console.h"
+#include "../input/Keyboard.h"
 #include <iostream>
 
-#include "utils/logger.h"
+#include "utils/Logger.h"
 
 Window::Window(int width, int height, const char* title) {
     // Initialize glfw

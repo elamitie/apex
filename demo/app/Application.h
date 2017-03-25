@@ -1,13 +1,13 @@
 #pragma once
 
-#include "engine/engine.h"
-#include "graphics/assets/shader.h"
-#include "graphics/assets/texture.h"
-#include "graphics/view/camera.h"
-#include "graphics/mesh/mesh.h"
-#include "utils/math.h"
-#include "utils/types.h"
-#include "utils/console.h"
+#include "engine/Engine.h"
+#include "graphics/assets/Shader.h"
+#include "graphics/assets/Texture.h"
+#include "graphics/view/Camera.h"
+#include "graphics/mesh/Mesh.h"
+#include "utils/Math.h"
+#include "utils/Types.h"
+#include "utils/Console.h"
 
 // post process
 #include "graphics/processing/postProcessor.h"

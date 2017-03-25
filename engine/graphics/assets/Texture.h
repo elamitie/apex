@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <string>
 
-#include "utils/types.h"
+#include "utils/Types.h"
 
 enum TextureType {
     DIFFUSE,
