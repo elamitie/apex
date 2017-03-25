@@ -8,9 +8,9 @@ public:
     PostProcessEffect(ShaderPtr shader);
     virtual ~PostProcessEffect();
 
-    void preRender();
-    virtual void render(int texture);
-    void postRender();
+    void PreRender();
+    virtual void Render(int texture);
+    void PostRender();
 
 protected:
     RenderTarget* mRenderTarget;

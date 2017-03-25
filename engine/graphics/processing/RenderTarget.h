@@ -8,9 +8,9 @@ public:
     RenderTarget(uint width, uint height);
     ~RenderTarget();
 
-    void render();
+    void Render();
 
-    inline int getOutputTexture() { return mFrameBuffer->getColorTexture(); }
+    inline int GetOutputTexture() { return mFrameBuffer->GetColorTexture(); }
 
 private:
     FrameBuffer* mFrameBuffer;

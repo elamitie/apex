@@ -17,7 +17,7 @@ public:
         this->a = a;
     }
 
-    inline ImVec4& createImColor() {
+    inline ImVec4& CreateIMColor() {
         ImVec4 color = ImColor(r, g, b, a);
         return color;
     }

@@ -8,13 +8,13 @@ public:
     PostProcessor();
     ~PostProcessor();
 
-    void init();
-    void process(int texture);
-    void pushEffect(ShaderPtr shader);
+    void Init();
+    void Process(int texture);
+    void PushEffect(ShaderPtr shader);
 
 private:
-    void start();
-    void end();
+    void Start();
+    void End();
 
 private:
     std::vector<PostProcessEffect*> mEffects;

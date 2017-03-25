@@ -29,13 +29,13 @@ public:
     Texture2D();
     ~Texture2D();
 
-    void generate(uint width, uint height, ubyte* pixels);
+    void Generate(uint width, uint height, ubyte* pixels);
 
     // This might be changed later if I decide to use an "external"
     // asset loading api
-    void load(const std::string& path);
-    void bind(unsigned int loc = 0);
-    void unbind(unsigned int loc = 0);
+    void Load(const std::string& path);
+    void Bind(unsigned int loc = 0);
+    void Unbind(unsigned int loc = 0);
 
 private:
     GLuint mId;

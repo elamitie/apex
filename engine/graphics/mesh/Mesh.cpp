@@ -15,7 +15,7 @@ Mesh::Mesh(const std::string& filename) {
 
     size_t index = path.find_last_of("/");
 
-    parse(path.substr(0, index), scene->mRootNode, scene);
+    Parse(path.substr(0, index), scene->mRootNode, scene);
 }
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,
@@ -62,7 +62,7 @@ Mesh::~Mesh() {
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
-void Mesh::render(ShaderPtr shader) {
+void Mesh::Render(ShaderPtr shader) {
 
     // TODO: MAKE THIS CLEANER WITH MATERIAL ABSTRACTION
 
@@ -70,7 +70,7 @@ void Mesh::render(ShaderPtr shader) {
     loc = diff = spec = 0;
 
     for (auto& mesh : mChildren)
-        mesh->render(shader);
+        mesh->Render(shader);
 
     for (auto& texture : mTextures) {
         TextureType t = texture->mType;
@@ -83,7 +83,7 @@ void Mesh::render(ShaderPtr shader) {
         else if (uniformTexture == "normal")
             uniformTexture += (++norm > 0) ? std::to_string(spec) : "";
 
-        texture->bind(loc);
+        texture->Bind(loc);
         shader->SetUniform("material." + uniformTexture, (GLint)loc++);
     }
 
@@ -92,14 +92,14 @@ void Mesh::render(ShaderPtr shader) {
     glBindVertexArray(0);
 }
 
-void Mesh::parse(const std::string& path, const aiNode* node, const aiScene* scene) {
+void Mesh::Parse(const std::string& path, const aiNode* node, const aiScene* scene) {
     for (int i = 0; i < node->mNumMeshes; i++)
-        parse(path, scene->mMeshes[node->mMeshes[i]], scene);
+        Parse(path, scene->mMeshes[node->mMeshes[i]], scene);
     for (int i = 0; i < node->mNumChildren; i++)
-        parse(path, node->mChildren[i], scene);
+        Parse(path, node->mChildren[i], scene);
 }
 
-void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* scene) {
+void Mesh::Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene) {
     std::vector<Vertex> vertices;
     for (int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -143,9 +143,9 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     // TODO: Process any materials
 
     std::vector<TexturePtr> textures;
-    std::vector<TexturePtr> diffuse  = process(path, scene->mMaterials[mesh->mMaterialIndex],
+    std::vector<TexturePtr> diffuse  = Process(path, scene->mMaterials[mesh->mMaterialIndex],
                                        aiTextureType_DIFFUSE);
-    std::vector<TexturePtr> specular = process(path, scene->mMaterials[mesh->mMaterialIndex],
+    std::vector<TexturePtr> specular = Process(path, scene->mMaterials[mesh->mMaterialIndex],
                                        aiTextureType_SPECULAR);
 
     textures.insert(textures.end(), diffuse.begin(), diffuse.end());
@@ -155,7 +155,7 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures, name));
 }
 
-std::vector<TexturePtr> Mesh::process(const std::string& path, aiMaterial* material,
+std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* material,
                                       aiTextureType type) {
     std::vector<TexturePtr> textures;
     for (int i = 0; i < material->GetTextureCount(type); i++) {
@@ -165,7 +165,7 @@ std::vector<TexturePtr> Mesh::process(const std::string& path, aiMaterial* mater
         filename = path + "/" + filename;
 
         TexturePtr texture = std::make_shared<Texture2D>();
-        texture->load(filename);
+        texture->Load(filename);
 
         if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
         if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;

@@ -16,14 +16,14 @@ public:
     Console();
     ~Console();
 
-    void init(Window* window);
-    void begin();
-    void render();
-    void end();
+    void Init(Window* window);
+    void Begin();
+    void Render();
+    void End();
 
-    void log(const std::string& data);
+    void Log(const std::string& data);
 
-    inline static void toggleDebug() { DebugEnabled = !DebugEnabled; }
+    inline static void ToggleDebug() { DebugEnabled = !DebugEnabled; }
 
 private:
     std::vector<std::string> mUserData;

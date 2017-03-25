@@ -13,16 +13,16 @@ public:
     Window(int width, int height, const char* title);
     ~Window();
 
-    bool open();
+    bool Open();
 
-    void update();
-    void swapBuffers();
-    void clear();
-    void setColor(Color color);
+    void Update();
+    void SwapBuffers();
+    void Clear();
+    void SetColor(Color color);
 
-    inline int getWidth() { return m_width; }
-    inline int getHeight() { return m_height; }
-    inline float getAspect() { return ((float)m_width / (float)m_height); }
+    inline int GetWidth() { return m_width; }
+    inline int GetHeight() { return m_height; }
+    inline float GetAspect() { return ((float)m_width / (float)m_height); }
 
 private:
     GLFWwindow* m_window;

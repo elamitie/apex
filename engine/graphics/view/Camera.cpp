@@ -2,64 +2,64 @@
 #include <math.h>
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up) {
-    position = pos;
-    worldUp = up;
+    Position = pos;
+    WorldUp = up;
 
-    calculateForward();
+    CalculateForward();
 }
 
 Camera::~Camera() {
 }
 
-void Camera::handleKeyboard(CameraDirection dir, float dt) {
-    float vel = properties.speed * dt;
+void Camera::HandleKeyboard(CameraDirection dir, float dt) {
+    float vel = Properties.Speed * dt;
     if (dir == CamForward)
-        position += front * vel;
+        Position += Front * vel;
     if (dir == CamBack)
-        position -= front * vel;
+        Position -= Front * vel;
     if (dir == CamLeft)
-        position -= right * vel;
+        Position -= Right * vel;
     if (dir == CamRight)
-        position += right * vel;
+        Position += Right * vel;
 }
 
-void Camera::handleMouse(float xoff, float yoff, bool constrainPitch) {
-    xoff *= properties.sensitivity;
-    yoff *= properties.sensitivity;
+void Camera::HandleMouse(float xoff, float yoff, bool constrainPitch) {
+    xoff *= Properties.Sensitivity;
+    yoff *= Properties.Sensitivity;
 
-    properties.yaw += xoff;
-    properties.pitch += yoff;
+    Properties.Yaw += xoff;
+    Properties.Pitch += yoff;
 
     if (constrainPitch) {
-        if (properties.pitch > 89.0f)
-            properties.pitch = 89.0f;
-        if (properties.pitch < -89.0f)
-            properties.pitch = -89.0f;
+        if (Properties.Pitch > 89.0f)
+            Properties.Pitch = 89.0f;
+        if (Properties.Pitch < -89.0f)
+            Properties.Pitch = -89.0f;
     }
 
-    calculateForward();
+    CalculateForward();
 }
 
-void Camera::handleScroll(float yoff) {
-    if (properties.zoom >= 1.0f && properties.zoom <= 45.0f)
-        properties.zoom -= yoff;
-    if (properties.zoom <= 1.0f)
-        properties.zoom = 1.0f;
-    if (properties.zoom >= 45.0f)
-        properties.zoom = 45.0f;
+void Camera::HandleScroll(float yoff) {
+    if (Properties.Zoom >= 1.0f && Properties.Zoom <= 45.0f)
+        Properties.Zoom -= yoff;
+    if (Properties.Zoom <= 1.0f)
+        Properties.Zoom = 1.0f;
+    if (Properties.Zoom >= 45.0f)
+        Properties.Zoom = 45.0f;
 }
 
-glm::mat4 Camera::getView() {
-    return glm::lookAt(position, position + front, cameraUp);
+glm::mat4 Camera::GetView() {
+    return glm::lookAt(Position, Position + Front, CameraUp);
 }
 
-void Camera::calculateForward() {
+void Camera::CalculateForward() {
     glm::vec3 f;
-    f.x = cos(glm::radians(properties.yaw)) * cos(glm::radians(properties.pitch));
-    f.y = sin(glm::radians(properties.pitch));
-    f.z = sin(glm::radians(properties.yaw)) * cos(glm::radians(properties.pitch));
+    f.x = cos(glm::radians(Properties.Yaw)) * cos(glm::radians(Properties.Pitch));
+    f.y = sin(glm::radians(Properties.Pitch));
+    f.z = sin(glm::radians(Properties.Yaw)) * cos(glm::radians(Properties.Pitch));
 
-    front = glm::normalize(f);
-    right = glm::normalize(glm::cross(front, worldUp));
-    cameraUp = glm::normalize(glm::cross(right, front));
+    Front = glm::normalize(f);
+    Right = glm::normalize(glm::cross(Front, WorldUp));
+    CameraUp = glm::normalize(glm::cross(Right, Front));
 }

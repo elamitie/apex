@@ -14,10 +14,10 @@
 
 class Application : public Engine {
 public:
-    void init() override;
-    void update() override;
-    void render() override;
-    void cleanup() override {};
+    void Init() override;
+    void Update() override;
+    void Render() override;
+    void Cleanup() override {};
 
 private:
     ShaderPtr mMeshShader;

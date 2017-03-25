@@ -14,22 +14,22 @@ public:
     FrameBuffer(uint width, uint height, DepthBufferType depthBufferType, bool hdrEnabled = false);
     ~FrameBuffer();
 
-    void bind();
-    void unbind();
+    void Bind();
+    void Unbind();
 
-    void bindForRead();
+    void BindForRead();
 
-    inline int getColorTexture() { return mColorTexture; }
-    inline int getDepthTexture() { return mDepthTexture; }
+    inline int GetColorTexture() { return mColorTexture; }
+    inline int GetDepthTexture() { return mDepthTexture; }
 
 
 private:
-    void createFrameBuffer();
-    void createColorTexture();
-    void createDepthTexture();
-    void createDepthBuffer();
+    void CreateFrameBuffer();
+    void CreateColorTexture();
+    void CreateDepthTexture();
+    void CreateDepthBuffer();
 
-    void initialize();
+    void Initialize();
 
 private:
     uint mWidth, mHeight;

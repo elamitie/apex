@@ -8,7 +8,7 @@ PostProcessor::~PostProcessor() {
     // TODO: MEMORY LEAKS LUL
 }
 
-void PostProcessor::init() {
+void PostProcessor::Init() {
     glGenVertexArrays(1, &mQuadVao);
     glGenBuffers(1, &mQuadVbo);
     glBindVertexArray(mQuadVao);
@@ -21,30 +21,30 @@ void PostProcessor::init() {
     glBindVertexArray(0);
 }
 
-void PostProcessor::process(int texture) {
-    start();
+void PostProcessor::Process(int texture) {
+    Start();
 
     for (auto& pe : mEffects) {
-        pe->preRender();
-        pe->render(texture);
-        pe->postRender();
+        pe->PreRender();
+        pe->Render(texture);
+        pe->PostRender();
     }
 
-    end();
+    End();
 }
 
-void PostProcessor::pushEffect(ShaderPtr shader) {
+void PostProcessor::PushEffect(ShaderPtr shader) {
     mEffects.push_back(new PostProcessEffect(shader));
 }
 
-void PostProcessor::start() {
+void PostProcessor::Start() {
     glBindVertexArray(mQuadVao);
     //glEnableVertexAttribArray(0);
     //glEnableVertexAttribArray(1);
     glDisable(GL_DEPTH_TEST);
 }
 
-void PostProcessor::end() {
+void PostProcessor::End() {
     glEnable(GL_DEPTH_TEST);
     //glDisableVertexAttribArray(1);
     //glDisableVertexAttribArray(0);

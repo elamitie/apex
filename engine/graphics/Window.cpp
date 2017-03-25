@@ -47,24 +47,24 @@ Window::~Window() {
     glfwTerminate();
 }
 
-bool Window::open() {
+bool Window::Open() {
     return !glfwWindowShouldClose(m_window);
 }
 
-void Window::update() {
+void Window::Update() {
     glfwPollEvents();
-    Keyboard::update();
+    Keyboard::Update();
 }
 
-void Window::swapBuffers() {
+void Window::SwapBuffers() {
     glfwSwapBuffers(m_window);
 }
 
-void Window::clear() {
+void Window::Clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::setColor(Color color) {
+void Window::SetColor(Color color) {
     glClearColor(color.r / 255.f, color.g / 255.f,
                  color.b / 255.f, color.a / 255.f);
 }

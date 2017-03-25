@@ -9,18 +9,18 @@ PostProcessEffect::~PostProcessEffect() {
     delete mRenderTarget;
 }
 
-void PostProcessEffect::preRender() {
+void PostProcessEffect::PreRender() {
     mShader->Enable();
 }
 
-void PostProcessEffect::render(int texture) {
+void PostProcessEffect::Render(int texture) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     mShader->SetUniform("postProcess_texture", 0);
 
-    mRenderTarget->render();
+    mRenderTarget->Render();
 }
 
-void PostProcessEffect::postRender() {
+void PostProcessEffect::PostRender() {
     mShader->Disable();
 }

@@ -14,11 +14,11 @@ enum CameraDirection {
 
 // Default
 struct CameraProperties {
-    float yaw         = -90.0f;
-    float pitch       =  0.0f;
-    float speed       =  3.0f;
-    float sensitivity =  0.25f;
-    float zoom        =  45.0f;
+    float Yaw         = -90.0f;
+    float Pitch       =  0.0f;
+    float Speed       =  3.0f;
+    float Sensitivity =  0.25f;
+    float Zoom        =  45.0f;
 };
 
 class Camera {
@@ -27,21 +27,21 @@ public:
     ~Camera();
 
     // TODO: Abstract these away into input management
-    void handleKeyboard(CameraDirection dir, float dt);
-    void handleMouse(float xoff, float yoff, bool constrainPitch = true);
-    void handleScroll(float yoff);
+    void HandleKeyboard(CameraDirection dir, float dt);
+    void HandleMouse(float xoff, float yoff, bool constrainPitch = true);
+    void HandleScroll(float yoff);
 
-    glm::mat4 getView();
+    glm::mat4 GetView();
 
 public:
-    CameraProperties properties;
+    CameraProperties Properties;
     // Should be private in the future?
-    glm::vec3 position;
-    glm::vec3 front;
-    glm::vec3 cameraUp;
-    glm::vec3 right;
-    glm::vec3 worldUp;
+    glm::vec3 Position;
+    glm::vec3 Front;
+    glm::vec3 CameraUp;
+    glm::vec3 Right;
+    glm::vec3 WorldUp;
 
 private:
-    void calculateForward();
+    void CalculateForward();
 };
