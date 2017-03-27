@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include <math.h>
 
+#include "utils/Logger.h"
+
 Camera::Camera(glm::vec3 pos, glm::vec3 up) {
     Position = pos;
     WorldUp = up;
@@ -23,30 +25,20 @@ void Camera::HandleKeyboard(CameraDirection dir, float dt) {
         Position += Right * vel;
 }
 
-void Camera::HandleMouse(float xoff, float yoff, bool constrainPitch) {
-    xoff *= Properties.Sensitivity;
-    yoff *= Properties.Sensitivity;
+void Camera::HandleMouse(float deltaX, float deltaY) {
+    float xmovement = deltaX * Properties.Sensitivity;
+    float ymovement = deltaY * Properties.Sensitivity;
 
-    Properties.Yaw += xoff;
-    Properties.Pitch += yoff;
+    Properties.Yaw   += xmovement;
+    Properties.Pitch += ymovement;
 
-    if (constrainPitch) {
-        if (Properties.Pitch > 89.0f)
-            Properties.Pitch = 89.0f;
-        if (Properties.Pitch < -89.0f)
-            Properties.Pitch = -89.0f;
-    }
+    if (Properties.Yaw   == 0.0f) Properties.Yaw   = 0.01f;
+    if (Properties.Pitch == 0.0f) Properties.Pitch = 0.01f;
+
+    if (Properties.Pitch >  89.0f)  Properties.Pitch =  89.0f;
+    if (Properties.Pitch < -89.0f)  Properties.Pitch = -89.0f;
 
     CalculateForward();
-}
-
-void Camera::HandleScroll(float yoff) {
-    if (Properties.Zoom >= 1.0f && Properties.Zoom <= 45.0f)
-        Properties.Zoom -= yoff;
-    if (Properties.Zoom <= 1.0f)
-        Properties.Zoom = 1.0f;
-    if (Properties.Zoom >= 45.0f)
-        Properties.Zoom = 45.0f;
 }
 
 glm::mat4 Camera::GetView() {

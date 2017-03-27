@@ -29,8 +29,7 @@ public:
 
     // TODO: Abstract these away into input management
     void HandleKeyboard(CameraDirection dir, float dt);
-    void HandleMouse(float xoff, float yoff, bool constrainPitch = true);
-    void HandleScroll(float yoff);
+    void HandleMouse(float deltaX, float deltaY);
 
     glm::mat4 GetView();
     glm::mat4 CreateProjection(uint width, uint height);

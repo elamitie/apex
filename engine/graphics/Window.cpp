@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "../utils/Console.h"
 #include "../input/Keyboard.h"
+#include "input/Mouse.h"
 #include <iostream>
 
 #include "utils/Logger.h"
@@ -37,6 +38,9 @@ Window::Window(int width, int height, const char* title) {
     Logger::Log(glVersion);
 
     glfwSetKeyCallback(m_window, key_callback);
+    glfwSetCursorPosCallback(m_window, mouse_callback);
+
+    glfwSwapInterval(1);
 
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
@@ -77,4 +81,24 @@ static void key_callback(GLFWwindow* window, int key,
         Keyboard::__hardwareKeyPress(key);
     if (action == GLFW_RELEASE)
         Keyboard::__hardwareKeyRelease(key);
+}
+
+bool firstMouse = true;
+float lastX = 640.0f;
+float lastY = 360.0f;
+static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+
+    lastX = xpos;
+    lastY = ypos;
+
+    Mouse::XOffset = xoffset;
+    Mouse::YOffset = yoffset;
 }

@@ -1,5 +1,6 @@
 #include "application.h"
 #include "input/keyboard.h"
+#include "input/Mouse.h"
 
 void Application::Init() {
     mCamera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -31,6 +32,8 @@ void Application::Update() {
         mCamera->HandleKeyboard(CamLeft, DeltaTime());
     if (Keyboard::KeyDown(GLFW_KEY_D))
         mCamera->HandleKeyboard(CamRight, DeltaTime());
+
+    mCamera->HandleMouse(Mouse::XOffset, Mouse::YOffset);
 }
 
 void Application::Render() {
