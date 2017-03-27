@@ -73,8 +73,8 @@ void Mesh::Render(ShaderPtr shader) {
 
     // TODO: MAKE THIS CLEANER WITH MATERIAL ABSTRACTION
 
-    uint loc, diff, spec, norm;
-    loc = diff = spec = norm = 0;
+    uint loc, diff, spec, norm, refl;
+    loc = diff = spec = norm = refl = 0;
 
     for (auto& mesh : mChildren)
         mesh->Render(shader);
@@ -89,9 +89,9 @@ void Mesh::Render(ShaderPtr shader) {
             uniformTexture += (++spec > 0) ? std::to_string(spec) : "";
         } else if (uniformTexture == "normal") {
             uniformTexture += (++norm > 0) ? std::to_string(norm) : "";
-        }
-
-        //Logger::Log(uniformTexture);
+		} else if (uniformTexture == "reflection") {
+			uniformTexture += (++refl > 0) ? std::to_string(refl) : "";
+		}
 
         texture->Bind(loc);
         shader->SetUniform(uniformTexture, (GLint)loc++);
@@ -153,21 +153,21 @@ void Mesh::Parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
     // TODO: Process any materials
 
     std::vector<TexturePtr> textures;
-    std::vector<TexturePtr> diffuse  = Process(path, scene->mMaterials[mesh->mMaterialIndex],
-                                       aiTextureType_DIFFUSE);
-    std::vector<TexturePtr> specular = Process(path, scene->mMaterials[mesh->mMaterialIndex],
-                                       aiTextureType_SPECULAR);
-    std::vector<TexturePtr> normals  = Process(path, scene->mMaterials[mesh->mMaterialIndex],
-                                       aiTextureType_HEIGHT);
+    std::vector<TexturePtr> diffuse    = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+                                         aiTextureType_DIFFUSE);
+    std::vector<TexturePtr> specular   = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+                                         aiTextureType_SPECULAR);
+    std::vector<TexturePtr> normals    = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+                                         aiTextureType_HEIGHT);
+	// @Hack: OBJ wavefront format doesn't really handle reflection maps very well. We can bypass it
+	// by loading reflection textures as ambient textures.
+	std::vector<TexturePtr> reflection = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+										 aiTextureType_AMBIENT);
 
     textures.insert(textures.end(), diffuse.begin(), diffuse.end());
     textures.insert(textures.end(), specular.begin(), specular.end());
-    textures.insert(textures.end(), normals.begin(), normals.end());
-
-    /*Logger::Log("Num Textures: " + std::to_string(textures.size()));
-    Logger::Log("Num Diffuse: " + std::to_string(diffuse.size()));
-    Logger::Log("Num Specular: " + std::to_string(specular.size()));
-    Logger::Log("Num Normals: " + std::to_string(normals.size()));*/
+	textures.insert(textures.end(), normals.begin(), normals.end());
+	textures.insert(textures.end(), reflection.begin(), reflection.end());
 
     std::string name = mesh->mName.C_Str();
     mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures, name));
@@ -182,14 +182,13 @@ std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* mater
         std::string filename = str.C_Str();
         filename = path + "/" + filename;
 
-        //TexturePtr texture = std::make_shared<Texture2D>();
-        //texture->Load(filename);
-		
 		TexturePtr texture = TextureCache::GetTexture(filename);
 
         if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
         if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;
         if (type == aiTextureType_HEIGHT)   texture->mType = TextureType::NORMAL;
+		// @Hack: See above
+		if (type == aiTextureType_AMBIENT)  texture->mType = TextureType::REFLECTION;
 
         textures.push_back(texture);
     }

@@ -32,7 +32,10 @@ public:
     void SetUniform(const std::string& name, const glm::vec4& vector);
     void SetUniform(const std::string& name, const glm::mat4& matrix);
 
-	inline void SetDebug(bool debug) { mDebugEnabled = debug; }
+    inline ShaderPtr SetDebug(bool debug) {
+        mDebugEnabled = debug;
+        return shared_from_this();
+    }
 
 private:
     GLuint Create(const std::string& filename);
@@ -45,5 +48,5 @@ private:
 
     GLint mStatus, mLength;
 
-	bool mDebugEnabled = false;
+    bool mDebugEnabled = false;
 };

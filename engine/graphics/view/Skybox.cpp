@@ -43,7 +43,7 @@ void Skybox::Render(const glm::mat4& view, const glm::mat4& proj) {
     mSkyboxShader->SetUniform("projection", proj);
 
     glBindVertexArray(mVertexArray);
-    mCubemap->Bind();
+    mCubemap->Bind(4);
     mSkyboxShader->SetUniform("skybox", 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);

@@ -81,5 +81,5 @@ void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->SetUniform("view", mView);
     command.shader->SetUniform("projection", mProj);
     command.shader->SetUniform("model", command.transform);
-    command.shader->SetUniform("skybox", 0);
+    command.shader->SetUniform("skybox", 4);
 }

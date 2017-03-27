@@ -12,6 +12,7 @@ enum TextureType {
     NORMAL,
     HEIGHTMAP,
     AMBIENT,
+	REFLECTION,
     NUM_TYPES
 };
 static const char* TextureTypeStr[] = {
@@ -19,7 +20,8 @@ static const char* TextureTypeStr[] = {
     "specular",
     "normal",
     "heightmap",
-    "ambient"
+    "ambient",
+	"reflection"
 };
 
 class Texture2D {
