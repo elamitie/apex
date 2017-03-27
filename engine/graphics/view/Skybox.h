@@ -16,6 +16,8 @@ public:
     // easier for now to just pass it a view and projection matrix
     void Render(const glm::mat4& view, const glm::mat4& proj);
 
+    inline Cubemap* GetCubemap() { return mCubemap; }
+
 private:
     GLuint mVertexArray;
     GLuint mVertexBuffer;

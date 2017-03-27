@@ -21,8 +21,11 @@ public:
     void Cleanup() override;
 
 private:
-    ShaderPtr mMeshShader;
-    MeshPtr mMesh;
-    glm::mat4 mTransform;
+    ShaderPtr mMeshReflectiveShader;
+    ShaderPtr mMeshRefractiveShader;
+    MeshPtr mMeshReflective;
+    MeshPtr mMeshRefractive;
+    glm::mat4 mMeshReflectiveTransform;
+    glm::mat4 mMeshRefractiveTransform;
     CameraPtr mCamera;
 };

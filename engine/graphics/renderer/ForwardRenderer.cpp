@@ -50,14 +50,17 @@ void ForwardRenderer::End() {
 }
 
 void ForwardRenderer::Flush() {
-    // Start by rendering the skybox
-    mSkybox->Render(mView, mProj);
-
     for (int i = 0; i < mCommandBuffer.size(); i++) {
         RenderCommand& command = mCommandBuffer[i];
         SetShaderUniforms(command);
+        mSkybox->GetCubemap()->Bind();
         command.mesh->Render(command.shader);
+        mSkybox->GetCubemap()->Unbind();
     }
+
+    // Render the skybox last so that the fragment culls any pixels
+    // behind a scene object
+    mSkybox->Render(mView, mProj);
 
     mFramebuffer->Unbind();
     mPostProcessor->Process(mFramebuffer->GetColorTexture());
@@ -65,7 +68,7 @@ void ForwardRenderer::Flush() {
 
 void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->Enable();
-    command.shader->SetUniform("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
+    /*command.shader->SetUniform("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
     command.shader->SetUniform("viewPos", mCamera->Position);
     command.shader->SetUniform("lightAmbient", glm::vec3(0.4f, 0.4f, 0.4f));
     command.shader->SetUniform("lightDiffuse", glm::vec3(0.6f, 0.6f, 0.6f));
@@ -73,5 +76,10 @@ void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->SetUniform("shininess", 32.0f);
     command.shader->SetUniform("view", mView);
     command.shader->SetUniform("projection", mProj);
+    command.shader->SetUniform("model", command.transform);*/
+    command.shader->SetUniform("cameraPos", mCamera->Position);
+    command.shader->SetUniform("view", mView);
+    command.shader->SetUniform("projection", mProj);
     command.shader->SetUniform("model", command.transform);
+    command.shader->SetUniform("skybox", 0);
 }

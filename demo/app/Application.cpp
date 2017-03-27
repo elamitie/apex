@@ -6,14 +6,20 @@ void Application::Init() {
     mCamera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
     GetRenderer()->RegisterCamera(mCamera);
 
-    mMeshShader = std::make_shared<Shader>();
-    mMeshShader->Attach("normal_mapping.vert")->Attach("normal_mapping.frag")->Link()->AddAttribs({
+    mMeshReflectiveShader = std::make_shared<Shader>();
+    mMeshRefractiveShader = std::make_shared<Shader>();
+    /*mMeshShader->Attach("normal_mapping.vert")->Attach("normal_mapping.frag")->Link()->AddAttribs({
         "position", "normal", "texCoords", "tangents", "bitangents"
+    });*/
+    mMeshReflectiveShader->Attach("env_reflection.vert")->Attach("env_reflection.frag")->Link()->AddAttribs({
+        "position", "normal"
+    });
+    mMeshRefractiveShader->Attach("env_refraction.vert")->Attach("env_refraction.frag")->Link()->AddAttribs({
+        "position", "normal"
     });
 
-    // Note trying to normal map this looks like ass because of how they mirrored texture coordinates
-    // on the object file.
-    mMesh = std::make_shared<Mesh>("nanosuit/nanosuit.obj");
+    mMeshReflective = std::make_shared<Mesh>("nanosuit/nanosuit.obj");
+    mMeshRefractive = std::make_shared<Mesh>("nanosuit/nanosuit.obj");
 
     // TODO: Figure out why the fuck Sponza isn't showing textures properly
     //mMesh = std::make_shared<Mesh>("sponza/sponza.obj");
@@ -37,12 +43,15 @@ void Application::Update() {
 }
 
 void Application::Render() {
-    mTransform = glm::mat4();
+    mMeshReflectiveTransform = mMeshRefractiveTransform = glm::mat4();
     //mTransform = glm::rotate(mTransform, glm::radians(ElapsedTime() * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    mTransform = glm::translate(mTransform, glm::vec3(0.0f, -1.75f, 0.0f));
-    mTransform = glm::scale(mTransform, glm::vec3(0.2f, 0.2f, 0.2f));
+    mMeshReflectiveTransform = glm::translate(mMeshReflectiveTransform, glm::vec3(2.0f, -1.75f, 0.0f));
+    mMeshReflectiveTransform = glm::scale(mMeshReflectiveTransform, glm::vec3(0.2f, 0.2f, 0.2f));
+    mMeshRefractiveTransform = glm::translate(mMeshRefractiveTransform, glm::vec3(-2.0f, -1.75f, 0.0f));
+    mMeshRefractiveTransform = glm::scale(mMeshRefractiveTransform, glm::vec3(0.2f, 0.2f, 0.2f));
 
-    GetRenderer()->PushMesh(mMesh, mMeshShader, mTransform);
+    GetRenderer()->PushMesh(mMeshReflective, mMeshReflectiveShader, mMeshReflectiveTransform);
+    GetRenderer()->PushMesh(mMeshRefractive, mMeshRefractiveShader, mMeshRefractiveTransform);
 }
 
 void Application::Cleanup() {

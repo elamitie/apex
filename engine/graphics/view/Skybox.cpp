@@ -32,7 +32,8 @@ Skybox::~Skybox() {
 }
 
 void Skybox::Render(const glm::mat4& view, const glm::mat4& proj) {
-    glDepthMask(GL_FALSE);
+    //glDepthMask(GL_FALSE);
+    glDepthFunc(GL_LEQUAL);
 
     mSkyboxShader->Enable();
 
@@ -47,5 +48,6 @@ void Skybox::Render(const glm::mat4& view, const glm::mat4& proj) {
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
 
-    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+    //glDepthMask(GL_TRUE);
 }
