@@ -45,7 +45,8 @@ ShaderPtr Shader::Attach(const std::string& filename) {
         std::unique_ptr<char[]> buffer(new char[mLength]);
         glGetShaderInfoLog(shader, mLength, nullptr, buffer.get());
 
-        Logger::Log(filename + " " + std::string(buffer.get()), ERROR);
+		if (mDebugEnabled)
+			Logger::Log(filename + " " + std::string(buffer.get()), ERROR);
     }
 
     // Attach the Shader and Free Allocated Memory
@@ -63,7 +64,9 @@ ShaderPtr Shader::Link() {
         glGetProgramiv(mProg, GL_INFO_LOG_LENGTH, &mLength);
         std::unique_ptr<char[]> buffer(new char[mLength]);
         glGetProgramInfoLog(mProg, mLength, nullptr, buffer.get());
-        Logger::Log(std::string(buffer.get()), ERROR);
+
+		if (mDebugEnabled)
+			Logger::Log(std::string(buffer.get()), ERROR);
     }
     assert(mStatus == true);
 
@@ -82,8 +85,10 @@ GLuint Shader::Create(const std::string& filename) {
 
 GLint Shader::GetUniformLocation(const std::string& uniformName) {
     GLint location = glGetUniformLocation(mProg, uniformName.c_str());
-    if (location == GL_INVALID_INDEX)
-        Logger::Log("Could not find uniform: " + uniformName, ERROR);
+	if (location == GL_INVALID_INDEX) {
+		if (mDebugEnabled)
+			Logger::Log("Could not find uniform: " + uniformName, ERROR);
+	}
     return location;
 }
 

@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "utils/Logger.h"
+#include "graphics/assets/cache/TextureCache.h"
 
 Mesh::Mesh(const std::string& filename) {
     Assimp::Importer loader;
@@ -181,8 +182,10 @@ std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* mater
         std::string filename = str.C_Str();
         filename = path + "/" + filename;
 
-        TexturePtr texture = std::make_shared<Texture2D>();
-        texture->Load(filename);
+        //TexturePtr texture = std::make_shared<Texture2D>();
+        //texture->Load(filename);
+		
+		TexturePtr texture = TextureCache::GetTexture(filename);
 
         if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
         if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;

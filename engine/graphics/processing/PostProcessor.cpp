@@ -5,7 +5,7 @@ PostProcessor::PostProcessor() {
 }
 
 PostProcessor::~PostProcessor() {
-    // TODO: MEMORY LEAKS LUL
+    
 }
 
 void PostProcessor::Init() {
@@ -34,7 +34,7 @@ void PostProcessor::Process(int texture) {
 }
 
 void PostProcessor::PushEffect(ShaderPtr shader) {
-    mEffects.push_back(new PostProcessEffect(shader));
+    mEffects.push_back(std::make_shared<PostProcessEffect>(shader));
 }
 
 void PostProcessor::Start() {

@@ -32,6 +32,8 @@ public:
     void SetUniform(const std::string& name, const glm::vec4& vector);
     void SetUniform(const std::string& name, const glm::mat4& matrix);
 
+	inline void SetDebug(bool debug) { mDebugEnabled = debug; }
+
 private:
     GLuint Create(const std::string& filename);
     GLint GetUniformLocation(const std::string& uniformName);
@@ -42,4 +44,6 @@ private:
     int mNumAttribs = 0;
 
     GLint mStatus, mLength;
+
+	bool mDebugEnabled = false;
 };

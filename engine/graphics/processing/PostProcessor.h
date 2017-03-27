@@ -17,7 +17,7 @@ private:
     void End();
 
 private:
-    std::vector<PostProcessEffect*> mEffects;
+    std::vector<PostProcessEffectPtr> mEffects;
 
     // Vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
     GLfloat mQuadVertices[24] = {
