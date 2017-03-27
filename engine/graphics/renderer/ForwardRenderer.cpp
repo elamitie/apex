@@ -60,8 +60,7 @@ void ForwardRenderer::Flush() {
 
 void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->Enable();
-    //command.shader->SetUniform("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
-    command.shader->SetUniform("lightPos", glm::vec3(0.0f, 3.0f, -5.0f));
+    command.shader->SetUniform("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
     command.shader->SetUniform("viewPos", mCamera->Position);
     command.shader->SetUniform("lightAmbient", glm::vec3(0.4f, 0.4f, 0.4f));
     command.shader->SetUniform("lightDiffuse", glm::vec3(0.6f, 0.6f, 0.6f));
