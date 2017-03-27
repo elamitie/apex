@@ -15,6 +15,8 @@ ForwardRenderer::ForwardRenderer(uint width, uint height) {
     mPostProcessor->Init();
     mPostProcessor->PushEffect(mDefaultPostEffect);
 
+    mSkybox = std::make_shared<Skybox>();
+
     mCommandBuffer.reserve(1000);
 }
 
@@ -48,6 +50,9 @@ void ForwardRenderer::End() {
 }
 
 void ForwardRenderer::Flush() {
+    // Start by rendering the skybox
+    mSkybox->Render(mView, mProj);
+
     for (int i = 0; i < mCommandBuffer.size(); i++) {
         RenderCommand& command = mCommandBuffer[i];
         SetShaderUniforms(command);

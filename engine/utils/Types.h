@@ -38,3 +38,6 @@ typedef std::shared_ptr<PostProcessor> PostProcessorPtr;
 
 class PostProcessEffect;
 typedef std::shared_ptr<PostProcessEffect> PostProcessEffectPtr;
+
+class Skybox;
+typedef std::shared_ptr<Skybox> SkyboxPtr;

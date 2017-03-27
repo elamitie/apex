@@ -3,6 +3,7 @@
 #include "graphics/view/Camera.h"
 #include "RenderCommand.h"
 #include "graphics/processing/PostProcessor.h"
+#include "graphics/view/Skybox.h"
 
 // TODO: PUSH LIGHTS
 
@@ -32,4 +33,5 @@ private:
     FrameBufferPtr mFramebuffer;
     PostProcessorPtr mPostProcessor;
     CommandBuffer mCommandBuffer;
+    SkyboxPtr mSkybox;
 };
