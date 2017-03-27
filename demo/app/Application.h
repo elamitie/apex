@@ -8,6 +8,7 @@
 #include "utils/Math.h"
 #include "utils/Types.h"
 #include "utils/Console.h"
+#include "graphics/renderer/ForwardRenderer.h"
 
 // post process
 #include "graphics/processing/postProcessor.h"
@@ -17,16 +18,11 @@ public:
     void Init() override;
     void Update() override;
     void Render() override;
-    void Cleanup() override {};
+    void Cleanup() override;
 
 private:
     ShaderPtr mMeshShader;
-    ShaderPtr mHdrShader;
     MeshPtr mMesh;
+    glm::mat4 mTransform;
     CameraPtr mCamera;
-
-    glm::vec3 mLightPos;
-
-    FrameBuffer* mFrameBuffer;
-    PostProcessor* mPostProcessor;
 };

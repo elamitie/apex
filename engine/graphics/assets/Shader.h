@@ -39,7 +39,7 @@ private:
 private:
     // TODO: support geom shaders
     GLuint mProg, mVert, mFrag;
-    int mNumAttribs;
+    int mNumAttribs = 0;
 
     GLint mStatus, mLength;
 };

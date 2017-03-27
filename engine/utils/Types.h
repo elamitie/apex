@@ -29,3 +29,12 @@ typedef std::shared_ptr<Material> MaterialPtr;
 
 class Camera;
 typedef std::shared_ptr<Camera> CameraPtr;
+
+class FrameBuffer;
+typedef std::shared_ptr<FrameBuffer> FrameBufferPtr;
+
+class PostProcessor;
+typedef std::shared_ptr<PostProcessor> PostProcessorPtr;
+
+class PostProcessEffect;
+typedef std::shared_ptr<PostProcessEffect> PostProcessEffectPtr;

@@ -34,6 +34,14 @@ void FrameBuffer::BindForRead() {
     glReadBuffer(GL_COLOR_ATTACHMENT0);
 }
 
+void FrameBuffer::Clear() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void FrameBuffer::SetViewport(uint width, uint height) {
+    glViewport(0, 0, mWidth, mHeight);
+}
+
 void FrameBuffer::CreateFrameBuffer() {
     glGenFramebuffers(1, &mFrameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);

@@ -62,12 +62,18 @@ Mesh::~Mesh() {
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
+//void Mesh::SetShader(ShaderPtr shader) {
+//    mShader = shader;
+//    for (auto& mesh : mChildren)
+//        mesh->SetShader(shader);
+//}
+
 void Mesh::Render(ShaderPtr shader) {
 
     // TODO: MAKE THIS CLEANER WITH MATERIAL ABSTRACTION
 
     uint loc, diff, spec, norm;
-    loc = diff = spec = 0;
+    loc = diff = spec = norm = 0;
 
     for (auto& mesh : mChildren)
         mesh->Render(shader);
@@ -76,15 +82,18 @@ void Mesh::Render(ShaderPtr shader) {
         TextureType t = texture->mType;
         std::string uniformTexture = TextureTypeStr[t];
 
-        if (uniformTexture == "diffuse")
+        if (uniformTexture == "diffuse") {
             uniformTexture += (++diff > 0) ? std::to_string(diff) : "";
-        else if (uniformTexture == "specular")
+        } else if (uniformTexture == "specular") {
             uniformTexture += (++spec > 0) ? std::to_string(spec) : "";
-        else if (uniformTexture == "normal")
-            uniformTexture += (++norm > 0) ? std::to_string(spec) : "";
+        } else if (uniformTexture == "normal") {
+            uniformTexture += (++norm > 0) ? std::to_string(norm) : "";
+        }
+
+        //Logger::Log(uniformTexture);
 
         texture->Bind(loc);
-        shader->SetUniform("material." + uniformTexture, (GLint)loc++);
+        shader->SetUniform(uniformTexture, (GLint)loc++);
     }
 
     glBindVertexArray(mVertexArray);
@@ -147,9 +156,17 @@ void Mesh::Parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
                                        aiTextureType_DIFFUSE);
     std::vector<TexturePtr> specular = Process(path, scene->mMaterials[mesh->mMaterialIndex],
                                        aiTextureType_SPECULAR);
+    std::vector<TexturePtr> normals  = Process(path, scene->mMaterials[mesh->mMaterialIndex],
+                                       aiTextureType_HEIGHT);
 
     textures.insert(textures.end(), diffuse.begin(), diffuse.end());
     textures.insert(textures.end(), specular.begin(), specular.end());
+    textures.insert(textures.end(), normals.begin(), normals.end());
+
+    /*Logger::Log("Num Textures: " + std::to_string(textures.size()));
+    Logger::Log("Num Diffuse: " + std::to_string(diffuse.size()));
+    Logger::Log("Num Specular: " + std::to_string(specular.size()));
+    Logger::Log("Num Normals: " + std::to_string(normals.size()));*/
 
     std::string name = mesh->mName.C_Str();
     mChildren.push_back(std::make_shared<Mesh>(vertices, indices, textures, name));
@@ -169,6 +186,7 @@ std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* mater
 
         if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
         if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;
+        if (type == aiTextureType_HEIGHT)   texture->mType = TextureType::NORMAL;
 
         textures.push_back(texture);
     }

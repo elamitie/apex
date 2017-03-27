@@ -1,5 +1,6 @@
 #pragma once
 #include "../../utils/Math.h"
+#include "utils/Types.h"
 
 // TODO: This maybe should have different subclasses for user controlled and auto fly.
 
@@ -32,6 +33,7 @@ public:
     void HandleScroll(float yoff);
 
     glm::mat4 GetView();
+    glm::mat4 CreateProjection(uint width, uint height);
 
 public:
     CameraProperties Properties;

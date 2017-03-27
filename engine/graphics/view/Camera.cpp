@@ -53,6 +53,10 @@ glm::mat4 Camera::GetView() {
     return glm::lookAt(Position, Position + Front, CameraUp);
 }
 
+glm::mat4 Camera::CreateProjection(uint width, uint height) {
+    return glm::perspective(Properties.Zoom, (float)width / (float)height, 0.1f, 100.0f);
+}
+
 void Camera::CalculateForward() {
     glm::vec3 f;
     f.x = cos(glm::radians(Properties.Yaw)) * cos(glm::radians(Properties.Pitch));

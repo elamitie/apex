@@ -30,6 +30,10 @@ public:
 
     void Render(ShaderPtr shader);
 
+    // This will hopefully get replaced by material stuff?
+    //inline ShaderPtr GetShader() { return mShader; }
+    //void SetShader(ShaderPtr shader);
+
 private:
     void Parse(const std::string& path, const aiNode* node, const aiScene* scene);
     void Parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
@@ -48,4 +52,6 @@ private:
     GLuint mIndexBuffer;
 
     std::string mName;
+
+    //ShaderPtr mShader;
 };

@@ -19,6 +19,9 @@ public:
 
     void BindForRead();
 
+    void Clear();
+    void SetViewport(uint width, uint height);
+
     inline int GetColorTexture() { return mColorTexture; }
     inline int GetDepthTexture() { return mDepthTexture; }
 

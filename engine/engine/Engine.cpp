@@ -43,7 +43,10 @@ void Engine::Loop() {
         mWindow->Clear();
 
         Update();
+        mRenderer->Begin();
         Render();
+        mRenderer->End();
+        mRenderer->Flush();
 
         mWindow->SwapBuffers();
     }
@@ -58,9 +61,12 @@ void Engine::InitBackend(int width, int height,
     Keyboard::Init();
     mConsole = new Console();
     mConsole->Init(mWindow);
+
+    mRenderer = new ForwardRenderer(mWidth, mHeight);
 }
 
 void Engine::CleanupBackend() {
+    delete mRenderer;
     Keyboard::Cleanup();
     delete mConsole;
     delete mWindow;
