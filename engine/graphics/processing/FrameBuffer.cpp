@@ -25,7 +25,7 @@ void FrameBuffer::Bind() {
 
 void FrameBuffer::Unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1280, 720);
 }
 
 void FrameBuffer::BindForRead() {

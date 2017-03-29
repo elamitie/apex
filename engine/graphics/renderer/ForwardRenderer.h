@@ -21,11 +21,15 @@ public:
 
     void RegisterCamera(CameraPtr camera);
 
+	void Interface();
+	inline void SetDebug(bool debug) { mDebugMode = debug; }
+
 private:
     void SetShaderUniforms(RenderCommand& command);
 
 private:
     uint mWidth, mHeight;
+	bool mDebugMode;
     glm::mat4 mView;
     glm::mat4 mProj;
     CameraPtr mCamera;

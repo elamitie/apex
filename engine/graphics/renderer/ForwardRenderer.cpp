@@ -1,9 +1,13 @@
 #include "ForwardRenderer.h"
 #include "utils/Logger.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 ForwardRenderer::ForwardRenderer(uint width, uint height) {
     mWidth = width;
     mHeight = height;
+	mDebugMode = true;
 
     mDefaultPostEffect = std::make_shared<Shader>();
     mDefaultPostEffect->Attach("textured_quad.vert")->Attach("framebuffer_default.frag")->Link()->AddAttribs({
@@ -64,6 +68,8 @@ void ForwardRenderer::Flush() {
 
     mFramebuffer->Unbind();
     mPostProcessor->Process(mFramebuffer->GetColorTexture());
+
+	if (mDebugMode) Interface();
 }
 
 void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
@@ -82,4 +88,17 @@ void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->SetUniform("projection", mProj);
     command.shader->SetUniform("model", command.transform);
     command.shader->SetUniform("skybox", 4);	// Is this working because the skybox is staying bound at 4...?
+}
+
+void ForwardRenderer::Interface() {
+	ImGui_ImplGlfwGL3_NewFrame();
+
+	ImGui::Begin("Apex Engine v0.1", nullptr, ImVec2(0, 0));
+	/*if (ImGui::CollapsingHeader("Stuff", 0, true, true))
+	{
+
+	}*/
+
+	ImGui::End();
+	ImGui::Render();
 }

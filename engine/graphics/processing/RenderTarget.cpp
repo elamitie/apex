@@ -16,7 +16,7 @@ void RenderTarget::Render() {
     if (mFrameBuffer != nullptr)
         mFrameBuffer->Bind();
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     if (mFrameBuffer != nullptr)

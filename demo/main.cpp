@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv) {
     Application app;
-    app.Start(800, 600, "OpenGL Demo");
+    app.Start(1280, 720, "OpenGL Demo");
 
     return 0;
 }
