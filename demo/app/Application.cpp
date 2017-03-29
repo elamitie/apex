@@ -8,7 +8,7 @@ void Application::Init() {
     GetRenderer()->RegisterCamera(mCamera);
 
     mReflectShader = std::make_shared<Shader>();
-    mReflectShader->SetDebug(true)
+    mReflectShader->SetDebug(false)
 				  ->Attach("reflection_mapping.vert")
 		          ->Attach("reflection_mapping.frag")
 		          ->Link()

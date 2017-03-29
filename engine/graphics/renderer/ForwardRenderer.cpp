@@ -53,7 +53,7 @@ void ForwardRenderer::Flush() {
     for (int i = 0; i < mCommandBuffer.size(); i++) {
         RenderCommand& command = mCommandBuffer[i];
         SetShaderUniforms(command);
-        mSkybox->GetCubemap()->Bind();
+        mSkybox->GetCubemap()->Bind(4);
         command.mesh->Render(command.shader);
         mSkybox->GetCubemap()->Unbind();
     }
@@ -81,5 +81,5 @@ void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->SetUniform("view", mView);
     command.shader->SetUniform("projection", mProj);
     command.shader->SetUniform("model", command.transform);
-    command.shader->SetUniform("skybox", 4);
+    command.shader->SetUniform("skybox", 4);	// Is this working because the skybox is staying bound at 4...?
 }
