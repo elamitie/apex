@@ -74,15 +74,6 @@ void ForwardRenderer::Flush() {
 
 void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
     command.shader->Enable();
-    /*command.shader->SetUniform("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
-    command.shader->SetUniform("viewPos", mCamera->Position);
-    command.shader->SetUniform("lightAmbient", glm::vec3(0.4f, 0.4f, 0.4f));
-    command.shader->SetUniform("lightDiffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    command.shader->SetUniform("lightSpecular", glm::vec3(1.0f, 1.0f, 1.0f));
-    command.shader->SetUniform("shininess", 32.0f);
-    command.shader->SetUniform("view", mView);
-    command.shader->SetUniform("projection", mProj);
-    command.shader->SetUniform("model", command.transform);*/
     command.shader->SetUniform("cameraPos", mCamera->Position);
     command.shader->SetUniform("view", mView);
     command.shader->SetUniform("projection", mProj);
@@ -94,10 +85,18 @@ void ForwardRenderer::Interface() {
 	ImGui_ImplGlfwGL3_NewFrame();
 
 	ImGui::Begin("Apex Engine v0.1", nullptr, ImVec2(0, 0));
-	/*if (ImGui::CollapsingHeader("Stuff", 0, true, true))
+	if (ImGui::CollapsingHeader("Stuff", 0, true, true))
 	{
+		std::string version = std::string((char*)glGetString(GL_VERSION));
+		std::string hardware = std::string((char*)glGetString(GL_RENDERER));
 
-	}*/
+		std::string gl = "OpenGL Version: " + version;
+		std::string hw = "Hardware Info: " + hardware;
+
+		ImGui::Text(gl.c_str());
+		ImGui::Text(hw.c_str());
+		ImGui::Text("\nFramerate %.2f FPS / Frametime %.4f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+	}
 
 	ImGui::End();
 	ImGui::Render();
