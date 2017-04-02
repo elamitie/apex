@@ -51,7 +51,7 @@ SceneNodePtr Scene::CreateNode(const std::string& name) {
 // Potentially design flaw, though it really doesn't matter? ->
 // We have to create a node here, and then manually add the returned node
 // to a different child if we want to do that.
-SceneNodePtr Scene::CreateNode(MeshPtr mesh, ShaderPtr shader, const std::string& name) {
+SceneNodePtr Scene::CreateNode(Mesh* mesh, Material* material, const std::string& name) {
 	SceneNodePtr node = std::make_shared<SceneNode>();
 	
 	if (mRoot) {
@@ -59,7 +59,7 @@ SceneNodePtr Scene::CreateNode(MeshPtr mesh, ShaderPtr shader, const std::string
 		if (child == nullptr) {
 			node->name = name;
 			node->mesh = mesh;
-			node->shader = shader;
+			node->material = material;
 			mRoot->AddChild(node);
 			return node;
 		} else {
@@ -69,7 +69,7 @@ SceneNodePtr Scene::CreateNode(MeshPtr mesh, ShaderPtr shader, const std::string
 	} else {
 		node->name = name;
 		node->mesh = mesh;
-		node->shader = shader;
+		node->material = material;
 		mRoot = node;
 
 		return node;

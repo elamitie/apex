@@ -19,8 +19,6 @@ ForwardRenderer::ForwardRenderer(uint width, uint height) {
     mPostProcessor->Init();
     mPostProcessor->PushEffect(mDefaultPostEffect);
 
-    mSkybox = std::make_shared<Skybox>();
-
     mCommandBuffer.reserve(1000);
 }
 
@@ -30,6 +28,15 @@ void ForwardRenderer::RegisterCamera(CameraPtr camera) {
     mProj = mCamera->CreateProjection(mWidth, mHeight);
 }
 
+void ForwardRenderer::SetLightingMode(LightMode mode) {
+	// @Refactor - both PBR and Phong should be able to use the same
+	// skybox interface. Right now, however, one would need a skybox and the other
+	// and environment map.
+	if (mode == LightMode::PHONG) {
+		mSkybox = std::make_shared<Skybox>();
+	}
+}
+
 void ForwardRenderer::Begin() {
     mView = mCamera->GetView();
 
@@ -37,17 +44,17 @@ void ForwardRenderer::Begin() {
     mFramebuffer->Bind();
 }
 
-void ForwardRenderer::PushMesh(MeshPtr mesh, ShaderPtr shader, glm::mat4 transform) {
+void ForwardRenderer::PushMesh(Mesh* mesh, Material* material, glm::mat4 transform) {
     RenderCommand command;
     command.mesh = mesh;
-    command.shader = shader;
+    command.material = material;
     command.transform = transform;
     mCommandBuffer.push_back(command);
 }
 
 void ForwardRenderer::PushNode(SceneNodePtr node) {
 	glm::mat4 transform = node->GetFinalTransform();
-	PushMesh(node->mesh, node->shader, transform);
+	PushMesh(node->mesh, node->material, transform);
 	for (SceneNodePtr child : node->GetChildren()) {
 		PushNode(child);
 	}
@@ -64,10 +71,15 @@ void ForwardRenderer::End() {
 void ForwardRenderer::Flush() {
     for (int i = 0; i < mCommandBuffer.size(); i++) {
         RenderCommand& command = mCommandBuffer[i];
-        SetShaderUniforms(command);
-        mSkybox->GetCubemap()->Bind(4);
-        command.mesh->Render(command.shader);
-        mSkybox->GetCubemap()->Unbind();
+
+		// Handle material uniforms
+		if (mSkybox) command.material->SetSkybox(mSkybox);
+		else {} // This is where I'd set an environment map I guess?
+		command.material->Enable();
+		command.material->SetData();
+		SetSystemUniforms(command);
+
+        command.mesh->Render(command.material);
     }
 
     // Render the skybox last so that the fragment culls any pixels
@@ -80,13 +92,10 @@ void ForwardRenderer::Flush() {
 	if (mDebugMode) Interface();
 }
 
-void ForwardRenderer::SetShaderUniforms(RenderCommand& command) {
-    command.shader->Enable();
-    command.shader->SetUniform("cameraPos", mCamera->Position);
-    command.shader->SetUniform("view", mView);
-    command.shader->SetUniform("projection", mProj);
-    command.shader->SetUniform("model", command.transform);
-    command.shader->SetUniform("skybox", 4);	// Is this working because the skybox is staying bound at 4...?
+void ForwardRenderer::SetSystemUniforms(RenderCommand& command) {
+	command.material->SetMatrix("view", mView);
+	command.material->SetMatrix("projection", mProj);
+	command.material->SetMatrix("model", command.transform);
 }
 
 void ForwardRenderer::Interface() {

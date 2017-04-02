@@ -6,8 +6,8 @@
 
 
 struct RenderCommand {
-    MeshPtr mesh;
-    ShaderPtr shader;
+    Mesh* mesh;
+	Material* material;
     glm::mat4 transform;
 };
 

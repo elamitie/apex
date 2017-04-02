@@ -24,7 +24,7 @@ typedef std::shared_ptr<Vertex> VertexPtr;
 class Model;
 typedef std::shared_ptr<Model> ModelPtr;
 
-struct Material;
+class Material;
 typedef std::shared_ptr<Material> MaterialPtr;
 
 class Camera;
@@ -47,3 +47,6 @@ typedef std::shared_ptr<Scene> ScenePtr;
 
 class SceneNode;
 typedef std::shared_ptr<SceneNode> SceneNodePtr;
+
+class Cubemap;
+typedef std::shared_ptr<Cubemap> CubemapPtr;

@@ -6,7 +6,7 @@ void PBRScene::Begin()
 {
 	Scene::Begin();
 
-	camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
+	/*camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 	mRenderer->RegisterCamera(camera);
 
 	reflection = std::make_shared<Shader>();
@@ -22,7 +22,7 @@ void PBRScene::Begin()
 
 	nanosuit = CreateNode(mesh, reflection, "nanosuit");
 	nanosuit->transform.position = glm::vec3(0.0f, -1.75f, 0.0f);
-	nanosuit->transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
+	nanosuit->transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);*/
 }
 
 void PBRScene::Update(double dt)

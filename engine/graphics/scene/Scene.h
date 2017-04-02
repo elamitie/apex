@@ -19,7 +19,7 @@ public:
 	void Render(double dt);
 
 	SceneNodePtr CreateNode(const std::string& name);
-	SceneNodePtr CreateNode(MeshPtr mesh, ShaderPtr shader, const std::string& name);
+	SceneNodePtr CreateNode(Mesh* mesh, Material* material, const std::string& name);
 	
 	void DeleteNode(SceneNodePtr node);
 

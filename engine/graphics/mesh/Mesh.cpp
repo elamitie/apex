@@ -63,21 +63,17 @@ Mesh::~Mesh() {
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
-//void Mesh::SetShader(ShaderPtr shader) {
-//    mShader = shader;
-//    for (auto& mesh : mChildren)
-//        mesh->SetShader(shader);
-//}
-
-void Mesh::Render(ShaderPtr shader) {
+void Mesh::Render(Material* mat) {
 
     // TODO: MAKE THIS CLEANER WITH MATERIAL ABSTRACTION
+	// TODO: THIS IS GOING TO BE BROKEN AS FUCK WHILE WORKING
+	// ON THE PBR - FIX IT LATER WITH LAMBERT MATERIAL STUFF
 
     uint loc, diff, spec, norm, refl;
     loc = diff = spec = norm = refl = 0;
 
     for (auto& mesh : mChildren)
-        mesh->Render(shader);
+        mesh->Render(mat);
 
     for (auto& texture : mTextures) {
         TextureType t = texture->mType;
@@ -94,7 +90,7 @@ void Mesh::Render(ShaderPtr shader) {
 		}
 
         texture->Bind(loc);
-        shader->SetUniform(uniformTexture, (GLint)loc++);
+        mat->SetInt(uniformTexture, (GLint)loc++);
     }
 
     glBindVertexArray(mVertexArray);

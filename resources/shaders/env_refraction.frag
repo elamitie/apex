@@ -15,7 +15,7 @@ const float diamond = 1.00 / 2.42;
 
 void main() {
 	// refractive ratio of glass
-	float ratio = glass;
+	float ratio = 1.00 / 1.52;
 	vec3 I = normalize(Position - cameraPos);
 	vec3 R = refract(I, normalize(Normal), ratio);
 	FragColor = texture(skybox, R);

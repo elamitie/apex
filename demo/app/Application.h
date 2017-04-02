@@ -14,6 +14,7 @@
 #include "graphics/processing/postProcessor.h"
 
 #include "../scenes/PBRScene.h"
+#include "../scenes/ReflectionScene.h"
 
 class Application : public Engine {
 public:

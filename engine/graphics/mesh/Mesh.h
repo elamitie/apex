@@ -12,6 +12,7 @@
 #include "../assets/Shader.h"
 #include "../assets/Texture.h"
 #include "Vertex.h"
+#include "Material.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -21,18 +22,15 @@
 
 class Mesh {
 public:
+	Mesh() {};
     Mesh(const std::string& filename);
     Mesh(const std::vector<Vertex>& vertices,
          const std::vector<uint>& indices,
          const std::vector<TexturePtr>& textures,
          const std::string& name = "");
-    ~Mesh();
+    virtual ~Mesh();
 
-    void Render(ShaderPtr shader);
-
-    // This will hopefully get replaced by material stuff?
-    //inline ShaderPtr GetShader() { return mShader; }
-    //void SetShader(ShaderPtr shader);
+    virtual void Render(Material* mat);
 
 private:
     void Parse(const std::string& path, const aiNode* node, const aiScene* scene);
@@ -41,7 +39,7 @@ private:
                                     aiMaterial* material,
                                     aiTextureType type);
 
-private:
+protected:
     std::vector<MeshPtr> mChildren;
     std::vector<uint> mIndices;
     std::vector<Vertex> mVertices;
@@ -52,6 +50,4 @@ private:
     GLuint mIndexBuffer;
 
     std::string mName;
-
-    //ShaderPtr mShader;
 };

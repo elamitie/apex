@@ -5,7 +5,10 @@
 
 class Transform {
 public:
-	Transform() {};
+	Transform() {
+		// Set scale to one instead of 0 by default
+		scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	};
 	~Transform() {};
 
 	glm::mat4& UpdateTransform();
@@ -35,9 +38,9 @@ public:
 	glm::mat4& GetFinalTransform();
 
 	// Public vars
-	MeshPtr mesh;
+	Mesh* mesh;
+	Material* material;
 	Transform transform;
-	ShaderPtr shader; // Replace with material later
 
 	// Dunno if I want this public or not
 	std::string name;
