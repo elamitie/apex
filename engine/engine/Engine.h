@@ -3,7 +3,7 @@
 #include "graphics/Window.h"
 #include "utils/Console.h"
 #include "utils/Logger.h"
-#include "graphics/renderer/ForwardRenderer.h"
+#include "graphics/scene/Scene.h"
 
 class Engine {
 public:
@@ -24,9 +24,11 @@ public:
     float ElapsedTime() { return mTotalTime; }
 
     Console* GetConsole() { return mConsole; }
-    ForwardRenderer* GetRenderer() { return mRenderer; }
 
     void SetColor (Color color);
+
+	// Replace this with better logic
+	void SetScene(Scene* scene);
 
 protected:
     virtual void Init() = 0;
@@ -42,12 +44,14 @@ private:
 
 private:
     Window* mWindow;
-    Console* mConsole;
-    ForwardRenderer* mRenderer;
+	Console* mConsole;
 
     bool mQuit;
     int mWidth, mHeight;
 
     float mDeltaTime;
     float mTotalTime;
+	bool mFirstFrame;
+
+	Scene* mScene;
 };

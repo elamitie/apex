@@ -43,12 +43,10 @@ void Engine::Loop() {
         mWindow->Clear();
 
         Update();
-        mRenderer->Begin();
         Render();
-        mRenderer->End();
-        mRenderer->Flush();
 
         mWindow->SwapBuffers();
+		if (mFirstFrame) mFirstFrame = false;
     }
 }
 
@@ -62,11 +60,12 @@ void Engine::InitBackend(int width, int height,
     mConsole = new Console();
     mConsole->Init(mWindow);
 
-    mRenderer = new ForwardRenderer(mWidth, mHeight);
+	mFirstFrame = true;
 }
 
 void Engine::CleanupBackend() {
-    delete mRenderer;
+	mScene->End();
+	delete mScene;
     Keyboard::Cleanup();
     delete mConsole;
     delete mWindow;
@@ -74,7 +73,14 @@ void Engine::CleanupBackend() {
 
 void Engine::Update() {
     mWindow->Update();
+	if (!mFirstFrame) mScene->Update(DeltaTime());
 }
 
 void Engine::Render() {
+	mScene->Render(DeltaTime());
+}
+
+void Engine::SetScene(Scene* scene) {
+	mScene = scene;
+	mScene->Begin();
 }

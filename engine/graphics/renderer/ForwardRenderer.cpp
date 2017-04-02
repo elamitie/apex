@@ -45,6 +45,14 @@ void ForwardRenderer::PushMesh(MeshPtr mesh, ShaderPtr shader, glm::mat4 transfo
     mCommandBuffer.push_back(command);
 }
 
+void ForwardRenderer::PushNode(SceneNodePtr node) {
+	glm::mat4 transform = node->GetFinalTransform();
+	PushMesh(node->mesh, node->shader, transform);
+	for (SceneNodePtr child : node->GetChildren()) {
+		PushNode(child);
+	}
+}
+
 void ForwardRenderer::PushPostEffect(ShaderPtr shader) {
     mPostProcessor->PushEffect(shader);
 }

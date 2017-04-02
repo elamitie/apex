@@ -4,6 +4,7 @@
 #include "RenderCommand.h"
 #include "graphics/processing/PostProcessor.h"
 #include "graphics/view/Skybox.h"
+#include "graphics/scene/SceneNode.h"
 
 // TODO: PUSH LIGHTS
 
@@ -13,6 +14,7 @@ public:
 
     void Begin();
     void PushMesh(MeshPtr mesh, ShaderPtr shader, glm::mat4 transform);
+	void PushNode(SceneNodePtr node);
 
     // TODO: This needs to be more robust to handle things like two-step gaussian
     void PushPostEffect(ShaderPtr shader);

@@ -13,6 +13,8 @@
 // post process
 #include "graphics/processing/postProcessor.h"
 
+#include "../scenes/PBRScene.h"
+
 class Application : public Engine {
 public:
     void Init() override;
@@ -20,9 +22,4 @@ public:
     void Render() override;
     void Cleanup() override;
 
-private:
-    ShaderPtr mReflectShader;
-    MeshPtr mMesh;
-    glm::mat4 mTransform;
-    CameraPtr mCamera;
 };

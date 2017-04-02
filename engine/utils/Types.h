@@ -41,3 +41,9 @@ typedef std::shared_ptr<PostProcessEffect> PostProcessEffectPtr;
 
 class Skybox;
 typedef std::shared_ptr<Skybox> SkyboxPtr;
+
+class Scene;
+typedef std::shared_ptr<Scene> ScenePtr;
+
+class SceneNode;
+typedef std::shared_ptr<SceneNode> SceneNodePtr;
