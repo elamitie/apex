@@ -31,7 +31,7 @@ public:
     Texture2D();
     ~Texture2D();
 
-    void Generate(uint width, uint height, ubyte* pixels);
+    void Generate(uint width, uint height, ubyte* pixels, bool hdrEnabled = false);
 
     // This might be changed later if I decide to use an "external"
     // asset loading api
@@ -40,15 +40,19 @@ public:
     void Bind(unsigned int loc = 0);
     void Unbind(unsigned int loc = 0);
 
+	inline unsigned int GetHandle() { return mId; }
+
+public:
+    // GL Data for manual texture construction (framebuffers)
+    GLenum mInternalFormat;
+    GLenum mImageFormat;
+    GLenum mMinFilter;
+    GLenum mMaxFilter;
+
 private:
     GLuint mId;
     int mWidth, mHeight;
     std::string mPath;
     TextureType mType;
 
-    // GL Data for manual texture construction (framebuffers)
-    GLenum mInternalFormat;
-    GLenum mImageFormat;
-    GLenum mMinFilter;
-    GLenum mMaxFilter;
 };

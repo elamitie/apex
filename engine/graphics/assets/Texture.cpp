@@ -11,13 +11,20 @@ Texture2D::~Texture2D() {
     glDeleteTextures(1, &mId);
 }
 
-void Texture2D::Generate(uint width, uint height, ubyte* pixels) {
+void Texture2D::Generate(uint width, uint height, ubyte* pixels, bool hdrEnabled) {
     mWidth = width;
     mHeight = height;
 
     glGenTextures(1, &mId);
     glBindTexture(GL_TEXTURE_2D, mId);
-    glTexImage2D(GL_TEXTURE_2D, 0, mInternalFormat, width, height, 0, mImageFormat, GL_UNSIGNED_BYTE, pixels);
+
+	GLenum type;
+	if (hdrEnabled) type = GL_FLOAT;
+	else type = GL_UNSIGNED_BYTE;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, mInternalFormat, width, height, 0, mImageFormat, type, pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mMaxFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mMinFilter);
 

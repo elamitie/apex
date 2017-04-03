@@ -8,8 +8,12 @@ PBRPreComputation::PBRPreComputation() {
 	irrWidth = irrHeight = 32;
 	int prefilterWidth, prefilterHeight;
 	prefilterWidth = prefilterHeight = 128;
+	int bdrfWidth, bdrfHeight;
+	bdrfWidth = bdrfHeight = 512;
 
-	// @TODO: Initialize Shaders
+	CreateCube();
+	CreateQuad();
+	InitializeShaders();
 
 	// Set up capture framebuffer
 	glGenFramebuffers(1, &mCaptureFbo);
@@ -56,6 +60,9 @@ PBRPreComputation::PBRPreComputation() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Render the cubemap cube mesh
+		glBindVertexArray(mCubeVao);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -86,6 +93,9 @@ PBRPreComputation::PBRPreComputation() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Render the cubemap cube mesh
+		glBindVertexArray(mCubeVao);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -118,14 +128,49 @@ PBRPreComputation::PBRPreComputation() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Render the cubemap cube mesh
+			glBindVertexArray(mCubeVao);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
 		}
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	// BDRF Integration
+	mBDRFTexture = new Texture2D();
+	mBDRFTexture->mInternalFormat = GL_RGB16F;
+	mBDRFTexture->mImageFormat = GL_RG;
+	mBDRFTexture->Generate(bdrfWidth, bdrfHeight, nullptr, true);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, mCaptureFbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, mCaptureRbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, bdrfWidth, bdrfHeight);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBDRFTexture->GetHandle(), 0);
+
+	glViewport(0, 0, bdrfWidth, bdrfHeight);
+	mBDRF->Enable();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Render Quad
+	glBindVertexArray(mQuadVao);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 PBRPreComputation::~PBRPreComputation() {
+	delete mPrefilterMap;
+	delete mIrradianceMap;
+	delete mEnvironmentMap;
+	delete mBDRFTexture;
+	delete mHdrTexture;
 
+	delete mBDRF;
+	delete mPrefilter;
+	delete mConvoluteIrradiance;
+	delete mHdrToCubemap;
+
+	glDeleteBuffers(1, &mCaptureRbo);
+	glDeleteBuffers(1, &mCaptureFbo);
 }
 
 void PBRPreComputation::SetHDR(Texture2D* hdrTexture) {
@@ -134,4 +179,102 @@ void PBRPreComputation::SetHDR(Texture2D* hdrTexture) {
 
 Texture2D* PBRPreComputation::GetHDR() {
 	return mHdrTexture;
+}
+
+void PBRPreComputation::InitializeShaders() {
+	mHdrToCubemap = new Shader();
+	mHdrToCubemap->Attach("pbr/cubemap.vert")->Attach("pbr/hdr_to_cubemap.frag")->Link();
+	mHdrToCubemap->AddAttribs({ "position" });
+
+	mConvoluteIrradiance = new Shader();
+	mConvoluteIrradiance->Attach("pbr/cubemap.vert")->Attach("pbr/convolute_irradiance.frag")->Link();
+	mConvoluteIrradiance->AddAttribs({ "position" });
+
+	mPrefilter = new Shader();
+	mPrefilter->Attach("pbr/cubemap.vert")->Attach("pbr/prefilter.frag")->Link();
+	mPrefilter->AddAttribs({ "position" });
+
+	mBDRF = new Shader();
+	mBDRF->Attach("pbr/integrate_bdrf.vert")->Attach("pbr/integrate_bdrf.frag")->Link();
+	mBDRF->AddAttribs({ "position", "texCoords" });
+}
+
+void PBRPreComputation::CreateCube() {
+	GLfloat vertices[] = {
+        // Back face
+        -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  // Bottom-left
+         1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  // top-right
+         1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  // bottom-right         
+         1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  // top-right
+        -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  // bottom-left
+        -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,  // top-left
+        // Front face
+        -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f,  // bottom-left
+         1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f,  // bottom-right
+         1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f,  // top-right
+         1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f,  // top-right
+        -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f,  // top-left
+        -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f,  // bottom-left
+        // Left face
+        -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,  // top-right
+        -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,  // top-left
+        -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,  // bottom-left
+        -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,  // bottom-left
+        -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f,  // bottom-right
+        -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,  // top-right
+        // Right face
+         1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,  // top-left
+         1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,  // bottom-right
+         1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,  // top-right         
+         1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,  // bottom-right
+         1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,  // top-left
+         1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,  // bottom-left     
+        // Bottom face
+        -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,  // top-right
+         1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,  // top-left
+         1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,  // bottom-left
+         1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,  // bottom-left
+        -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,  // bottom-right
+        -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,  // top-right
+        // Top face
+        -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,  // top-left
+         1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // bottom-right
+         1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,  // top-right     
+         1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // bottom-right
+        -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,  // top-left
+        -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f   // bottom-left        
+    };
+
+    glGenVertexArrays(1, &mCubeVao);
+    glGenBuffers(1, &mCubeVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, mCubeVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindVertexArray(mCubeVao);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void PBRPreComputation::CreateQuad() {
+	GLfloat quadVertices[] = {
+		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+	};
+
+	glGenVertexArrays(1, &mQuadVao);
+	glGenBuffers(1, &mQuadVbo);
+	glBindVertexArray(mQuadVao);
+	glBindBuffer(GL_ARRAY_BUFFER, mQuadVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 }

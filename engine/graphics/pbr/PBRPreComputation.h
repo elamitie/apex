@@ -19,16 +19,27 @@ public:
 	Texture2D* GetHDR();
 
 private:
+	// Utility functions - replace these with mesh prefabs later
+	void CreateCube();
+	void CreateQuad();
+	void InitializeShaders();
+
+private:
 	Shader* mHdrToCubemap;
 	Shader* mConvoluteIrradiance;
 	Shader* mPrefilter;
 	Shader* mBDRF;
 
 	Texture2D* mHdrTexture;
+	Texture2D* mBDRFTexture;
 	Cubemap* mEnvironmentMap;
 	Cubemap* mIrradianceMap;
 	Cubemap* mPrefilterMap;
 
 	unsigned int mCaptureFbo;
 	unsigned int mCaptureRbo;
+
+	// Utility handles - replace these with mesh prefabs later
+	GLuint mCubeVao, mCubeVbo;
+	GLuint mQuadVao, mQuadVbo;
 };
