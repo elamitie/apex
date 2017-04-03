@@ -56,6 +56,30 @@ void Texture2D::Load(const std::string& path) {
     }
 }
 
+void Texture2D::LoadHDR(const std::string& path) {
+	glGenTextures(1, &mId);
+	glBindTexture(GL_TEXTURE_2D, mId);
+
+	// No need for this since ASSIMP does it for us (by flipping the uvs)
+	stbi_set_flip_vertically_on_load(true);
+
+	int _width, _height, _nrComponents;
+	float* data = stbi_loadf(path.c_str(), &_width, &_height, &_nrComponents, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, _width, _height, 0, GL_RGB, GL_FLOAT, data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		//glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		stbi_image_free(data);
+	}
+}
+
 void Texture2D::Bind(unsigned int loc /*= 0*/) {
     if (loc >= 0)
         glActiveTexture(GL_TEXTURE0 + loc);

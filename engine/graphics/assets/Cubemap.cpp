@@ -12,6 +12,23 @@ Cubemap::~Cubemap() {
     glDeleteTextures(1, &mId);
 }
 
+void Cubemap::Create(int width, int height, bool mipmaps) {
+	glGenTextures(1, &mId);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, mId);
+
+	for (unsigned int i = 0; i < 6; i++) {
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, minFilter);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, magFilter);
+
+	if (mipmaps) glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+}
+
 void Cubemap::Load(const std::vector<std::string>& faces) {
     glActiveTexture(GL_TEXTURE0);
     int width, height, nrComponents;

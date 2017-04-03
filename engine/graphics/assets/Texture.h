@@ -36,6 +36,7 @@ public:
     // This might be changed later if I decide to use an "external"
     // asset loading api
     void Load(const std::string& path);
+	void LoadHDR(const std::string& path);
     void Bind(unsigned int loc = 0);
     void Unbind(unsigned int loc = 0);
 
