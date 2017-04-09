@@ -29,11 +29,16 @@ void ForwardRenderer::RegisterCamera(CameraPtr camera) {
 }
 
 void ForwardRenderer::SetLightingMode(LightMode mode) {
-	// @Refactor - both PBR and Phong should be able to use the same
-	// skybox interface. Right now, however, one would need a skybox and the other
-	// and environment map.
 	if (mode == LightMode::PHONG) {
-		mSkybox = std::make_shared<Skybox>();
+		mMode = mode;
+		mSkybox = std::make_shared<Skybox>("skybox.vert", "skybox.frag");
+	}
+
+	if (mode == LightMode::PBR) {
+		mMode = mode;
+		mSkybox = std::make_shared<Skybox>("pbr/pbr_background.vert", "pbr/pbr_background.frag");
+		mPBRPreComputation = new PBRPreComputation();
+		mSkybox->SetCubemap(mPBRPreComputation->GetEnvironmentMap());
 	}
 }
 
@@ -72,10 +77,12 @@ void ForwardRenderer::Flush() {
     for (int i = 0; i < mCommandBuffer.size(); i++) {
         RenderCommand& command = mCommandBuffer[i];
 
-		// Handle material uniforms
-		if (mSkybox) command.material->SetSkybox(mSkybox);
-		else {} // This is where I'd set an environment map I guess?
 		command.material->Enable();
+
+		// Handle material uniforms
+		if (mMode == PHONG) command.material->SetSkybox(mSkybox);
+		else if (mMode == PBR) command.material->SetEnvironmentMap(mPBRPreComputation);
+
 		command.material->SetData();
 		SetSystemUniforms(command);
 

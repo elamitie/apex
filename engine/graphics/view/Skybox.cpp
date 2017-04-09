@@ -1,9 +1,9 @@
 #include "Skybox.h"
 
-Skybox::Skybox() {
+Skybox::Skybox(const std::string& vert, const std::string& frag) {
 
-    mSkyboxShader = std::make_shared<Shader>();
-    mSkyboxShader->Attach("skybox.vert")->Attach("skybox.frag")->Link()->AddAttribs({
+	mSkyboxShader = new Shader();
+    mSkyboxShader->Attach(vert)->Attach(frag)->Link()->AddAttribs({
         "position"
     });
 
@@ -37,14 +37,12 @@ void Skybox::Render(const glm::mat4& view, const glm::mat4& proj) {
 
     mSkyboxShader->Enable();
 
-    glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
-
-    mSkyboxShader->SetUniform("view", skyboxView);
+    mSkyboxShader->SetUniform("view", view);
     mSkyboxShader->SetUniform("projection", proj);
 
     glBindVertexArray(mVertexArray);
     mCubemap->Bind(0);
-    mSkyboxShader->SetUniform("skybox", 0);
+    mSkyboxShader->SetUniform("environmentMap", 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
 

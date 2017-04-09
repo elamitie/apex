@@ -19,9 +19,9 @@ public:
     void Enable();
     void Disable();
 
-    ShaderPtr AddAttribs(const std::vector<std::string>& attribs);
-    ShaderPtr Attach(const std::string& filename);
-    ShaderPtr Link();
+    Shader* AddAttribs(const std::vector<std::string>& attribs);
+    Shader* Attach(const std::string& filename);
+    Shader* Link();
 
     void SetUniform(const std::string& name, GLint data);
     void SetUniform(const std::string& name, GLint* data, GLsizei count);
@@ -32,9 +32,9 @@ public:
     void SetUniform(const std::string& name, const glm::vec4& vector);
     void SetUniform(const std::string& name, const glm::mat4& matrix);
 
-    inline ShaderPtr SetDebug(bool debug) {
+    inline Shader* SetDebug(bool debug) {
         mDebugEnabled = debug;
-        return shared_from_this();
+        return this;
     }
 
 private:

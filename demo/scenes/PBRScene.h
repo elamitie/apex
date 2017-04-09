@@ -2,6 +2,8 @@
 
 #include "graphics/scene/Scene.h"
 #include "graphics/view/Camera.h"
+#include "graphics/pbr/PBRMaterial.h"
+#include "graphics/mesh/prefab/Sphere.h"
 
 class PBRScene : public Scene {
 public:
@@ -13,7 +15,13 @@ public:
 
 private:
 	CameraPtr camera;
-	SceneNodePtr nanosuit;
+	SceneNodePtr sphere;
+	Sphere* sphereMesh;
+	PBRMaterial* plastic;
 
-	ShaderPtr reflection; // TEMP
+	Texture2D* plasticAlbedo;
+	Texture2D* plasticNormal;
+	Texture2D* plasticMetallic;
+	Texture2D* plasticRoughness;
+	Texture2D* plasticAO;
 };

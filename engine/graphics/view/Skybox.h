@@ -9,7 +9,7 @@
 
 class Skybox {
 public:
-    Skybox();
+    Skybox(const std::string& vert, const std::string& frag);
     ~Skybox();
 
     // Render should only ever be called internally in the renderer, so its
@@ -17,17 +17,18 @@ public:
     void Render(const glm::mat4& view, const glm::mat4& proj);
 
     inline Cubemap* GetCubemap() { return mCubemap; }
+	inline void SetCubemap(Cubemap* cubemap) { mCubemap = cubemap; }
 
 private:
     GLuint mVertexArray;
     GLuint mVertexBuffer;
 
-    float mVerts[36 * 6] = {
+    float mVerts[18 * 6] = {
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
         -1.0f,  1.0f, -1.0f,
 
         -1.0f, -1.0f,  1.0f,
@@ -37,33 +38,33 @@ private:
         -1.0f,  1.0f,  1.0f,
         -1.0f, -1.0f,  1.0f,
 
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
 
         -1.0f, -1.0f,  1.0f,
         -1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
         -1.0f, -1.0f,  1.0f,
 
         -1.0f,  1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
         -1.0f,  1.0f,  1.0f,
         -1.0f,  1.0f, -1.0f,
 
         -1.0f, -1.0f, -1.0f,
         -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
         -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f
+         1.0f, -1.0f,  1.0f
     };
 
     // TODO: Smart pointer
@@ -71,5 +72,5 @@ private:
 
     // Standard Skybox Shader
     // Let the end user customize this in the future ???
-    ShaderPtr mSkyboxShader;
+    Shader* mSkyboxShader;
 };

@@ -17,7 +17,7 @@ void Scene::Update(double dt) {
 
 void Scene::Render(double dt) {
 	mRenderer->Begin();
-	mRenderer->PushNode(mRoot);
+	if (mRoot != nullptr) mRenderer->PushNode(mRoot);
 	mRenderer->End();
 	mRenderer->Flush();
 }

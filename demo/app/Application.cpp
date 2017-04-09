@@ -4,8 +4,9 @@
 #include "graphics/mesh/cache/MeshCache.h"
 
 void Application::Init() {
-	ReflectionScene* scene = new ReflectionScene(GetWidth(), GetHeight());
-	SetScene(scene);
+	PBRScene* pbrScene = new PBRScene(GetWidth(), GetHeight());
+	ReflectionScene* reflectionScene = new ReflectionScene(GetWidth(), GetHeight());
+	SetScene(pbrScene);
     SetColor({ int(0.1f * 255.f), int(0.1f * 255.f), int(0.1f * 255.f), int(1.0f * 255.f) });
 }
 

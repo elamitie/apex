@@ -2,7 +2,7 @@
 
 ReflectionMaterial::ReflectionMaterial() {
 	// Load default shader
-	mShader = std::make_shared<Shader>();
+	mShader = new Shader();
 	mShader->SetDebug(false)
 		->Attach("env_reflection.vert")
 		->Attach("env_reflection.frag")

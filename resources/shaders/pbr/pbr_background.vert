@@ -8,7 +8,7 @@ out vec3 Position;
 
 void main()
 {
-    Position = pos;
+    Position = position;
 
 	mat4 rotView = mat4(mat3(view));
 	vec4 clipPos = projection * rotView * vec4(Position, 1.0);

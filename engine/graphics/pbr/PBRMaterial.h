@@ -12,24 +12,27 @@ public:
 
 	void SetData() override;
 
-	void SetAlbedo(TexturePtr albedo, int location);
-	void SetNormal(TexturePtr normal, int location);
-	void SetMetallic(TexturePtr metallic, int location);
-	void SetRoughness(TexturePtr roughness, int location);
-	void SetAO(TexturePtr ao, int location);
-	void SetBDRF(TexturePtr bdrf, int location);
+	void SetAlbedo(Texture2D* albedo, int location);
+	void SetNormal(Texture2D* normal, int location);
+	void SetMetallic(Texture2D* metallic, int location);
+	void SetRoughness(Texture2D* roughness, int location);
+	void SetAO(Texture2D* ao, int location);
+	void SetBRDF(Texture2D* brdf, int location);
 
-	void SetIrradianceMap(CubemapPtr irrMap, int location);
-	void SetPrefilterMap(CubemapPtr prefilter, int location);
+	void SetEnvironmentMap(PBRPreComputation* precompute) override;
 
 private:
-	CubemapPtr mIrradiance;
-	CubemapPtr mPrefilter;
+	void SetIrradianceMap(Cubemap* irrMap, int location);
+	void SetPrefilterMap(Cubemap* prefilter, int location);
 
-	TexturePtr mBDRF;
-	TexturePtr mAlbedo;
-	TexturePtr mNormal;
-	TexturePtr mMetallic;
-	TexturePtr mRoughness;
-	TexturePtr mAO;
+private:
+	Cubemap* mIrradiance;
+	Cubemap* mPrefilter;
+	Texture2D* mBRDF;
+
+	Texture2D* mAlbedo;
+	Texture2D* mNormal;
+	Texture2D* mMetallic;
+	Texture2D* mRoughness;
+	Texture2D* mAO;
 };

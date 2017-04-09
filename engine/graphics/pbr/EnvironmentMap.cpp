@@ -8,7 +8,7 @@ EnvironmentMap::~EnvironmentMap() {
 	delete mCaptureBuffer;
 	
 	delete mEnvironment;
-	delete mBdrf;
+	delete mbrdf;
 	delete mPrefilter;
 	delete mIrradiance;
 	delete mEquirectangular;

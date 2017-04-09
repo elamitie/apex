@@ -1,28 +1,39 @@
 #include "PBRScene.h"
 #include "input/Keyboard.h"
-#include "graphics/mesh/cache/MeshCache.h"
+#include "input/Mouse.h"
+#include "graphics/mesh/prefab/Sphere.h"
 
 void PBRScene::Begin()
 {
 	Scene::Begin();
 
-	/*camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
+	camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
+	mRenderer->SetLightingMode(PBR);
 	mRenderer->RegisterCamera(camera);
 
-	reflection = std::make_shared<Shader>();
-	reflection->SetDebug(false)
-		->Attach("reflection_mapping.vert")
-		->Attach("reflection_mapping.frag")
-		->Link()
-		->AddAttribs({
-		"position", "normal", "texCoords"
-	});
+	plasticAlbedo = new Texture2D();
+	plasticAlbedo->Load(FileSystem::GetPath("resources/textures/pbr/gold/albedo.png"));
+	plasticNormal = new Texture2D();
+	plasticNormal->Load(FileSystem::GetPath("resources/textures/pbr/gold/normal.png"));
+	plasticMetallic = new Texture2D();
+	plasticMetallic->Load(FileSystem::GetPath("resources/textures/pbr/gold/metallic.png"));
+	plasticRoughness = new Texture2D();
+	plasticRoughness->Load(FileSystem::GetPath("resources/textures/pbr/gold/roughness.png"));
+	plasticAO = new Texture2D();
+	plasticAO->Load(FileSystem::GetPath("resources/textures/pbr/gold/ao.png"));
 
-	MeshPtr mesh = MeshCache::GetMesh("nanosuit_reflection/nanosuit.obj");
+	plastic = new PBRMaterial();
+	plastic->SetCamera(camera);
+	plastic->SetAlbedo(plasticAlbedo, 3);
+	plastic->SetNormal(plasticNormal, 4);
+	plastic->SetMetallic(plasticMetallic, 5);
+	plastic->SetRoughness(plasticRoughness, 6);
+	plastic->SetAO(plasticAO, 7);
 
-	nanosuit = CreateNode(mesh, reflection, "nanosuit");
-	nanosuit->transform.position = glm::vec3(0.0f, -1.75f, 0.0f);
-	nanosuit->transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);*/
+	sphereMesh = new Sphere(64, 64);
+
+	sphere = CreateNode(sphereMesh, plastic, "sphere");
+	sphere->transform.scale = glm::vec3(0.5f, 0.5f, 0.5f);
 }
 
 void PBRScene::Update(double dt)
@@ -37,6 +48,8 @@ void PBRScene::Update(double dt)
 		camera->HandleKeyboard(CamLeft, dt);
 	if (Keyboard::KeyDown(GLFW_KEY_D))
 		camera->HandleKeyboard(CamRight, dt);
+
+	camera->HandleMouse(Mouse::XOffset, Mouse::YOffset);
 }
 
 void PBRScene::End()

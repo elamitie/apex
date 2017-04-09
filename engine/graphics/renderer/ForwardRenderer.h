@@ -5,6 +5,7 @@
 #include "graphics/processing/PostProcessor.h"
 #include "graphics/view/Skybox.h"
 #include "graphics/scene/SceneNode.h"
+#include "graphics/pbr/PBRPreComputation.h"
 
 // TODO: PUSH LIGHTS
 
@@ -47,4 +48,7 @@ private:
     PostProcessorPtr mPostProcessor;
     CommandBuffer mCommandBuffer;
     SkyboxPtr mSkybox;
+	PBRPreComputation* mPBRPreComputation;
+
+	LightMode mMode;
 };

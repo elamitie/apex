@@ -18,6 +18,13 @@ public:
 	void SetHDR(Texture2D* hdrTexture);
 	Texture2D* GetHDR();
 
+	inline Cubemap* GetIrradianceMap() { return mIrradianceMap; }
+	inline Cubemap* GetPrefilterMap() { return mPrefilterMap; }
+	inline Cubemap* GetEnvironmentMap() { return mEnvironmentMap; }
+	inline Texture2D* GetBRDF() { return mBRDFTexture; }
+
+	void RenderBRDF();
+
 private:
 	// Utility functions - replace these with mesh prefabs later
 	void CreateCube();
@@ -28,10 +35,10 @@ private:
 	Shader* mHdrToCubemap;
 	Shader* mConvoluteIrradiance;
 	Shader* mPrefilter;
-	Shader* mBDRF;
+	Shader* mBRDF;
 
 	Texture2D* mHdrTexture;
-	Texture2D* mBDRFTexture;
+	Texture2D* mBRDFTexture;
 	Cubemap* mEnvironmentMap;
 	Cubemap* mIrradianceMap;
 	Cubemap* mPrefilterMap;

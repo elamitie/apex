@@ -13,7 +13,7 @@ private:
 	Shader* mEquirectangular;
 	Shader* mIrradiance;
 	Shader* mPrefilter;
-	Shader* mBdrf;
+	Shader* mbrdf;
 	Shader* mEnvironment;
 
 	FrameBuffer* mCaptureBuffer;

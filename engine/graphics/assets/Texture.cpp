@@ -25,8 +25,8 @@ void Texture2D::Generate(uint width, uint height, ubyte* pixels, bool hdrEnabled
     glTexImage2D(GL_TEXTURE_2D, 0, mInternalFormat, width, height, 0, mImageFormat, type, pixels);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mMaxFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mMinFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mMaxFilter);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -41,7 +41,7 @@ void Texture2D::Load(const std::string& path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     // No need for this since ASSIMP does it for us (by flipping the uvs)
-    //stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);
 
     int _width, _height, _nrComponents;
     unsigned char* data = stbi_load(path.c_str(), &_width, &_height, &_nrComponents, 0);

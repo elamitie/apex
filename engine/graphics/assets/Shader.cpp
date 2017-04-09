@@ -5,12 +5,12 @@
 #include <vector>
 #include <iostream>
 
-ShaderPtr Shader::AddAttribs(const std::vector<std::string>& attribs) {
+Shader* Shader::AddAttribs(const std::vector<std::string>& attribs) {
     for (std::string str : attribs) {
         glBindAttribLocation(mProg, mNumAttribs++, str.c_str());
     }
 
-    return shared_from_this();
+    return this;
 }
 
 void Shader::Enable() {
@@ -25,7 +25,7 @@ void Shader::Disable() {
         glDisableVertexAttribArray(i);
 }
 
-ShaderPtr Shader::Attach(const std::string& filename) {
+Shader* Shader::Attach(const std::string& filename) {
     // Load GLSL Shader Source from File
     std::string path = FileSystem::GetPath("resources/shaders/" + filename);
     std::ifstream fd(path);
@@ -53,10 +53,10 @@ ShaderPtr Shader::Attach(const std::string& filename) {
     glAttachShader(mProg, shader);
     glDeleteShader(shader);
 
-    return shared_from_this();
+    return this;
 }
 
-ShaderPtr Shader::Link() {
+Shader* Shader::Link() {
     glLinkProgram(mProg);
     glGetProgramiv(mProg, GL_LINK_STATUS, &mStatus);
 
@@ -65,12 +65,12 @@ ShaderPtr Shader::Link() {
         std::unique_ptr<char[]> buffer(new char[mLength]);
         glGetProgramInfoLog(mProg, mLength, nullptr, buffer.get());
 
-		if (mDebugEnabled)
+		//if (mDebugEnabled)
 			Logger::Log(std::string(buffer.get()), ERROR);
     }
     assert(mStatus == true);
 
-    return shared_from_this();
+    return this;
 }
 
 GLuint Shader::Create(const std::string& filename) {

@@ -1,75 +1,112 @@
 #include "PBRMaterial.h"
 
 PBRMaterial::PBRMaterial() {
+	mIrradiance = nullptr;
+	mPrefilter = nullptr;
+	mBRDF = nullptr;
 
+	mAlbedo = nullptr;
+	mNormal = nullptr;
+	mMetallic = nullptr;
+	mRoughness = nullptr;
+	mAO = nullptr;
+
+	mShader = new Shader();
+	mShader->SetDebug(true);
+	mShader->Attach("pbr/pbr.vert")->Attach("pbr/pbr.frag")->Link();
+	mShader->AddAttribs({ "position", "normal", "texCoords" });
 }
 
 void PBRMaterial::SetData() {
 	// Set all of this shader's uniforms
 	// @TODO: Take in a vector of PointLights! These are hardcoded for now!
+	if (mCamera) mShader->SetUniform("camPos", mCamera->Position);
+
+	glm::vec3 lightPositions[] = {
+		glm::vec3(-10.0f,  10.0f, 10.0f),
+		glm::vec3( 10.0f,  10.0f, 10.0f),
+		glm::vec3(-10.0f, -10.0f, 10.0f),
+		glm::vec3( 10.0f, -10.0f, 10.0f),
+	};
+	glm::vec3 lightColors[] = {
+		glm::vec3(300.0f, 300.0f, 300.0f),
+		glm::vec3(300.0f, 300.0f, 300.0f),
+		glm::vec3(300.0f, 300.0f, 300.0f),
+		glm::vec3(300.0f, 300.0f, 300.0f)
+	};
+
+	for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i) {
+		std::string position = "lightPositions[" + std::to_string(i) + "]";
+		std::string color    = "lightColors[" + std::to_string(i) + "]";
+
+		mShader->SetUniform(position, lightPositions[i]);
+		mShader->SetUniform(color, lightColors[i]);
+	}
+
+	for (auto& uniform : mBindingLocations) {
+		mShader->SetUniform(uniform.first, uniform.second);
+	}
 	
-	if (mIrradiance) mIrradiance->Bind(mBindingLocations["irradianceMap"]);
-	if (mPrefilter) mPrefilter->Bind(mBindingLocations["prefilterMap"]);
-	if (mBDRF) mBDRF->Bind(mBindingLocations["bdrfLUT"]);
-	if (mAlbedo) mAlbedo->Bind(mBindingLocations["albedo"]);
-	if (mNormal) mNormal->Bind(mBindingLocations["normal"]);
-	if (mMetallic) mMetallic->Bind(mBindingLocations["metallic"]);
-	if (mRoughness) mRoughness->Bind(mBindingLocations["roughness"]);
-	if (mAO) mAO->Bind(mBindingLocations["ao"]);
+	mIrradiance->Bind(mBindingLocations["irradianceMap"]);
+	mPrefilter->Bind(mBindingLocations["prefilterMap"]);
+	mBRDF->Bind(mBindingLocations["brdfLUT"]);
+	mAlbedo->Bind(mBindingLocations["albedoMap"]);
+	mNormal->Bind(mBindingLocations["normalMap"]);
+	mMetallic->Bind(mBindingLocations["metallicMap"]);
+	mRoughness->Bind(mBindingLocations["roughnessMap"]);
+	mAO->Bind(mBindingLocations["aoMap"]);
 }
 
-void PBRMaterial::SetAlbedo(TexturePtr albedo, int location)
+void PBRMaterial::SetAlbedo(Texture2D* albedo, int location)
 {
 	mAlbedo = albedo;
-	mShader->SetUniform("albedo", location);
-	mBindingLocations["albedo"] = location;
+	mBindingLocations["albedoMap"] = location;
 }
 
-void PBRMaterial::SetNormal(TexturePtr normal, int location)
+void PBRMaterial::SetNormal(Texture2D* normal, int location)
 {
 	mNormal = normal;
-	mShader->SetUniform("normal", location);
-	mBindingLocations["normal"] = location;
+	mBindingLocations["normalMap"] = location;
 }
 
-void PBRMaterial::SetMetallic(TexturePtr metallic, int location)
+void PBRMaterial::SetMetallic(Texture2D* metallic, int location)
 {
 	mMetallic = metallic;
-	mShader->SetUniform("metallic", location);
-	mBindingLocations["metallic"] = location;
+	mBindingLocations["metallicMap"] = location;
 }
 
-void PBRMaterial::SetRoughness(TexturePtr roughness, int location)
+void PBRMaterial::SetRoughness(Texture2D* roughness, int location)
 {
 	mRoughness = roughness;
-	mShader->SetUniform("roughness", location);
-	mBindingLocations["roughness"] = location;
+	mBindingLocations["roughnessMap"] = location;
 }
 
-void PBRMaterial::SetAO(TexturePtr ao, int location)
+void PBRMaterial::SetAO(Texture2D* ao, int location)
 {
 	mAO = ao;
-	mShader->SetUniform("ao", location);
-	mBindingLocations["ao"] = location;
+	mBindingLocations["aoMap"] = location;
 }
 
-void PBRMaterial::SetBDRF(TexturePtr bdrf, int location)
+void PBRMaterial::SetBRDF(Texture2D* brdf, int location)
 {
-	mBDRF = bdrf;
-	mShader->SetUniform("bdrfLUT", location);
-	mBindingLocations["bdrfLUT"] = location;
+	mBRDF = brdf;
+	mBindingLocations["brdfLUT"] = location;
 }
 
-void PBRMaterial::SetIrradianceMap(CubemapPtr irrMap, int location)
+void PBRMaterial::SetIrradianceMap(Cubemap* irrMap, int location)
 {
 	mIrradiance = irrMap;
-	mShader->SetUniform("irradianceMap", location);
 	mBindingLocations["irradianceMap"] = location;
 }
 
-void PBRMaterial::SetPrefilterMap(CubemapPtr prefilter, int location)
+void PBRMaterial::SetPrefilterMap(Cubemap* prefilter, int location)
 {
 	mPrefilter = prefilter;
-	mShader->SetUniform("prefilterMap", location);
 	mBindingLocations["prefilterMap"] = location;
+}
+
+void PBRMaterial::SetEnvironmentMap(PBRPreComputation* precompute) {
+	SetIrradianceMap(precompute->GetIrradianceMap(), 0);
+	SetPrefilterMap(precompute->GetPrefilterMap(), 1);
+	SetBRDF(precompute->GetBRDF(), 2);
 }

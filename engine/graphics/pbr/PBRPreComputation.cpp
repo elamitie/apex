@@ -8,8 +8,10 @@ PBRPreComputation::PBRPreComputation() {
 	irrWidth = irrHeight = 32;
 	int prefilterWidth, prefilterHeight;
 	prefilterWidth = prefilterHeight = 128;
-	int bdrfWidth, bdrfHeight;
-	bdrfWidth = bdrfHeight = 512;
+	int brdfWidth, brdfHeight;
+	brdfWidth = brdfHeight = 512;
+
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	CreateCube();
 	CreateQuad();
@@ -101,6 +103,8 @@ PBRPreComputation::PBRPreComputation() {
 
 	// Create the Prefilter Map
 	mPrefilterMap = new Cubemap();
+	mPrefilterMap->minFilter = GL_LINEAR_MIPMAP_LINEAR;
+	mPrefilterMap->magFilter = GL_LINEAR;
 	mPrefilterMap->Create(prefilterWidth, prefilterHeight, true);
 
 	// Create the prefilter with "Monte-Carlo Simulation"
@@ -135,19 +139,21 @@ PBRPreComputation::PBRPreComputation() {
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// BDRF Integration
-	mBDRFTexture = new Texture2D();
-	mBDRFTexture->mInternalFormat = GL_RGB16F;
-	mBDRFTexture->mImageFormat = GL_RG;
-	mBDRFTexture->Generate(bdrfWidth, bdrfHeight, nullptr, true);
+	// brdf Integration
+	mBRDFTexture = new Texture2D();
+	mBRDFTexture->mInternalFormat = GL_RG16F;
+	mBRDFTexture->mImageFormat = GL_RG;
+	mBRDFTexture->mMinFilter = GL_LINEAR;
+	mBRDFTexture->mMaxFilter = GL_LINEAR;
+	mBRDFTexture->Generate(brdfWidth, brdfHeight, nullptr, true);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, mCaptureFbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, mCaptureRbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, bdrfWidth, bdrfHeight);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBDRFTexture->GetHandle(), 0);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, brdfWidth, brdfHeight);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBRDFTexture->GetHandle(), 0);
 
-	glViewport(0, 0, bdrfWidth, bdrfHeight);
-	mBDRF->Enable();
+	glViewport(0, 0, brdfWidth, brdfHeight);
+	mBRDF->Enable();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Render Quad
 	glBindVertexArray(mQuadVao);
@@ -155,16 +161,25 @@ PBRPreComputation::PBRPreComputation() {
 	glBindVertexArray(0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glViewport(0, 0, 1280, 720);
+}
+
+void PBRPreComputation::RenderBRDF() {
+	mBRDF->Enable();
+	glBindVertexArray(mQuadVao);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
 }
 
 PBRPreComputation::~PBRPreComputation() {
 	delete mPrefilterMap;
 	delete mIrradianceMap;
 	delete mEnvironmentMap;
-	delete mBDRFTexture;
+	delete mBRDFTexture;
 	delete mHdrTexture;
 
-	delete mBDRF;
+	delete mBRDF;
 	delete mPrefilter;
 	delete mConvoluteIrradiance;
 	delete mHdrToCubemap;
@@ -183,20 +198,24 @@ Texture2D* PBRPreComputation::GetHDR() {
 
 void PBRPreComputation::InitializeShaders() {
 	mHdrToCubemap = new Shader();
+	mHdrToCubemap->SetDebug(true);
 	mHdrToCubemap->Attach("pbr/cubemap.vert")->Attach("pbr/hdr_to_cubemap.frag")->Link();
 	mHdrToCubemap->AddAttribs({ "position" });
 
 	mConvoluteIrradiance = new Shader();
+	mConvoluteIrradiance->SetDebug(true);
 	mConvoluteIrradiance->Attach("pbr/cubemap.vert")->Attach("pbr/convolute_irradiance.frag")->Link();
 	mConvoluteIrradiance->AddAttribs({ "position" });
 
 	mPrefilter = new Shader();
+	mPrefilter->SetDebug(true);
 	mPrefilter->Attach("pbr/cubemap.vert")->Attach("pbr/prefilter.frag")->Link();
 	mPrefilter->AddAttribs({ "position" });
 
-	mBDRF = new Shader();
-	mBDRF->Attach("pbr/integrate_bdrf.vert")->Attach("pbr/integrate_bdrf.frag")->Link();
-	mBDRF->AddAttribs({ "position", "texCoords" });
+	mBRDF = new Shader();
+	mBRDF->SetDebug(true);
+	mBRDF->Attach("pbr/integrate_brdf.vert")->Attach("pbr/integrate_brdf.frag")->Link();
+	mBRDF->AddAttribs({ "position", "texCoords" });
 }
 
 void PBRPreComputation::CreateCube() {

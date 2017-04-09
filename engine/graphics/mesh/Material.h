@@ -3,6 +3,7 @@
 #include "utils/Math.h"
 #include "graphics/assets/Shader.h"
 #include "graphics/view/Camera.h"
+#include "graphics/pbr/PBRPreComputation.h"
 #include <map>
 
 class Material {
@@ -24,17 +25,17 @@ public:
 	// Set the relevant "background".
 	// @Refactor: This API design is stupid make a new one
 	virtual void SetSkybox(SkyboxPtr skybox) {};
-	virtual void SetEnvironmentMap() {};
+	virtual void SetEnvironmentMap(PBRPreComputation* precompute) {};
 
 
 	void Enable();
 	void Disable();
 
-	inline void SetShader(ShaderPtr shader) { mShader = shader; }
+	inline void SetShader(Shader* shader) { mShader = shader; }
 	inline void SetCamera(CameraPtr camera) { mCamera = camera; }
 
 protected:
-	ShaderPtr mShader;
+	Shader* mShader;
 	CameraPtr mCamera;
 	std::map<std::string, int> mBindingLocations;
 };
