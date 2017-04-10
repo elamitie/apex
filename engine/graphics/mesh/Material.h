@@ -19,14 +19,19 @@ public:
 	void SetVector(const std::string& name, const glm::vec4& data);
 	void SetMatrix(const std::string& name, const glm::mat4& data);
 
-	virtual void SetData() = 0;
+	virtual void SetAlbedo(Texture2D* albedo, int location);
+	virtual void SetNormal(Texture2D* normal, int location);
+	virtual void SetMetallic(Texture2D* metallic, int location);
+	virtual void SetRoughness(Texture2D* roughness, int location);
+	virtual void SetAO(Texture2D* ao, int location);
+	virtual void SetBRDF(Texture2D* brdf, int location);
+
+	virtual void SetData();
 	
 	// Each child Material can be either a PBR or a Lambert Material;
 	// Set the relevant "background".
 	// @Refactor: This API design is stupid make a new one
 	virtual void SetSkybox(SkyboxPtr skybox) {};
-	virtual void SetEnvironmentMap(PBRPreComputation* precompute) {};
-
 
 	void Enable();
 	void Disable();
@@ -34,7 +39,23 @@ public:
 	inline void SetShader(Shader* shader) { mShader = shader; }
 	inline void SetCamera(CameraPtr camera) { mCamera = camera; }
 
+	void SetEnvironmentMap(PBRPreComputation* precompute);
+
+private:
+	void SetIrradianceMap(Cubemap* irrMap, int location);
+	void SetPrefilterMap(Cubemap* prefilter, int location);
+
 protected:
+	Cubemap*   mIrradiance;
+	Cubemap*   mPrefilter;
+	Texture2D* mBRDF;
+
+	Texture2D* mAlbedo;
+	Texture2D* mNormal;
+	Texture2D* mMetallic;
+	Texture2D* mRoughness;
+	Texture2D* mAO;
+
 	Shader* mShader;
 	CameraPtr mCamera;
 	std::map<std::string, int> mBindingLocations;

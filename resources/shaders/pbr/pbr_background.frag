@@ -5,9 +5,12 @@ in vec3 Position;
 
 uniform samplerCube environmentMap;
 
-void main()
-{		
+void main() {		
+	// -- if we want to render the prefilter map ->
     //vec3 envColor = textureLod(environmentMap, Position, 1.2).rgb;
+	// ------------------------------------------------------------
+	
+	// Render the environment map
 	vec3 envColor = textureLod(environmentMap, Position, 0.0).rgb;
     
     // HDR tonemap and gamma correct

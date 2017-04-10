@@ -16,7 +16,7 @@ enum LightMode {
 
 class ForwardRenderer {
 public:
-    ForwardRenderer(uint width, uint height);
+    ForwardRenderer(uint width, uint height, Scene* mParentScene);
 
     void Begin();
     void PushMesh(Mesh* mesh, Material* material, glm::mat4 transform);
@@ -49,6 +49,8 @@ private:
     CommandBuffer mCommandBuffer;
     SkyboxPtr mSkybox;
 	PBRPreComputation* mPBRPreComputation;
+
+	Scene* mParentScene;
 
 	LightMode mMode;
 };

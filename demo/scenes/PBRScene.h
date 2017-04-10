@@ -13,15 +13,13 @@ public:
 	void Update(double dt) override;
 	void End() override;
 
+	void OnChangeMaterial(const std::string& matName) override;
+
 private:
 	CameraPtr camera;
 	SceneNodePtr sphere;
 	Sphere* sphereMesh;
-	PBRMaterial* plastic;
-
-	Texture2D* plasticAlbedo;
-	Texture2D* plasticNormal;
-	Texture2D* plasticMetallic;
-	Texture2D* plasticRoughness;
-	Texture2D* plasticAO;
+	Material* plastic;
+	Material* gold;
+	Shader* pbr;
 };

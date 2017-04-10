@@ -2,7 +2,7 @@
 #include "utils/Logger.h"
 
 Scene::Scene(int width, int height) {
-	mRenderer = new ForwardRenderer(width, height);
+	mRenderer = new ForwardRenderer(width, height, this);
 }
 
 void Scene::Begin() {
@@ -79,6 +79,10 @@ SceneNodePtr Scene::CreateNode(Mesh* mesh, Material* material, const std::string
 void Scene::DeleteNode(SceneNodePtr node) {
 	if (node->GetParent()) {
 		node->GetParent()->RemoveChild(node->name);
+	}
+	else {
+		// If parent was null, delete the root
+		mRoot = nullptr;
 	}
 
 	// deleting shared pointers question mark

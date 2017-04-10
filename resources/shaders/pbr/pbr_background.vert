@@ -6,8 +6,7 @@ uniform mat4 view;
 
 out vec3 Position;
 
-void main()
-{
+void main() {
     Position = position;
 
 	mat4 rotView = mat4(mat3(view));

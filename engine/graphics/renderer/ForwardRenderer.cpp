@@ -1,13 +1,16 @@
 #include "ForwardRenderer.h"
 #include "utils/Logger.h"
+#include "graphics/scene/Scene.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
-ForwardRenderer::ForwardRenderer(uint width, uint height) {
+ForwardRenderer::ForwardRenderer(uint width, uint height, Scene* parentScene) {
     mWidth = width;
     mHeight = height;
 	mDebugMode = true;
+
+	mParentScene = parentScene;
 
     mDefaultPostEffect = std::make_shared<Shader>();
     mDefaultPostEffect->Attach("textured_quad.vert")->Attach("framebuffer_default.frag")->Link()->AddAttribs({
@@ -109,8 +112,33 @@ void ForwardRenderer::Interface() {
 	ImGui_ImplGlfwGL3_NewFrame();
 
 	ImGui::Begin("Apex Engine v0.1", nullptr, ImVec2(0, 0));
-	if (ImGui::CollapsingHeader("Stuff", 0, true, true))
-	{
+	if (ImGui::CollapsingHeader("Scene", 0, true, false)) {
+		if (ImGui::TreeNode("Set Material Type")) {
+			switch (mMode) {
+			case PHONG:
+				break;
+			case PBR:
+				if (ImGui::Button("Plastic")) {
+					Logger::Log("Button click: Plastic");
+					mParentScene->OnChangeMaterial("plastic");
+				}
+				if (ImGui::Button("Gold")) {
+					Logger::Log("Button click: Gold");
+					mParentScene->OnChangeMaterial("gold");
+				}
+				break;
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Post Processing", 0, true, false)) {
+		// Dynamically get the different post processing shaders that are active
+		// somehow??
+	}
+
+	if (ImGui::CollapsingHeader("Profiling", 0, true, true)) {
 		std::string version = std::string((char*)glGetString(GL_VERSION));
 		std::string hardware = std::string((char*)glGetString(GL_RENDERER));
 

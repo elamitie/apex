@@ -5,11 +5,11 @@
 #include "graphics/assets/Texture.h"
 #include <map>
 
-typedef std::map<std::string, TexturePtr> TextureMap;
+typedef std::map<std::string, Texture2D*> TextureMap;
 
 class TextureCache {
 public:
-	static TexturePtr GetTexture(const std::string& filepath);
+	static Texture2D* GetTexture(const std::string& filepath);
 
 private:
 	TextureCache();

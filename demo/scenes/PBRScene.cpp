@@ -2,6 +2,9 @@
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "graphics/mesh/prefab/Sphere.h"
+#include "utils/Logger.h"
+
+#include "graphics/assets/cache/TextureCache.h"
 
 void PBRScene::Begin()
 {
@@ -11,24 +14,28 @@ void PBRScene::Begin()
 	mRenderer->SetLightingMode(PBR);
 	mRenderer->RegisterCamera(camera);
 
-	plasticAlbedo = new Texture2D();
-	plasticAlbedo->Load(FileSystem::GetPath("resources/textures/pbr/gold/albedo.png"));
-	plasticNormal = new Texture2D();
-	plasticNormal->Load(FileSystem::GetPath("resources/textures/pbr/gold/normal.png"));
-	plasticMetallic = new Texture2D();
-	plasticMetallic->Load(FileSystem::GetPath("resources/textures/pbr/gold/metallic.png"));
-	plasticRoughness = new Texture2D();
-	plasticRoughness->Load(FileSystem::GetPath("resources/textures/pbr/gold/roughness.png"));
-	plasticAO = new Texture2D();
-	plasticAO->Load(FileSystem::GetPath("resources/textures/pbr/gold/ao.png"));
+	pbr = new Shader();
+	pbr->SetDebug(true);
+	pbr->Attach("pbr/pbr.vert")->Attach("pbr/pbr.frag")->Link();
+	pbr->AddAttribs({"position", "normal", "texCoords"});
 
-	plastic = new PBRMaterial();
+	plastic = new Material();
 	plastic->SetCamera(camera);
-	plastic->SetAlbedo(plasticAlbedo, 3);
-	plastic->SetNormal(plasticNormal, 4);
-	plastic->SetMetallic(plasticMetallic, 5);
-	plastic->SetRoughness(plasticRoughness, 6);
-	plastic->SetAO(plasticAO, 7);
+	plastic->SetShader(pbr);
+	plastic->SetAlbedo(TextureCache::GetTexture("pbr/plastic/albedo.png"), 3);
+	plastic->SetNormal(TextureCache::GetTexture("pbr/plastic/normal.png"), 4);
+	plastic->SetMetallic(TextureCache::GetTexture("pbr/plastic/metallic.png"), 5);
+	plastic->SetRoughness(TextureCache::GetTexture("pbr/plastic/roughness.png"), 6);
+	plastic->SetAO(TextureCache::GetTexture("pbr/plastic/ao.png"), 7);
+
+	gold = new Material();
+	gold->SetCamera(camera);
+	gold->SetShader(pbr);
+	gold->SetAlbedo(TextureCache::GetTexture("pbr/gold/albedo.png"), 3);
+	gold->SetNormal(TextureCache::GetTexture("pbr/gold/normal.png"), 4);
+	gold->SetMetallic(TextureCache::GetTexture("pbr/gold/metallic.png"), 5);
+	gold->SetRoughness(TextureCache::GetTexture("pbr/gold/roughness.png"), 6);
+	gold->SetAO(TextureCache::GetTexture("pbr/gold/ao.png"), 7);
 
 	sphereMesh = new Sphere(64, 64);
 
@@ -55,4 +62,19 @@ void PBRScene::Update(double dt)
 void PBRScene::End()
 {
 	Scene::End();
+}
+
+void PBRScene::OnChangeMaterial(const std::string& matName) {
+	Logger::Log("Changing Material: " + matName);
+
+	DeleteNode(sphere);
+
+	if (matName == "plastic") {
+		sphere = CreateNode(sphereMesh, plastic, "sphere");
+		sphere->transform.scale = glm::vec3(0.5f, 0.5f, 0.5f);
+	}
+	else if (matName == "gold") {
+		sphere = CreateNode(sphereMesh, gold, "sphere");
+		sphere->transform.scale = glm::vec3(0.5f, 0.5f, 0.5f);
+	}
 }

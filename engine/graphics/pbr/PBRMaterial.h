@@ -10,20 +10,20 @@ class PBRMaterial : public Material {
 public:
 	PBRMaterial();
 
-	void SetData() override;
+	/*void SetData() override;
 
 	void SetAlbedo(Texture2D* albedo, int location);
 	void SetNormal(Texture2D* normal, int location);
 	void SetMetallic(Texture2D* metallic, int location);
 	void SetRoughness(Texture2D* roughness, int location);
 	void SetAO(Texture2D* ao, int location);
-	void SetBRDF(Texture2D* brdf, int location);
+	void SetBRDF(Texture2D* brdf, int location);*/
 
-	void SetEnvironmentMap(PBRPreComputation* precompute) override;
+	//void SetEnvironmentMap(PBRPreComputation* precompute) override;
 
 private:
-	void SetIrradianceMap(Cubemap* irrMap, int location);
-	void SetPrefilterMap(Cubemap* prefilter, int location);
+	//void SetIrradianceMap(Cubemap* irrMap, int location);
+	//void SetPrefilterMap(Cubemap* prefilter, int location);
 
 private:
 	Cubemap* mIrradiance;

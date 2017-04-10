@@ -14,6 +14,9 @@ public:
 	virtual void Begin();
 	virtual void Update(double dt);
 	virtual void End();
+
+	// Temporary for prototype 2's demo..?
+	virtual void OnChangeMaterial(const std::string& matName) {};
 	
 	// Not overriden for now, no point.
 	void Render(double dt);

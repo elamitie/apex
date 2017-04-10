@@ -11,8 +11,7 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-void main()
-{
+void main() {
     TexCoords = texCoords;
     WorldPos = vec3(model * vec4(pos, 1.0f));
     Normal = mat3(model) * normal;   

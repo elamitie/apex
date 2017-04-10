@@ -178,15 +178,15 @@ std::vector<TexturePtr> Mesh::Process(const std::string& path, aiMaterial* mater
         std::string filename = str.C_Str();
         filename = path + "/" + filename;
 
-		TexturePtr texture = TextureCache::GetTexture(filename);
+		//TexturePtr texture = TextureCache::GetTexture(filename);
 
-        if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
-        if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;
-        if (type == aiTextureType_HEIGHT)   texture->mType = TextureType::NORMAL;
-		// @Hack: See above
-		if (type == aiTextureType_AMBIENT)  texture->mType = TextureType::REFLECTION;
+  //      if (type == aiTextureType_DIFFUSE)  texture->mType = TextureType::DIFFUSE;
+  //      if (type == aiTextureType_SPECULAR) texture->mType = TextureType::SPECULAR;
+  //      if (type == aiTextureType_HEIGHT)   texture->mType = TextureType::NORMAL;
+		//// @Hack: See above
+		//if (type == aiTextureType_AMBIENT)  texture->mType = TextureType::REFLECTION;
 
-        textures.push_back(texture);
+        //textures.push_back(texture);
     }
 
     return textures;
