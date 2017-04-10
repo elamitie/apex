@@ -6,7 +6,7 @@ glm::mat4& Transform::UpdateTransform() {
 	mat = glm::translate(mat, position);
 	mat = glm::scale(mat, scale);
 	glm::vec3 rot = glm::vec3(rotation.x, rotation.y, rotation.z);
-	//mMatrix = glm::rotate(mMatrix, glm::radians(rotation.w), rot);
+	mat = glm::rotate(mat, glm::radians(rotation.w), rot);
 
 	return mat;
 }

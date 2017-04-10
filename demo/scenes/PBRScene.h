@@ -22,4 +22,6 @@ private:
 	Material* plastic;
 	Material* gold;
 	Shader* pbr;
+
+	float targetRotation;
 };

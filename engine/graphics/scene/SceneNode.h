@@ -15,7 +15,7 @@ public:
 
 	// Public vars
 	glm::vec3 position;
-	glm::vec4 rotation;		// Axis-angle, no quaternion (for now)
+	glm::vec4 rotation = glm::vec4(0.0, 1.0, 0.0, 0.0);		// Axis-angle, no quaternion (for now)
 	glm::vec3 scale;
 };
 

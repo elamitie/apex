@@ -31,8 +31,6 @@ void ReflectionScene::Update(double dt)
 		camera->HandleKeyboard(CamLeft, dt);
 	if (Keyboard::KeyDown(GLFW_KEY_D))
 		camera->HandleKeyboard(CamRight, dt);
-
-	camera->HandleMouse(Mouse::XOffset, Mouse::YOffset);
 }
 
 void ReflectionScene::End()

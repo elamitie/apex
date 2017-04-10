@@ -39,6 +39,8 @@ Window::Window(int width, int height, const char* title) {
 
     glfwSetKeyCallback(m_window, key_callback);
     glfwSetCursorPosCallback(m_window, mouse_callback);
+	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
+	glfwSetScrollCallback(m_window, scroll_callback);
 
     glfwSwapInterval(1);
 
@@ -59,6 +61,7 @@ bool Window::Open() {
 void Window::Update() {
     glfwPollEvents();
     Keyboard::Update();
+	Mouse::Update();
 }
 
 void Window::SwapBuffers() {
@@ -84,22 +87,19 @@ static void key_callback(GLFWwindow* window, int key,
         Keyboard::__hardwareKeyRelease(key);
 }
 
-bool firstMouse = true;
-float lastX = 640.0f;
-float lastY = 360.0f;
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
+	Mouse::SetPosition(glm::vec2(xpos, ypos));
+}
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		Mouse::SetLeft(true);
+	}
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+		Mouse::SetLeft(false);
+	}
+}
 
-    lastX = xpos;
-    lastY = ypos;
-
-    Mouse::XOffset = xoffset;
-    Mouse::YOffset = yoffset;
+static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+	Mouse::SetScrollOffset(glm::vec2(xoffset, yoffset));
 }

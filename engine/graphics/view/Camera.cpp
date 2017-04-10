@@ -1,11 +1,18 @@
 #include "Camera.h"
 #include <math.h>
+#include "utils/Math.h"
+
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
 
 #include "utils/Logger.h"
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up) {
     Position = pos;
+	mTargetPosition = pos;
     WorldUp = up;
+
+	mScrollDirty = false;
 
     CalculateForward();
 }
@@ -39,6 +46,30 @@ void Camera::HandleMouse(float deltaX, float deltaY) {
     if (Properties.Pitch < -89.0f)  Properties.Pitch = -89.0f;
 
     CalculateForward();
+}
+
+void Camera::Update(double dt) {
+
+	// "Zoom" in / out with the scroll wheel
+	float vel = Properties.Speed * dt;
+	if (Mouse::GetScrollOffset().y != mPreviousScroll.y) {
+		mScrollDirty = true;
+	}
+
+	// Only move
+	if (mScrollDirty) {
+
+		mTargetPosition += Front * (Mouse::GetScrollOffset().y * 0.3f);
+		mScrollDirty = false;
+	}
+
+	Position = math::Lerp(Position, mTargetPosition, math::Clamp01(dt * DampCoeff));
+
+	if (Mouse::GetScrollOffset().y > 0 || Mouse::GetScrollOffset().y < 0) {
+		mPreviousScroll = Mouse::GetScrollOffset();
+	}
+
+	CalculateForward();
 }
 
 glm::mat4 Camera::GetView() {

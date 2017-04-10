@@ -41,22 +41,24 @@ void PBRScene::Begin()
 
 	sphere = CreateNode(sphereMesh, plastic, "sphere");
 	sphere->transform.scale = glm::vec3(0.5f, 0.5f, 0.5f);
+
+	targetRotation = sphere->transform.rotation.w;
 }
 
 void PBRScene::Update(double dt)
 {
 	Scene::Update(dt);
+	
+	camera->Update(dt);
 
-	if (Keyboard::KeyDown(GLFW_KEY_W))
-		camera->HandleKeyboard(CamForward, dt);
-	if (Keyboard::KeyDown(GLFW_KEY_S))
-		camera->HandleKeyboard(CamBack, dt);
-	if (Keyboard::KeyDown(GLFW_KEY_A))
-		camera->HandleKeyboard(CamLeft, dt);
-	if (Keyboard::KeyDown(GLFW_KEY_D))
-		camera->HandleKeyboard(CamRight, dt);
+	if (Keyboard::KeyDown(GLFW_KEY_A)) {
+		targetRotation = sphere->transform.rotation.w += -50 * dt;
+	}
+	if (Keyboard::KeyDown(GLFW_KEY_D)) {
+		targetRotation = sphere->transform.rotation.w += 50 * dt;
+	}
 
-	camera->HandleMouse(Mouse::XOffset, Mouse::YOffset);
+	sphere->transform.rotation.w = math::Lerp(sphere->transform.rotation.w, targetRotation, dt * 5.0f);
 }
 
 void PBRScene::End()

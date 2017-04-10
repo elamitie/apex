@@ -30,6 +30,8 @@ public:
     // TODO: Abstract these away into input management
     void HandleKeyboard(CameraDirection dir, float dt);
     void HandleMouse(float deltaX, float deltaY);
+	
+	void Update(double dt);
 
     glm::mat4 GetView();
     glm::mat4 CreateProjection(uint width, uint height);
@@ -43,6 +45,12 @@ public:
     glm::vec3 Right;
     glm::vec3 WorldUp;
 
+	float DampCoeff = 5.0f;
+
 private:
     void CalculateForward();
+
+	glm::vec3 mTargetPosition;
+	glm::vec2 mPreviousScroll;
+	bool mScrollDirty;
 };
