@@ -21,4 +21,12 @@ public:
         ImVec4 color = ImColor(r, g, b, a);
         return color;
     }
+
+	inline void Normalize()
+	{
+		this->r /= 255;
+		this->g /= 255;
+		this->b /= 255;
+		this->a /= 255;
+	}
 };

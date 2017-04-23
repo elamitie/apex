@@ -9,6 +9,7 @@ public:
 	static bool LeftReleased();
 
 	static glm::vec2 GetPosition();
+	static glm::vec2 DeltaPosition();
 	static glm::vec2 GetScrollOffset();
 
 	static void Update();
@@ -25,4 +26,6 @@ private:
 
 	static glm::vec2 mScrollOffset;
 	static glm::vec2 mPosition;
+	static glm::vec2 mPrevPosition;
+	static glm::vec2 mNextPosition;
 };

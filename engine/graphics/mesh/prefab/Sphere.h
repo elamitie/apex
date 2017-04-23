@@ -6,5 +6,5 @@ class Sphere : public Mesh {
 public:
 	Sphere(int xSegments, int ySegments);
 
-	void Render(Material* mat) override;
+	void Render(MaterialBase* mat) override;
 };

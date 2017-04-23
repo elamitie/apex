@@ -63,7 +63,7 @@ Mesh::~Mesh() {
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
-void Mesh::Render(Material* mat) {
+void Mesh::Render(MaterialBase* mat) {
 
     // TODO: MAKE THIS CLEANER WITH MATERIAL ABSTRACTION
 	// TODO: THIS IS GOING TO BE BROKEN AS FUCK WHILE WORKING

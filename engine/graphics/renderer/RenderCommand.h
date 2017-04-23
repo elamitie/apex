@@ -7,7 +7,7 @@
 
 struct RenderCommand {
     Mesh* mesh;
-	Material* material;
+	MaterialBase* material;
     glm::mat4 transform;
 };
 

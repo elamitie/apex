@@ -1,6 +1,8 @@
 #include "Mouse.h"
 
 glm::vec2 Mouse::mPosition;
+glm::vec2 Mouse::mPrevPosition;
+glm::vec2 Mouse::mNextPosition;
 glm::vec2 Mouse::mScrollOffset;
 bool Mouse::mLeftPrev = false;
 bool Mouse::mLeft = false;
@@ -23,6 +25,11 @@ glm::vec2 Mouse::GetPosition()
 	return mPosition;
 }
 
+glm::vec2 Mouse::DeltaPosition()
+{
+	return mPosition - mPrevPosition;
+}
+
 glm::vec2 Mouse::GetScrollOffset()
 {
 	return mScrollOffset;
@@ -31,10 +38,13 @@ glm::vec2 Mouse::GetScrollOffset()
 void Mouse::Update() {
 	mLeftPrev = mLeft;
 	mLeft = mLeftNext;
+
+	mPrevPosition = mPosition;
+	mPosition = mNextPosition;
 }
 
 void Mouse::SetPosition(const glm::vec2& position) {
-	mPosition = position;
+	mNextPosition = position;
 }
 
 void Mouse::SetLeft(bool val) {

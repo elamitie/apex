@@ -17,7 +17,12 @@ void PBRScene::Begin()
 	pbr = new Shader();
 	pbr->SetDebug(true);
 	pbr->Attach("pbr/pbr.vert")->Attach("pbr/pbr.frag")->Link();
-	pbr->AddAttribs({"position", "normal", "texCoords"});
+	pbr->AddAttribs({ "position", "normal", "texCoords" });
+
+	pbrCustom = new Shader();
+	pbrCustom->SetDebug(true);
+	pbrCustom->Attach("pbr/pbr_custom.vert")->Attach("pbr/pbr_custom.frag")->Link();
+	pbrCustom->AddAttribs({ "position", "normal", "texCoords" });
 
 	plastic = new Material();
 	plastic->SetCamera(camera);
@@ -37,6 +42,16 @@ void PBRScene::Begin()
 	gold->SetRoughness(TextureCache::GetTexture("pbr/gold/roughness.png"), 6);
 	gold->SetAO(TextureCache::GetTexture("pbr/gold/ao.png"), 7);
 
+	custom = new MaterialCustom();
+	custom->SetCamera(camera);
+	custom->SetShader(pbrCustom);
+	custom->SetAlbedo(Color(0, 200, 0));
+	custom->SetMetallic(0.9f);
+	custom->SetRoughness(0.1f);
+	custom->SetAO(0.9f);
+
+	mRenderer->RegisterCustomMaterial(custom);
+
 	sphereMesh = new Sphere(64, 64);
 
 	sphere = CreateNode(sphereMesh, plastic, "sphere");
@@ -48,7 +63,7 @@ void PBRScene::Begin()
 void PBRScene::Update(double dt)
 {
 	Scene::Update(dt);
-	
+
 	camera->Update(dt);
 
 	if (Keyboard::KeyDown(GLFW_KEY_A)) {
@@ -59,6 +74,9 @@ void PBRScene::Update(double dt)
 	}
 
 	sphere->transform.rotation.w = math::Lerp(sphere->transform.rotation.w, targetRotation, dt * 5.0f);
+
+	//camera->Position.x = std::cos(fuck) * camera->Position.z;
+	//camera->Position.z = std::sin(fuck) * camera->Position.z;
 }
 
 void PBRScene::End()
@@ -77,6 +95,10 @@ void PBRScene::OnChangeMaterial(const std::string& matName) {
 	}
 	else if (matName == "gold") {
 		sphere = CreateNode(sphereMesh, gold, "sphere");
+		sphere->transform.scale = glm::vec3(0.5f, 0.5f, 0.5f);
+	}
+	else if (matName == "custom") {
+		sphere = CreateNode(sphereMesh, custom, "sphere");
 		sphere->transform.scale = glm::vec3(0.5f, 0.5f, 0.5f);
 	}
 }

@@ -6,8 +6,17 @@
 #include "graphics/view/Skybox.h"
 #include "graphics/scene/SceneNode.h"
 #include "graphics/pbr/PBRPreComputation.h"
+#include "graphics/mesh/MaterialCustom.h"
 
 // TODO: PUSH LIGHTS
+
+struct CustomMaterialTweaks
+{
+	Color* albedo;
+	float* metallic;
+	float* roughness;
+	float* ao;
+};
 
 enum LightMode {
 	PHONG,
@@ -19,7 +28,7 @@ public:
     ForwardRenderer(uint width, uint height, Scene* mParentScene);
 
     void Begin();
-    void PushMesh(Mesh* mesh, Material* material, glm::mat4 transform);
+    void PushMesh(Mesh* mesh, MaterialBase* material, glm::mat4 transform);
 	void PushNode(SceneNodePtr node);
 
     // TODO: This needs to be more robust to handle things like two-step gaussian
@@ -30,6 +39,9 @@ public:
     void RegisterCamera(CameraPtr camera);
 
 	void SetLightingMode(LightMode mode);
+	void ChangeEnvironment(const std::string& envName);
+
+	void RegisterCustomMaterial(MaterialCustom* mat);
 
 	void Interface();
 	inline void SetDebug(bool debug) { mDebugMode = debug; }
@@ -43,9 +55,6 @@ private:
     glm::mat4 mView;
     glm::mat4 mProj;
     CameraPtr mCamera;
-    ShaderPtr mDefaultPostEffect;
-    FrameBufferPtr mFramebuffer;
-    PostProcessorPtr mPostProcessor;
     CommandBuffer mCommandBuffer;
     SkyboxPtr mSkybox;
 	PBRPreComputation* mPBRPreComputation;
@@ -53,4 +62,7 @@ private:
 	Scene* mParentScene;
 
 	LightMode mMode;
+
+	bool mTweakSliders = false;		// Tweak material values
+	MaterialCustom* mCustomMat;		// Current registered custom material, currently only one supported at a time
 };

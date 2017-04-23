@@ -9,7 +9,7 @@
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up) {
     Position = pos;
-	mTargetPosition = pos;
+	mTargetDistance = mDistance = pos.z;
     WorldUp = up;
 
 	mScrollDirty = false;
@@ -52,29 +52,40 @@ void Camera::Update(double dt) {
 
 	// "Zoom" in / out with the scroll wheel
 	float vel = Properties.Speed * dt;
-	if (Mouse::GetScrollOffset().y != mPreviousScroll.y) {
-		mScrollDirty = true;
-	}
+	ticks += dt * mRotationRate;
 
-	// Only move
-	if (mScrollDirty) {
+	if (mRotate)
+	{
+		Position.x = std::cos(ticks) * mDistance;
+		Position.z = std::sin(ticks) * mDistance;
 
-		mTargetPosition += Front * (Mouse::GetScrollOffset().y * 0.3f);
-		mScrollDirty = false;
-	}
+		if (Mouse::GetScrollOffset().y != mPreviousScroll.y) {
+			mScrollDirty = true;
+		}
 
-	Position = math::Lerp(Position, mTargetPosition, math::Clamp01(dt * DampCoeff));
+		// Only move
+		if (mScrollDirty) {
 
-	if (Mouse::GetScrollOffset().y > 0 || Mouse::GetScrollOffset().y < 0) {
-		mPreviousScroll = Mouse::GetScrollOffset();
+			mTargetDistance -= Mouse::GetScrollOffset().y * 0.3f;
+			mScrollDirty = false;
+		}
+
+		mTargetDistance = math::Clamp(mTargetDistance, 1.0f, 6.0f);
+		mDistance = math::Lerp(mDistance, mTargetDistance, math::Clamp01(dt * DampCoeff));
+
+		if (Mouse::GetScrollOffset().y > 0 || Mouse::GetScrollOffset().y < 0) {
+			mPreviousScroll = Mouse::GetScrollOffset();
+		}
 	}
 
 	CalculateForward();
 }
 
 glm::mat4 Camera::GetView() {
-    return glm::lookAt(Position, Position + Front, CameraUp);
+    //return glm::lookAt(Position, Position + Front, CameraUp);
+	return glm::lookAt(Position, glm::vec3(0.0, 0.0, 0.0), CameraUp);
 }
+
 
 glm::mat4 Camera::CreateProjection(uint width, uint height) {
     return glm::perspective(Properties.Zoom, (float)width / (float)height, 0.1f, 100.0f);

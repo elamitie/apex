@@ -12,7 +12,7 @@
 #include "../assets/Shader.h"
 #include "../assets/Texture.h"
 #include "Vertex.h"
-#include "Material.h"
+#include "MaterialBase.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -30,7 +30,7 @@ public:
          const std::string& name = "");
     virtual ~Mesh();
 
-    virtual void Render(Material* mat);
+    virtual void Render(MaterialBase* mat);
 
 private:
     void Parse(const std::string& path, const aiNode* node, const aiScene* scene);

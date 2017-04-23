@@ -12,7 +12,7 @@
 
 class PBRPreComputation {
 public:
-	PBRPreComputation();
+	PBRPreComputation(const std::string& envName = "newport_loft");
 	~PBRPreComputation();
 
 	void SetHDR(Texture2D* hdrTexture);

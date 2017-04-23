@@ -72,7 +72,7 @@ Sphere::Sphere(int xSegments, int ySegments) {
 	glDeleteBuffers(1, &mIndexBuffer);
 }
 
-void Sphere::Render(Material* mat) {
+void Sphere::Render(MaterialBase* mat) {
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLE_STRIP, mIndices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

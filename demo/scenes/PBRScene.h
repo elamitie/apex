@@ -2,8 +2,10 @@
 
 #include "graphics/scene/Scene.h"
 #include "graphics/view/Camera.h"
-#include "graphics/pbr/PBRMaterial.h"
 #include "graphics/mesh/prefab/Sphere.h"
+
+#include "graphics/mesh/Material.h"
+#include "graphics/mesh/MaterialCustom.h"
 
 class PBRScene : public Scene {
 public:
@@ -21,7 +23,11 @@ private:
 	Sphere* sphereMesh;
 	Material* plastic;
 	Material* gold;
+	MaterialCustom* custom;
 	Shader* pbr;
+	Shader* pbrCustom;
 
 	float targetRotation;
+
+	double fuck = 0.0;
 };

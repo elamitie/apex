@@ -17,12 +17,13 @@ public:
 
 	// Temporary for prototype 2's demo..?
 	virtual void OnChangeMaterial(const std::string& matName) {};
+	// -----------------------------------
 	
 	// Not overriden for now, no point.
 	void Render(double dt);
 
 	SceneNodePtr CreateNode(const std::string& name);
-	SceneNodePtr CreateNode(Mesh* mesh, Material* material, const std::string& name);
+	SceneNodePtr CreateNode(Mesh* mesh, MaterialBase* material, const std::string& name);
 	
 	void DeleteNode(SceneNodePtr node);
 

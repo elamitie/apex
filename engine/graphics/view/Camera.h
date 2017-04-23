@@ -23,6 +23,7 @@ struct CameraProperties {
 };
 
 class Camera {
+	friend class ForwardRenderer;
 public:
     Camera(glm::vec3 pos = vec3_zero, glm::vec3 up = vec3_up);
     ~Camera();
@@ -32,6 +33,9 @@ public:
     void HandleMouse(float deltaX, float deltaY);
 	
 	void Update(double dt);
+
+	inline void EnableRotation(bool rotation) { mRotate = rotation; }
+	inline void SetRotationRate(float rate) { mRotationRate = rate; }
 
     glm::mat4 GetView();
     glm::mat4 CreateProjection(uint width, uint height);
@@ -50,7 +54,13 @@ public:
 private:
     void CalculateForward();
 
-	glm::vec3 mTargetPosition;
+	float mTargetDistance;
+	float mDistance;
 	glm::vec2 mPreviousScroll;
 	bool mScrollDirty;
+
+	bool mRotate = true;
+	float mRotationRate = 0.5f;
+
+	double ticks = 0.0;
 };

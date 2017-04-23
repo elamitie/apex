@@ -1,51 +1,9 @@
 #include "Material.h"
 
-void Material::SetInt(const std::string& name, int data)
+void Material::SetData() 
 {
-	mShader->SetUniform(name, data);
-}
+	MaterialBase::SetData();
 
-void Material::SetFloat(const std::string& name, float data)
-{
-	mShader->SetUniform(name, data);
-}
-
-void Material::SetBool(const std::string& name, bool data)
-{
-	mShader->SetUniform(name, data);
-}
-
-void Material::SetVector(const std::string& name, const glm::vec2& data)
-{
-	mShader->SetUniform(name, data);
-}
-
-void Material::SetVector(const std::string& name, const glm::vec3& data)
-{
-	mShader->SetUniform(name, data);
-}
-
-void Material::SetVector(const std::string& name, const glm::vec4& data)
-{
-	mShader->SetUniform(name, data);
-}
-
-void Material::SetMatrix(const std::string& name, const glm::mat4& data)
-{
-	mShader->SetUniform(name, data);
-}
-
-void Material::Enable()
-{
-	mShader->Enable();
-}
-
-void Material::Disable()
-{
-	mShader->Disable();
-}
-
-void Material::SetData() {
 	// Set all of this shader's uniforms
 	// @TODO: Take in a vector of PointLights! These are hardcoded for now!
 	if (mCamera) mShader->SetUniform("camPos", mCamera->Position);
@@ -75,9 +33,6 @@ void Material::SetData() {
 		mShader->SetUniform(uniform.first, uniform.second);
 	}
 
-	mIrradiance->Bind(mBindingLocations["irradianceMap"]);
-	mPrefilter->Bind(mBindingLocations["prefilterMap"]);
-	mBRDF->Bind(mBindingLocations["brdfLUT"]);
 	mAlbedo->Bind(mBindingLocations["albedoMap"]);
 	mNormal->Bind(mBindingLocations["normalMap"]);
 	mMetallic->Bind(mBindingLocations["metallicMap"]);
@@ -113,28 +68,4 @@ void Material::SetAO(Texture2D* ao, int location)
 {
 	mAO = ao;
 	mBindingLocations["aoMap"] = location;
-}
-
-void Material::SetBRDF(Texture2D* brdf, int location)
-{
-	mBRDF = brdf;
-	mBindingLocations["brdfLUT"] = location;
-}
-
-void Material::SetIrradianceMap(Cubemap* irrMap, int location)
-{
-	mIrradiance = irrMap;
-	mBindingLocations["irradianceMap"] = location;
-}
-
-void Material::SetPrefilterMap(Cubemap* prefilter, int location)
-{
-	mPrefilter = prefilter;
-	mBindingLocations["prefilterMap"] = location;
-}
-
-void Material::SetEnvironmentMap(PBRPreComputation* precompute) {
-	SetIrradianceMap(precompute->GetIrradianceMap(), 0);
-	SetPrefilterMap(precompute->GetPrefilterMap(), 1);
-	SetBRDF(precompute->GetBRDF(), 2);
 }

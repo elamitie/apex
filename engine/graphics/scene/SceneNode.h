@@ -39,7 +39,7 @@ public:
 
 	// Public vars
 	Mesh* mesh;
-	Material* material;
+	MaterialBase* material;
 	Transform transform;
 
 	// Dunno if I want this public or not

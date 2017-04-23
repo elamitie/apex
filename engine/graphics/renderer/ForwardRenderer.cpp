@@ -12,16 +12,6 @@ ForwardRenderer::ForwardRenderer(uint width, uint height, Scene* parentScene) {
 
 	mParentScene = parentScene;
 
-    mDefaultPostEffect = std::make_shared<Shader>();
-    mDefaultPostEffect->Attach("textured_quad.vert")->Attach("framebuffer_default.frag")->Link()->AddAttribs({
-        "position", "texCoords"
-    });
-
-    mFramebuffer = std::make_shared<FrameBuffer>(mWidth, mHeight, DEPTH_RENDER_BUFFER, true);
-    mPostProcessor = std::make_shared<PostProcessor>();
-    mPostProcessor->Init();
-    mPostProcessor->PushEffect(mDefaultPostEffect);
-
     mCommandBuffer.reserve(1000);
 }
 
@@ -45,14 +35,25 @@ void ForwardRenderer::SetLightingMode(LightMode mode) {
 	}
 }
 
-void ForwardRenderer::Begin() {
-    mView = mCamera->GetView();
-
-    mCommandBuffer.clear();
-    mFramebuffer->Bind();
+void ForwardRenderer::ChangeEnvironment(const std::string& envName)
+{
+	mPBRPreComputation = new PBRPreComputation(envName);
+	mSkybox->SetCubemap(mPBRPreComputation->GetEnvironmentMap());
 }
 
-void ForwardRenderer::PushMesh(Mesh* mesh, Material* material, glm::mat4 transform) {
+void ForwardRenderer::RegisterCustomMaterial(MaterialCustom* mat)
+{
+	mCustomMat = mat;
+}
+
+void ForwardRenderer::Begin() {
+    mView = mCamera->GetView();
+	mProj = mCamera->CreateProjection(mWidth, mHeight);
+
+    mCommandBuffer.clear();
+}
+
+void ForwardRenderer::PushMesh(Mesh* mesh, MaterialBase* material, glm::mat4 transform) {
     RenderCommand command;
     command.mesh = mesh;
     command.material = material;
@@ -69,7 +70,7 @@ void ForwardRenderer::PushNode(SceneNodePtr node) {
 }
 
 void ForwardRenderer::PushPostEffect(ShaderPtr shader) {
-    mPostProcessor->PushEffect(shader);
+    //mPostProcessor->PushEffect(shader);
 }
 
 void ForwardRenderer::End() {
@@ -96,9 +97,6 @@ void ForwardRenderer::Flush() {
     // behind a scene object
     mSkybox->Render(mView, mProj);
 
-    mFramebuffer->Unbind();
-    mPostProcessor->Process(mFramebuffer->GetColorTexture());
-
 	if (mDebugMode) Interface();
 }
 
@@ -112,33 +110,100 @@ void ForwardRenderer::Interface() {
 	ImGui_ImplGlfwGL3_NewFrame();
 
 	ImGui::Begin("Apex Engine v0.1", nullptr, ImVec2(0, 0));
-	if (ImGui::CollapsingHeader("Scene", 0, true, false)) {
-		if (ImGui::TreeNode("Set Material Type")) {
-			switch (mMode) {
+	if (ImGui::CollapsingHeader("Scene", 0, true, false))
+	{
+		if (ImGui::TreeNode("Set Material Type"))
+		{
+			switch (mMode)
+			{
 			case PHONG:
 				break;
 			case PBR:
-				if (ImGui::Button("Plastic")) {
+				if (ImGui::Button("Plastic"))
+				{
 					Logger::Log("Button click: Plastic");
 					mParentScene->OnChangeMaterial("plastic");
+					mTweakSliders = false;
 				}
-				if (ImGui::Button("Gold")) {
+				if (ImGui::Button("Gold"))
+				{
 					Logger::Log("Button click: Gold");
 					mParentScene->OnChangeMaterial("gold");
+					mTweakSliders = false;
+				}
+				if (ImGui::Button("Custom"))
+				{
+					Logger::Log("Button click: Custom");
+					mParentScene->OnChangeMaterial("custom");
+					mTweakSliders = true;
 				}
 				break;
 			}
 
 			ImGui::TreePop();
 		}
+
+		if (ImGui::TreeNode("Set Material Values"))
+		{
+			if (mTweakSliders)
+			{
+				glm::vec3 albedo = glm::vec3(mCustomMat->mAlbedo.r / 255.f, mCustomMat->mAlbedo.g / 255.f, mCustomMat->mAlbedo.b / 255.f);
+				float metallic = mCustomMat->mMetallic;
+				float roughness = mCustomMat->mRoughness;
+				float ambient = mCustomMat->mAO;
+
+				ImGui::ColorEdit3("Albedo", (float*)&albedo);
+				ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f);
+				ImGui::SliderFloat("Roughness", &roughness, 0.0f, 0.5f);
+				ImGui::SliderFloat("Ambient", &ambient, 0.1f, 1.0f);
+
+				mCustomMat->SetAlbedo(Color(albedo.x * 255, albedo.y * 255, albedo.z * 255));
+				mCustomMat->SetMetallic(metallic);
+				mCustomMat->SetRoughness(roughness);
+				mCustomMat->SetAO(ambient);
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Environment Maps"))
+		{
+			switch (mMode)
+			{
+			case PHONG:
+				break;
+			case PBR:
+				if (ImGui::Button("Newport Loft"))
+				{
+					ChangeEnvironment("newport_loft");
+				}
+				if (ImGui::Button("Pines"))
+				{
+					ChangeEnvironment("arches_e_pinetree");
+				}
+				if (ImGui::Button("Gravel Plaza"))
+				{
+					ChangeEnvironment("gravel_plaza");
+				}
+				break;
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Camera"))
+		{
+			float rate = mCamera->mRotationRate;
+			ImGui::SliderFloat("Rotation Rate", &rate, 0.0f, 1.0f);
+
+			mCamera->EnableRotation(rotate);
+
+			ImGui::TreePop();
+		}
 	}
 
-	if (ImGui::CollapsingHeader("Post Processing", 0, true, false)) {
-		// Dynamically get the different post processing shaders that are active
-		// somehow??
-	}
-
-	if (ImGui::CollapsingHeader("Profiling", 0, true, true)) {
+	if (ImGui::CollapsingHeader("Profiling", 0, true, true)) 
+	{
 		std::string version = std::string((char*)glGetString(GL_VERSION));
 		std::string hardware = std::string((char*)glGetString(GL_RENDERER));
 

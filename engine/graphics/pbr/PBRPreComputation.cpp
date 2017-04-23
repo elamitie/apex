@@ -1,7 +1,7 @@
 #include "PBRPreComputation.h"
 #include "utils/FileSystem.h"
 
-PBRPreComputation::PBRPreComputation() {
+PBRPreComputation::PBRPreComputation(const std::string& envName) {
 	int envWidth, envHeight;
 	envWidth = envHeight = 512;
 	int irrWidth, irrHeight;
@@ -28,7 +28,7 @@ PBRPreComputation::PBRPreComputation() {
 
 	// Load HDR Environment Texture
 	mHdrTexture = new Texture2D();
-	mHdrTexture->LoadHDR(FileSystem::GetPath("resources/textures/environments/newport_loft.hdr"));
+	mHdrTexture->LoadHDR(FileSystem::GetPath("resources/textures/environments/" + envName + ".hdr"));
 
 	// Create Environment Map
 	mEnvironmentMap = new Cubemap();
