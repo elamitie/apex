@@ -196,7 +196,7 @@ void ForwardRenderer::Interface() {
 			float rate = mCamera->mRotationRate;
 			ImGui::SliderFloat("Rotation Rate", &rate, 0.0f, 1.0f);
 
-			mCamera->EnableRotation(rotate);
+			mCamera->SetRotationRate(rate);
 
 			ImGui::TreePop();
 		}
