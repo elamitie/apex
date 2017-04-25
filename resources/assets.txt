@@ -1,0 +1,26 @@
+# material textures
+texture:resources/textures/pbr/plastic/albedo.png
+texture:resources/textures/pbr/plastic/normal.png
+texture:resources/textures/pbr/plastic/roughness.png
+texture:resources/textures/pbr/plastic/metallic.png
+texture:resources/textures/pbr/plastic/ao.png
+
+texture:resources/textures/pbr/gold/albedo.png
+texture:resources/textures/pbr/gold/normal.png
+texture:resources/textures/pbr/gold/roughness.png
+texture:resources/textures/pbr/gold/metallic.png
+texture:resources/textures/pbr/gold/ao.png
+
+# hdr environment textures
+texture:resources/textures/environments/arches_e_pinetree.hdr
+texture:resources/textures/environments/factory_catwalk.hdr
+texture:resources/textures/environments/gravel_plaza.hdr
+texture:resources/textures/environments/hamarikyu_bridge_b.hdr
+texture:resources/textures/environments/newport_loft.hdr
+
+# models
+
+# shaders todo: something appended to the end like ext-vert,frag,comp etc
+# also need a way to specify specific existing verts
+
+# materials

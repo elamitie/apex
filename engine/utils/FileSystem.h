@@ -13,6 +13,47 @@ public:
         return (*pathBuilder)(path);
     }
 
+	static std::pair<std::string, std::string> GetNameFromPath(const std::string& path)
+	{
+		// split off the file from path
+		size_t loc = path.find_last_of("/\\");
+		
+		std::string p = path.substr(0, loc);
+		std::string n = path.substr(loc + 1);
+
+		// split off the file extension
+		loc = n.find_last_of(".");
+		n = n.substr(0, loc);
+
+		return std::make_pair(p, n);
+	}
+
+	static std::string GetConjoinedNameFromPath(const std::string& path)
+	{
+		auto pair = GetNameFromPath(path);
+
+		// find the last directory in the path separate from file
+		size_t loc = pair.first.find_last_of("/\\");
+
+		// we can discard the actual path and keep the last dir
+		std::string dir = pair.first.substr(loc + 1);
+
+		std::string conjoined = dir + "_" + pair.second;
+		return conjoined;
+	}
+
+	static std::string GetExtension(const std::string& path)
+	{
+		size_t loc = path.find_last_of(".");
+		return path.substr(loc + 1);
+	}
+
+	static std::pair<std::string, std::string> Cut(const std::string& path, char delim)
+	{
+		size_t loc = path.find_last_of(delim);
+		return std::make_pair(path.substr(0, loc), path.substr(loc + 1));
+	}
+
 private:
     static std::string const& GetRoot() {
         static char const* envRoot = getenv("LOGL_ROOT_PATH");
@@ -21,7 +62,6 @@ private:
         return root;
     }
 
-    //static std::string(*foo (std::string const &)) getPathBuilder()
     static Builder GetPathBuilder() {
         if (GetRoot() != "")
             return &FileSystem::GetPathRelativeRoot;

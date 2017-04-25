@@ -5,6 +5,7 @@
 #include "utils/Logger.h"
 
 #include "graphics/assets/cache/TextureCache.h"
+#include "utils/FileSystem.h"
 
 void PBRScene::Begin()
 {

@@ -7,6 +7,9 @@
 #include "graphics/mesh/MaterialBase.h"
 
 #include "utils/FileSystem.h"
+#include "utils/Logger.h"
+
+#include <fstream>
 
 Assets& Assets::Instance()
 {
@@ -16,23 +19,48 @@ Assets& Assets::Instance()
 
 void Assets::RegisterAssetsFromFile(const std::string & file)
 {
+	std::ifstream f("file", std::ios::in);
+	std::string line;
+	
+	while (std::getline(f, line))
+	{
+		// # considered comment
+		if (line[0] == '#') continue;
+		if (line.empty()) continue;
+	
+		// convention is to denote type of file with 'file:path'
+		// e.g. texture:"resources/textures"...
+		auto pair = FileSystem::Cut(line, ':');
+		if (pair.first == "texture")
+		{
+			LoadTexture(pair.second);
+		}
+		else if (pair.first == "shader")
+		{
+			LoadShader(pair.second);
+		}
+		else if (pair.first == "cubemap")
+		{
+			LoadCubemap(pair.second);
+		}
+		else if (pair.first == "mesh")
+		{
+			LoadMesh(pair.second);
+		}
+		else if (pair.first == "material")
+		{
+			LoadMaterial(pair.second);
+		}
+	}
 }
 
 Texture2D* Assets::GetTexture(const std::string & name)
 {
 	auto it = mTextures.find(name);
-
-	// Contingency incase file did not contain this texture.
 	if (it == mTextures.end())
 	{
-		// TODO: Parse out the file name from the containing folder
-		// e.g. "pbr/plastic/albedo.png" -> "plastic_albedo"
-		// Do the same for environments?
-		Texture2D* tmp = new Texture2D();
-		tmp->Load(FileSystem::GetPath("resources/textures/" + name));
-		mTextures.insert(std::make_pair(name, tmp));
-
-		return tmp;
+		Logger::Log("Could not find texture with name \"" + name + "\"", WARNING);
+		return nullptr;
 	}
 
 	return it->second;
@@ -41,9 +69,11 @@ Texture2D* Assets::GetTexture(const std::string & name)
 Shader* Assets::GetShader(const std::string & name)
 {
 	auto it = mShaders.find(name);
-
-	// TODO: Contingency for this requires funky name shenanigans
-	// to parse out the ".vert" and ".frag"
+	if (it == mShaders.end())
+	{
+		Logger::Log("Could not find shader with name \"" + name + "\"", WARNING);
+		return nullptr;
+	}
 
 	return it->second;
 }
@@ -51,13 +81,10 @@ Shader* Assets::GetShader(const std::string & name)
 Mesh* Assets::GetMesh(const std::string & name)
 {
 	auto it = mMeshes.find(name);
-
 	if (it == mMeshes.end())
 	{
-		// TODO: Parse out the file name from the containing folder
-		// e.g. "nanosuit/nanosuit.obj" -> "nanosuit"
-		// consider also just tracking by directory instead of by actual obj name
-		// for mtl files
+		Logger::Log("Could not find mesh with name \"" + name + "\"", WARNING);
+		return nullptr;
 	}
 
 	return it->second;
@@ -66,12 +93,10 @@ Mesh* Assets::GetMesh(const std::string & name)
 MaterialBase* Assets::GetMaterial(const std::string & name)
 {
 	auto it = mMaterials.find(name);
-
 	if (it == mMaterials.end())
 	{
-		// TODO: Loading should be different and better planned since they rely on
-		// different textures and / or values. Consider not having a contingency for
-		// Materials
+		Logger::Log("Could not find material with name \"" + name + "\"", WARNING);
+		return nullptr;
 	}
 
 	return it->second;
@@ -80,10 +105,10 @@ MaterialBase* Assets::GetMaterial(const std::string & name)
 Cubemap* Assets::GetCubemap(const std::string & name)
 {
 	auto it = mCubemaps.find(name);
-
 	if (it == mCubemaps.end())
 	{
-
+		Logger::Log("Could not find cubemap with name \"" + name + "\"", WARNING);
+		return nullptr;
 	}
 
 	return it->second;
