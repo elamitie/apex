@@ -20,7 +20,15 @@ texture:resources/textures/environments/newport_loft.hdr
 
 # models
 
-# shaders todo: something appended to the end like ext-vert,frag,comp etc
-# also need a way to specify specific existing verts
+# shaders
+shader:resources/shaders/pbr/pbr.vert;pbr.frag
+shader:resources/shaders/pbr/pbr_custom.vert;pbr_custom.frag
+shader:resources/shaders/pbr/cubemap.vert;hdr_to_cubemap.frag
+shader:resources/shaders/pbr/cubemap.vert;convolute_irradiance.frag
+shader:resources/shaders/pbr/cubemap.vert;prefilter.frag
+shader:resources/shaders/pbr/integrate_brdf.vert;integrate_brdf.frag
+shader:resources/shaders/pbr/pbr_background.vert;pbr_background.frag
 
 # materials
+material:resources/materials/plastic.material
+material:resources/materials/gold.material
