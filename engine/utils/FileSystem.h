@@ -5,25 +5,21 @@
 
 class FileSystem {
 private:
-    typedef std::string(*Builder) (const std::string& path);
+	typedef std::string(*Builder) (const std::string& path);
 
 public:
-    static std::string GetPath(const std::string& path) {
-        static std::string(*pathBuilder)(std::string const&) = GetPathBuilder();
-        return (*pathBuilder)(path);
-    }
+	static std::string GetPath(const std::string& path) {
+		static std::string(*pathBuilder)(std::string const&) = GetPathBuilder();
+		return (*pathBuilder)(path);
+	}
 
 	static std::pair<std::string, std::string> GetNameFromPath(const std::string& path)
 	{
 		// split off the file from path
 		size_t loc = path.find_last_of("/\\");
-		
+
 		std::string p = path.substr(0, loc);
 		std::string n = path.substr(loc + 1);
-
-		// split off the file extension
-		loc = n.find_last_of(".");
-		n = n.substr(0, loc);
 
 		return std::make_pair(p, n);
 	}
@@ -52,6 +48,12 @@ public:
 	{
 		size_t loc = path.find_last_of(delim);
 		return std::make_pair(path.substr(0, loc), path.substr(loc + 1));
+	}
+
+	static std::string DropExtension(const std::string& path)
+	{
+		size_t loc = path.find_last_of(path);
+		return path.substr(0, loc);
 	}
 
 private:

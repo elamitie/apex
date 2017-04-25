@@ -116,10 +116,45 @@ Cubemap* Assets::GetCubemap(const std::string & name)
 
 void Assets::LoadTexture(const std::string & name)
 {
+	std::string ext = FileSystem::GetExtension(name);
+	if (ext == ".png" || ext == ".jpg")
+	{
+		Texture2D* tmp = new Texture2D();
+		tmp->Load(FileSystem::GetPath(name));
+
+		std::string n = FileSystem::GetConjoinedNameFromPath(name);
+		n = FileSystem::DropExtension(n);
+
+		mTextures.insert(std::make_pair(n, tmp));
+	}
+	else if (ext == ".hdr")
+	{
+		Texture2D* tmp = new Texture2D();
+		tmp->LoadHDR(FileSystem::GetPath(name));
+
+		std::string n = FileSystem::GetConjoinedNameFromPath(name);
+		n = FileSystem::DropExtension(n);
+
+		mTextures.insert(std::make_pair(n, tmp));
+	}
+	else // uh-oh, unknown file type
+	{
+		Logger::Log("Attempt to load texture with path \"" + name + "\"" + "failed.", WARNING);
+	}
 }
 
 void Assets::LoadShader(const std::string & name)
 {
+	// This will need to be somewhat refactored to support more than just vertex
+	// and fragment shaders
+	auto shaders = FileSystem::Cut(name, ';');
+	std::string dir = FileSystem::GetNameFromPath(name).first;
+
+	std::string vert = shaders.first;
+	std::string frag = dir + "/" + shaders.second;
+
+	Shader* tmp = new Shader();
+	tmp->Attach(vert)->Attach(frag)->Link();
 }
 
 void Assets::LoadMesh(const std::string & name)

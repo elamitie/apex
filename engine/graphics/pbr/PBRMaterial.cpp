@@ -14,7 +14,6 @@ PBRMaterial::PBRMaterial() {
 	mShader = new Shader();
 	mShader->SetDebug(true);
 	mShader->Attach("pbr/pbr.vert")->Attach("pbr/pbr.frag")->Link();
-	mShader->AddAttribs({ "position", "normal", "texCoords" });
 }
 
 //void PBRMaterial::SetData() {

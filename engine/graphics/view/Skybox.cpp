@@ -3,9 +3,7 @@
 Skybox::Skybox(const std::string& vert, const std::string& frag) {
 
 	mSkyboxShader = new Shader();
-    mSkyboxShader->Attach(vert)->Attach(frag)->Link()->AddAttribs({
-        "position"
-    });
+	mSkyboxShader->Attach(vert)->Attach(frag)->Link();
 
     mCubemap = new Cubemap();
     mCubemap->Load({

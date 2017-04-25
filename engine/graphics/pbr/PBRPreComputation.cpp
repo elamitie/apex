@@ -200,22 +200,18 @@ void PBRPreComputation::InitializeShaders() {
 	mHdrToCubemap = new Shader();
 	mHdrToCubemap->SetDebug(true);
 	mHdrToCubemap->Attach("pbr/cubemap.vert")->Attach("pbr/hdr_to_cubemap.frag")->Link();
-	mHdrToCubemap->AddAttribs({ "position" });
 
 	mConvoluteIrradiance = new Shader();
 	mConvoluteIrradiance->SetDebug(true);
 	mConvoluteIrradiance->Attach("pbr/cubemap.vert")->Attach("pbr/convolute_irradiance.frag")->Link();
-	mConvoluteIrradiance->AddAttribs({ "position" });
 
 	mPrefilter = new Shader();
 	mPrefilter->SetDebug(true);
 	mPrefilter->Attach("pbr/cubemap.vert")->Attach("pbr/prefilter.frag")->Link();
-	mPrefilter->AddAttribs({ "position" });
 
 	mBRDF = new Shader();
 	mBRDF->SetDebug(true);
 	mBRDF->Attach("pbr/integrate_brdf.vert")->Attach("pbr/integrate_brdf.frag")->Link();
-	mBRDF->AddAttribs({ "position", "texCoords" });
 }
 
 void PBRPreComputation::CreateCube() {

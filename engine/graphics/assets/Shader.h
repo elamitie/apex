@@ -19,8 +19,8 @@ public:
     void Enable();
     void Disable();
 
-    Shader* AddAttribs(const std::vector<std::string>& attribs);
-    Shader* Attach(const std::string& filename);
+	// TODO: Get rid of this verbose garbage when asset loading works
+    Shader* Attach(const std::string& filename, bool verbose = false);
     Shader* Link();
 
     void SetUniform(const std::string& name, GLint data);

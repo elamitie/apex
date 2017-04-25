@@ -11,6 +11,10 @@ void PBRScene::Begin()
 {
 	Scene::Begin();
 
+	std::string tmp ="test/dir/file.file";
+	auto pair = FileSystem::GetNameFromPath(tmp);
+	Logger::Log(pair.first);
+
 	camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 	mRenderer->SetLightingMode(PBR);
 	mRenderer->RegisterCamera(camera);
@@ -18,12 +22,10 @@ void PBRScene::Begin()
 	pbr = new Shader();
 	pbr->SetDebug(true);
 	pbr->Attach("pbr/pbr.vert")->Attach("pbr/pbr.frag")->Link();
-	pbr->AddAttribs({ "position", "normal", "texCoords" });
-
+	
 	pbrCustom = new Shader();
 	pbrCustom->SetDebug(true);
 	pbrCustom->Attach("pbr/pbr_custom.vert")->Attach("pbr/pbr_custom.frag")->Link();
-	pbrCustom->AddAttribs({ "position", "normal", "texCoords" });
 
 	plastic = new Material();
 	plastic->SetCamera(camera);

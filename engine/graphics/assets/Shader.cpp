@@ -5,29 +5,30 @@
 #include <vector>
 #include <iostream>
 
-Shader* Shader::AddAttribs(const std::vector<std::string>& attribs) {
-    for (std::string str : attribs) {
-        glBindAttribLocation(mProg, mNumAttribs++, str.c_str());
-    }
-
-    return this;
-}
-
 void Shader::Enable() {
     glUseProgram(mProg);
-    for (int i = 0; i < mNumAttribs; i++)
-        glEnableVertexAttribArray(i);
+    /*for (int i = 0; i < mNumAttribs; i++)
+        glEnableVertexAttribArray(i);*/
 }
 
 void Shader::Disable() {
     glUseProgram(0);
-    for (int i = 0; i < mNumAttribs; i++)
-        glDisableVertexAttribArray(i);
+    /*for (int i = 0; i < mNumAttribs; i++)
+        glDisableVertexAttribArray(i);*/
 }
 
-Shader* Shader::Attach(const std::string& filename) {
+Shader* Shader::Attach(const std::string& filename, bool verbose) {
     // Load GLSL Shader Source from File
-    std::string path = FileSystem::GetPath("resources/shaders/" + filename);
+	std::string path;
+	if (verbose)
+	{
+		//path = FileSystem::GetPath()
+		path = filename;
+	}
+	else
+	{
+		path = FileSystem::GetPath("resources/shaders/" + filename);
+	}
     std::ifstream fd(path);
     auto src = std::string(std::istreambuf_iterator<char>(fd),
                            (std::istreambuf_iterator<char>()));
